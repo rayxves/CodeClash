@@ -1,0 +1,7 @@
+/home/ray/Documentos/Csharp/CodeClash/api/obj/Debug/net9.0/api.csproj.AssemblyReference.cache
+/home/ray/Documentos/Csharp/CodeClash/api/obj/Debug/net9.0/api.GeneratedMSBuildEditorConfig.editorconfig
+/home/ray/Documentos/Csharp/CodeClash/api/obj/Debug/net9.0/api.AssemblyInfoInputs.cache
+/home/ray/Documentos/Csharp/CodeClash/api/obj/Debug/net9.0/api.AssemblyInfo.cs
+/home/ray/Documentos/Csharp/CodeClash/api/obj/Debug/net9.0/api.csproj.CoreCompileInputs.cache
+/home/ray/Documentos/Csharp/CodeClash/api/obj/Debug/net9.0/api.MvcApplicationPartsAssemblyInfo.cs
+/home/ray/Documentos/Csharp/CodeClash/api/obj/Debug/net9.0/api.MvcApplicationPartsAssemblyInfo.cache
