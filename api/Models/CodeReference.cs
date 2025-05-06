@@ -7,6 +7,6 @@ public class CodeReference
     public string Language { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public virtual IEnumerable<CodeReference> GetChildren() => Enumerable.Empty<CodeReference>();
 
+    public virtual IEnumerable<CodeReference> GetChildren() => Enumerable.Empty<CodeReference>();
 }
