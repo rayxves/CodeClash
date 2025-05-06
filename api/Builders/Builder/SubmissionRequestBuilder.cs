@@ -4,37 +4,33 @@ namespace Builders
 {
     public class SubmissionRequestBuilder
     {
-        private string _code;
-        private string _input;
-        private string _language;
+        private readonly SubmissionRequest _request = new();
 
         public SubmissionRequestBuilder WithCode(string code)
         {
-            _code = code;
+            _request.Code = code;
             return this;
         }
 
         public SubmissionRequestBuilder WithInput(string input)
         {
-            _input = input;
+            _request.Input = input;
             return this;
         }
 
         public SubmissionRequestBuilder WithLanguage(string language)
         {
-            _language = language;
+            _request.Language = language;
             return this;
         }
 
+        public SubmissionRequest Build() => _request;
 
-        public SubmissionRequest Build()
-        {
-            return new SubmissionRequest
-            {
-                Code = _code,
-                Input = _input,
-                Language = _language,
-            };
-        }
+        public static SubmissionRequest Create(string code, string input, string language) =>
+            new SubmissionRequestBuilder()
+                .WithCode(code)
+                .WithInput(input)
+                .WithLanguage(language)
+                .Build();
     }
 }
