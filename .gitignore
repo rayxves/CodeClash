@@ -1,3 +1,8 @@
 /api/appsettings.json
 /api/appsettings.Development.json
+/api/compose.yml
+/api/Migrations
+/api/bin
+/api/obj
+/api/Properties
 .env

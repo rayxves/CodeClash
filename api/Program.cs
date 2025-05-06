@@ -1,5 +1,10 @@
+using Data;
+using Dtos;
+using Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +31,21 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    options.UseNpgsql(connectionString);
+});
+
 builder.Configuration.AddEnvironmentVariables();
+
+
+builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
+builder.Services.AddHttpClient(); 
+builder.Services.AddScoped<IJudge0Interface, Judge0Client>();
+builder.Services.AddScoped<CodeSubmissionFacade>();
 
 
 var app = builder.Build();
