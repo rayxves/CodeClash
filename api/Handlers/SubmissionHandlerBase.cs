@@ -19,7 +19,7 @@ public abstract class SubmissionHandlerBase : ISubmissionHandler
             await ProcessAsync(context);
         }
 
-        if (_next != null && !context.IsCompleted)
+        if (!context.IsCompleted && _next is not null)
         {
             await _next.HandleAsync(context);
         }

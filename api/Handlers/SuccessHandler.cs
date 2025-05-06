@@ -4,13 +4,12 @@ namespace Validators;
 
 public class SuccessHandler : SubmissionHandlerBase
 {
-    protected override async Task<bool> CanHandleAsync(SubmissionContext context)
-    {
-        return context.Response?.Status?.Id == 3; 
-    }
+    protected override Task<bool> CanHandleAsync(SubmissionContext context) =>
+        Task.FromResult(context.Response?.Status?.Id == 3);
 
-    protected override async Task ProcessAsync(SubmissionContext context)
+    protected override Task ProcessAsync(SubmissionContext context)
     {
         context.IsCompleted = true;
+        return Task.CompletedTask;
     }
 }

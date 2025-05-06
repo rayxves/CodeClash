@@ -4,17 +4,13 @@ namespace Validators;
 
 public class CodeNotEmptyValidator : SubmissionHandlerBase
 {
-    protected override async Task<bool> CanHandleAsync(SubmissionContext context)
-    {
-        return context.Response == null;
-    }
+    protected override Task<bool> CanHandleAsync(SubmissionContext context) =>
+        Task.FromResult(string.IsNullOrWhiteSpace(context.Request.Code));
 
-    protected override async Task ProcessAsync(SubmissionContext context)
+    protected override Task ProcessAsync(SubmissionContext context)
     {
-        if (string.IsNullOrWhiteSpace(context.Request.Code))
-        {
-            context.ErrorMessage = "O código não pode ser vazio.";
-            context.IsCompleted = true;
-        }
+        context.ErrorMessage = SubmissionErrorMessages.CodeEmpty;
+        context.IsCompleted = true;
+        return Task.CompletedTask;
     }
 }
