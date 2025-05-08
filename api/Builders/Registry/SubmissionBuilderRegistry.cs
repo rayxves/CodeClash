@@ -4,7 +4,8 @@ namespace Builders;
 
 public static class SubmissionBuilderRegistry
 {
-    private static readonly Dictionary<string, ISubmissionBuilder> _builders;
+    private static readonly Dictionary<string, ISubmissionBuilder> _buildersByName;
+    private static readonly Dictionary<string, ISubmissionBuilder> _buildersByAlias;
 
     static SubmissionBuilderRegistry()
     {
@@ -17,14 +18,17 @@ public static class SubmissionBuilderRegistry
             new JavaScriptSubmissionBuilder()
         };
 
-        _builders = builders.ToDictionary(b => b.Language.Name.ToLowerInvariant());
+        _buildersByName = builders.ToDictionary(b => b.Language.Name.ToLowerInvariant());
+        _buildersByAlias = builders.ToDictionary(b => b.Language.Judge0Alias.ToLowerInvariant());
     }
 
-    public static ISubmissionBuilder GetBuilder(string languageName) =>
-        _builders.TryGetValue(languageName.ToLowerInvariant(), out var builder)
-            ? builder
-            : throw new NotSupportedException($"Linguagem '{languageName}' não suportada");
+    public static ISubmissionBuilder GetBuilder(string languageIdentifier) =>
+        _buildersByName.TryGetValue(languageIdentifier.ToLowerInvariant(), out var builderByName)
+            ? builderByName
+            : _buildersByAlias.TryGetValue(languageIdentifier.ToLowerInvariant(), out var builderByAlias)
+                ? builderByAlias
+                : throw new NotSupportedException($"Linguagem '{languageIdentifier}' não suportada");
 
     public static IReadOnlyCollection<Language> GetSupportedLanguages() =>
-        _builders.Values.Select(b => b.Language).ToList().AsReadOnly();
+        _buildersByName.Values.Select(b => b.Language).ToList().AsReadOnly();
 }

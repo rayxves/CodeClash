@@ -8,8 +8,6 @@ using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -43,12 +41,17 @@ builder.Configuration.AddEnvironmentVariables();
 
 
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
-builder.Services.AddHttpClient(); 
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IJudge0Interface, Judge0Client>();
 builder.Services.AddScoped<CodeSubmissionFacade>();
 
 
 var app = builder.Build();
+
+app.UseRouting();
+app.UseAuthorization();
+
+app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {

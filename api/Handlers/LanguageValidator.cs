@@ -19,6 +19,7 @@ public class LanguageValidator : SubmissionHandlerBase
             context.ErrorMessage = ex.Message;
             context.IsCompleted = true;
         }
+        
         return Task.CompletedTask;
     }
 }
