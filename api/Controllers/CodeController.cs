@@ -89,26 +89,6 @@ public class CodeController : ControllerBase
         return Ok(references);
     }
 
-    [HttpGet("by-category/{category}")]
-    public async Task<ActionResult<List<CodeReferenceWithCodeDto>>> GetReferencesByCategory(string category)
-    {
-        var references = await _context.CodeReferences
-            .Where(r => r.Category == category)
-            .Select(r => new CodeReferenceWithCodeDto
-            {
-                Id = r.Id,
-                Name = r.Name,
-                Category = r.Category,
-                Language = r.Language,
-                Description = r.Description,
-                ParentName = r.Parent != null ? r.Parent.Name : null,
-                Code = r.Code  // Inclui o código
-            })
-            .ToListAsync();
-
-        return Ok(references);
-    }
-
     [HttpGet("by-name/{name}")]
     public async Task<ActionResult<List<CodeReferenceWithCodeDto>>> GetReferencesByName(string name)
     {
@@ -122,7 +102,7 @@ public class CodeController : ControllerBase
                 Language = r.Language,
                 Description = r.Description,
                 ParentName = r.Parent != null ? r.Parent.Name : null,
-                Code = r.Code  
+                Code = r.Code
             })
             .ToListAsync();
 
