@@ -39,10 +39,15 @@ public class CodeSubmissionFacade
 
         return new SubmissionResult
         {
-            Status = context.ErrorMessage == null ? "Success" : "Error",
-            Output = context.ErrorMessage ?? context.Response?.Stdout ?? string.Empty,
-            ExecutionTime = context.Response?.Time ?? 0
+            Status = context.ErrorMessage != null ? "Error" : "Success",
+            Output = context.ErrorMessage
+          ?? (!string.IsNullOrWhiteSpace(context.Response?.Stdout)
+              ? context.Response.Stdout
+              : "Nenhuma saída gerada pelo programa."),
+            ExecutionTime = double.TryParse(context.Response?.Time, out var time) ? time : 0
         };
+
+
     }
 
     public async Task<Judge0Response> SubmitCodeAsync(string sourceCode, string input, string languageName)

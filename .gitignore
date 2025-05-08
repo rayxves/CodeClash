@@ -5,4 +5,5 @@
 /api/bin
 /api/obj
 /api/Properties
+/api/TheAlgorithm
 .env
