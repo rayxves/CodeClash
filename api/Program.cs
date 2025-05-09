@@ -1,3 +1,4 @@
+using Composites;
 using Data;
 using Dtos;
 using Interfaces;
@@ -44,6 +45,7 @@ builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Jud
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IJudge0Interface, Judge0Client>();
 builder.Services.AddScoped<CodeSubmissionFacade>();
+builder.Services.AddScoped<ICodeReferenceInterface, CodeReferenceService>();
 
 
 var app = builder.Build();

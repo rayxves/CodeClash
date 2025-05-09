@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Services;
 using Models;
 using Dtos;
-using Data;
-using Microsoft.EntityFrameworkCore;
+using Interfaces;
+using Composites;
 
 namespace Controllers;
 
@@ -11,17 +11,14 @@ namespace Controllers;
 [Route("api/code")]
 public class CodeController : ControllerBase
 {
+    private readonly ICodeReferenceInterface _codeService;
     private readonly CodeSubmissionFacade _submissionFacade;
-    private readonly ApplicationDbContext _context;
 
-
-    public CodeController(CodeSubmissionFacade submissionFacade, ApplicationDbContext context)
+    public CodeController(ICodeReferenceInterface codeService, CodeSubmissionFacade submissionFacade)
     {
+        _codeService = codeService;
         _submissionFacade = submissionFacade;
-        _context = context;
     }
-
-
 
     [HttpPost("submit")]
     public async Task<ActionResult<Judge0Response>> SubmitDirect(
@@ -37,76 +34,51 @@ public class CodeController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetReferenceWithChildren(int id)
     {
-        var reference = await _context.CodeReferences
-         .Include(r => r.Parent)
-         .Include(r => r.Children)
-         .FirstOrDefaultAsync(r => r.Id == id);
+        var tree = await _codeService.BuildCompositeTreeAsync(id);
+        var root = tree.Children.FirstOrDefault() as CodeReferenceComposite;
 
-        if (reference == null)
+        if (root == null)
             return NotFound();
 
-        var response = new CodeReferenceWithChildrenDto
-        {
-            Id = reference.Id,
-            Name = reference.Name,
-            Category = reference.Category,
-            Language = reference.Language,
-            Description = reference.Description,
-            ParentName = reference.Parent?.Name,
-            Children = reference.Children.Select(c => new CodeReferenceWithCodeDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Category = c.Category,
-                Language = c.Language,
-                Description = c.Description,
-                Code = c.Code
-            }).ToList()
-        };
+        return Ok(root.ToCardWithChildren());
+    }
 
-        return Ok(response);
+    [HttpGet("by-language/{language}")]
+    public async Task<IActionResult> GetReferencesByLanguage(string language)
+    {
+        var references = await _codeService.GetByLanguageAsync(language);
+        return Ok(references);
     }
 
     [HttpGet("by-category/{category}")]
-    public async Task<ActionResult<List<CodeReferenceDto>>> GetReferencesByCategory(string category)
+    public async Task<IActionResult> GetReferencesByCategory(string category)
     {
-        var references = await _context.CodeReferences
-            .Where(r => r.Category == category)
-            .Select(r => new CodeReferenceWithCodeDto
-            {
-                Id = r.Id,
-                Name = r.Name,
-                Category = r.Category,
-                Language = r.Language,
-                ParentName = r.Parent != null ? r.Parent.Name : null,
-                Code = r.Code
-            })
-            .ToListAsync();
-
+        var references = await _codeService.GetByCategoryAsync(category);
         return Ok(references);
     }
 
     [HttpGet("by-name/{name}")]
-    public async Task<ActionResult<List<CodeReferenceWithCodeDto>>> GetReferencesByName(string name)
+    public async Task<IActionResult> GetReferencesByName(string name)
     {
-        var references = await _context.CodeReferences
-            .Where(r => r.Name.Contains(name))
-            .Select(r => new CodeReferenceWithCodeDto
-            {
-                Id = r.Id,
-                Name = r.Name,
-                Category = r.Category,
-                Language = r.Language,
-                Description = r.Description,
-                ParentName = r.Parent != null ? r.Parent.Name : null,
-                Code = r.Code
-            })
-            .ToListAsync();
-
+        var references = await _codeService.SearchByNameAsync(name);
         return Ok(references);
     }
 
+    [HttpPost("recommend-similar")]
+    public async Task<IActionResult> RecommendSimilar([FromBody] RecommendSimilarDto dto)
+    {
+        try
+        {
+            var recommendations = await _codeService.RecommendSimilarAsync(dto.UserCodeAttempt);
+            return Ok(recommendations);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
 }
