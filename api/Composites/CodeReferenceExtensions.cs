@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Models;
 
 namespace Composites;
@@ -38,59 +39,63 @@ public static class CodeReferenceExtensions
         return results;
     }
 
+    
+    public static CodeReference FindNode(this CodeReference reference, string name)
+    {
+        if (reference.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+        {
+            return reference;
+        }
+
+        foreach (var child in reference.GetChildren())
+        {
+            var found = child.FindNode(name);
+            if (found != null)
+            {
+                return found;
+            }
+        }
+
+        return null;
+    }
+
+
+    public static object ToCardModel(this CodeReferenceEntity reference)
+    {
+        return new
+        {
+            reference.Id,
+            reference.Name,
+            reference.Category,
+            reference.Language,
+            reference.Code,
+            reference.Description
+        };
+    }
     public static object ToCardModel(this CodeReference reference)
     {
         return new
         {
             reference.Name,
-            reference.Description,
-            Language = reference.Language.ToUpper(),
-            reference.Code
+            reference.Category,
+            reference.Language,
+            reference.Code,
+            reference.Description
         };
     }
 
-    public static List<CodeReference> RecommendSimilar(this CodeReference reference, string userCodeAttempt)
+    public static object ToCardWithChildren(this CodeReferenceComposite composite)
     {
-        var keywords = ExtractKeywords(userCodeAttempt);
-        var results = new List<CodeReference>();
-
-        if (keywords.Any(k =>
-            reference.Description.Contains(k, StringComparison.OrdinalIgnoreCase) ||
-            reference.Code.Contains(k, StringComparison.OrdinalIgnoreCase)))
+        return new
         {
-            results.Add(reference);
-        }
-
-        foreach (var child in reference.GetChildren())
-        {
-            results.AddRange(child.RecommendSimilar(userCodeAttempt));
-        }
-
-        return results.Distinct().Take(3).ToList();
-    }
-
-    private static List<string> ExtractKeywords(string code)
-    {
-        return code.Split(new[] { ' ', '\n', '\t', '(', ')', '{', '}' }, StringSplitOptions.RemoveEmptyEntries)
-                   .Where(w => w.Length > 3)
-                   .Distinct()
-                   .ToList();
-    }
-
-    public static List<string> CompareWithUserCode(this CodeReference reference, string userCode)
-    {
-        var referenceLines = reference.Code.Split('\n');
-        var userLines = userCode.Split('\n');
-        var diffs = new List<string>();
-
-        for (int i = 0; i < Math.Min(referenceLines.Length, userLines.Length); i++)
-        {
-            if (!referenceLines[i].Trim().Equals(userLines[i].Trim(), StringComparison.OrdinalIgnoreCase))
-            {
-                diffs.Add($"Linha {i + 1}: Esperado → {referenceLines[i].Trim()} | Seu código → {userLines[i].Trim()}");
-            }
-        }
-
-        return diffs;
+            composite.Name,
+            composite.Category,
+            composite.Language,
+            composite.Code,
+            composite.Description,
+            Children = composite.Children.Select(c => c.ToCardModel())
+        };
     }
 }
+
+

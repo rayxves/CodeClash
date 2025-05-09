@@ -15,4 +15,6 @@ public class CodeReferenceEntity : CodeReference
     public CodeReferenceEntity? Parent { get; set; }
 
     public List<CodeReferenceEntity> Children { get; set; } = new();
+
+    public override IEnumerable<CodeReference> GetChildren() => Children;
 }
