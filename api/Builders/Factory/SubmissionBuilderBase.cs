@@ -1,6 +1,7 @@
 using Models;
 
 namespace Builders;
+
 public abstract class SubmissionBuilderBase : ISubmissionBuilder
 {
     public abstract Language Language { get; }
@@ -10,7 +11,8 @@ public abstract class SubmissionBuilderBase : ISubmissionBuilder
         return new SubmissionRequestBuilder()
             .WithCode(sourceCode)
             .WithInput(input)
-            .WithLanguage(Language.Judge0Alias)
+            .WithLanguage(Language.Name)
+            .WithLanguageId(Language.Id)
             .Build();
     }
 }

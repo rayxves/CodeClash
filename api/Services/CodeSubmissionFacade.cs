@@ -26,32 +26,16 @@ public class CodeSubmissionFacade
             .SetNext(new CompilationErrorHandler())
             .SetNext(new TimeoutHandler())
             .SetNext(new RuntimeErrorHandler())
+            .SetNext(new UnprocessableEntityHandler())
             .SetNext(new SuccessHandler());
 
         return chain;
     }
 
-    public async Task<SubmissionResult> ProcessSubmissionAsync(SubmissionRequest request)
-    {
-        var context = new SubmissionContext { Request = request };
-
-        await _handlerChain.HandleAsync(context);
-
-        return new SubmissionResult
-        {
-            Status = context.ErrorMessage != null ? "Error" : "Success",
-            Output = context.ErrorMessage
-          ?? (!string.IsNullOrWhiteSpace(context.Response?.Stdout)
-              ? context.Response.Stdout
-              : "Nenhuma saída gerada pelo programa."),
-            ExecutionTime = double.TryParse(context.Response?.Time, out var time) ? time : 0
-        };
-
-
-    }
 
     public async Task<Judge0Response> SubmitCodeAsync(string sourceCode, string input, string languageName)
     {
+
         try
         {
             var builder = SubmissionBuilderRegistry.GetBuilder(languageName);
@@ -60,14 +44,14 @@ public class CodeSubmissionFacade
             var context = new SubmissionContext { Request = request };
             await _handlerChain.HandleAsync(context);
 
-            if (context.Response != null)
-                return context.Response;
+            if (!string.IsNullOrWhiteSpace(context.ErrorMessage))
+                throw new Exception(context.ErrorMessage);
 
-            throw new Exception(context.ErrorMessage);
+            return context.Response ?? throw new Exception("Erro desconhecido ao processar a submissão.");
         }
         catch (Exception ex)
         {
-            throw new Exception($"Erro na submissão: {ex.Message}", ex);
+            throw new Exception($"{ex.Message}", ex);
         }
     }
 

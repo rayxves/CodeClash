@@ -24,13 +24,20 @@ namespace Builders
             return this;
         }
 
+        public SubmissionRequestBuilder WithLanguageId(int languageId)
+        {
+            _request.LanguageId = languageId;
+            return this;
+        }
+
         public SubmissionRequest Build() => _request;
 
-        public static SubmissionRequest Create(string code, string input, string language) =>
+        public static SubmissionRequest Create(string code, string input, string language, int languageId) =>
             new SubmissionRequestBuilder()
                 .WithCode(code)
                 .WithInput(input)
                 .WithLanguage(language)
+                .WithLanguageId(languageId)
                 .Build();
     }
 }
