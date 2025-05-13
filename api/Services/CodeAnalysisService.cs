@@ -59,4 +59,13 @@ public static class CodeAnalysisService
             .Select(x => x.Entity)
             .ToList();
     }
+
+    public static string NormalizeCategory(string input)
+    {
+        return input
+            .ToLower()
+            .Replace("_", "")
+            .Replace("-", "")
+            .Replace(" ", "");
+    }
 }

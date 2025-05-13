@@ -39,13 +39,16 @@ public class CodeController : ControllerBase
     public async Task<IActionResult> GetReferenceWithChildren(int id)
     {
         var tree = await _codeService.BuildCompositeTreeAsync(id);
-        var root = tree.Children.FirstOrDefault() as CodeReferenceComposite;
 
-        if (root == null)
+        if (tree == null)
             return NotFound();
 
-        return Ok(root.ToCardWithChildren());
+        if (tree is CodeReferenceComposite composite)
+            return Ok(composite.ToCardWithChildren());
+
+        return Ok(tree.ToCardModel());
     }
+
 
     [HttpGet("by-language/{language}")]
     public async Task<IActionResult> GetReferencesByLanguage(string language)
@@ -68,6 +71,21 @@ public class CodeController : ControllerBase
         return Ok(references);
     }
 
+    [HttpGet("by-language-and-category")]
+    public async Task<IActionResult> GetByLanguageAndCategory([FromQuery] string language, [FromQuery] string category)
+    {
+        var references = await _codeService.GetByLanguageAndCategoryAsync(language, category);
+        return Ok(references);
+    }
+
+    [HttpGet("by-language-and-name")]
+    public async Task<IActionResult> GetByLanguageAndName([FromQuery] string language, [FromQuery] string name)
+    {
+        var references = await _codeService.GetByLanguageAndNameAsync(language, name);
+        return Ok(references);
+    }
+
+
     [HttpPost("recommend-similar")]
     public async Task<IActionResult> RecommendSimilar([FromBody] RecommendSimilarDto dto)
     {
@@ -81,4 +99,19 @@ public class CodeController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
+    [HttpGet("flattened-references")]
+    public async Task<IActionResult> GetFlattenedReferences(string? language = null, string? category = null, string? name = null, int? maxDepth = null)
+    {
+        var references = await _codeService.GetFlattenedReferencesAsync(language, category, name, maxDepth);
+        return Ok(references);
+    }
+
+    [HttpGet("references-depth")]
+    public async Task<IActionResult> GetReferencesDepth(string? category = null, string? name = null)
+    {
+        var depth = await _codeService.GetReferencesDepthAsync(category, name);
+        return Ok(new { Depth = depth });
+    }
+
 }
