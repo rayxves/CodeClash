@@ -4,7 +4,7 @@ import MobileMenu from "./MobileMenu";
 import DesktopMenu from "./DesktopMenu";
 import { Filter, Menu } from "lucide-react";
 import FilterDropdown from "./FilterDropdown";
-import logo from "../assets/logo.jpg";
+import logo from "../../assets/logo.jpg";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);

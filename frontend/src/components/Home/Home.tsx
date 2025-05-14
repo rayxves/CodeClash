@@ -4,10 +4,7 @@ import Navbar from "../Navbar/Navbar";
 export default function Home() {
   return (
     <div className="min-h-screen min-w-screen bg-whitesmoke text-gray-800">
-      <div className="relative flex mb-10">
-        {" "}
-        <Navbar />
-      </div>{" "}
+    
       <section className="py-20 px-4 bg-gray-50">
         <div className="container mx-auto flex flex-col md:flex-row items-start gap-10">
           <div className="md:w-1/2">
