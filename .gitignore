@@ -6,4 +6,4 @@
 /api/obj
 /api/Properties
 /api/TheAlgorithm
-.env
+/frontend/.env
