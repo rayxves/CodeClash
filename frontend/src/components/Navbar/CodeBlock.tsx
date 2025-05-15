@@ -1,4 +1,5 @@
-import { Highlight, themes } from "prism-react-renderer";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import {  vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const code = `#include <iostream>
 using namespace std;
@@ -10,23 +11,30 @@ int main() {
 
 export default function CodeBlock() {
   return (
-    <section className="px-4 py-4 rounded shadow max-w-full">
-      <Highlight theme={themes.nightOwl} code={code} language="cpp">
-        {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre
-            className={`${className} overflow-x-auto text-xs md:text-sm font-mono p-3 rounded`}
-            style={style}
-          >
-            {tokens.map((line, i) => (
-              <div key={i} {...getLineProps({ line, key: i })}>
-                {line.map((token, key) => (
-                  <span key={key} {...getTokenProps({ token, key })} />
-                ))}
-              </div>
-            ))}
-          </pre>
-        )}
-      </Highlight>
+    <section className="px-4 py-4 rounded shadow max-w-full overflow-hidden">
+      <SyntaxHighlighter
+        language="cpp"
+        style={vscDarkPlus}
+        showLineNumbers
+        wrapLines
+        customStyle={{
+          margin: 0,
+          padding: "1rem",
+          background: "#1e1e2f",
+          fontSize: "0.85rem",
+          lineHeight: "1.5",
+          overflowX: "hidden",
+          wordBreak: "break-word",
+        }}
+        lineNumberStyle={{
+          minWidth: "2.5em",
+          paddingRight: "1em",
+          color: "#6e7681",
+          textAlign: "right",
+        }}
+      >
+        {code}
+      </SyntaxHighlighter>
     </section>
   );
 }

@@ -14,12 +14,13 @@ export default function MobileMenu({ toggleMenu }: MobileMenuProps) {
         </button>
       </div>
       <nav className="flex flex-col w-full space-y-4 mt-6 text-sm font-medium text-center">
-        <a
-          href="/about"
+      <a
+          href="/"
           className="bg-gray-700 rounded hover:bg-gray-600 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
         >
-          Sobre
+          Home
         </a>
+       
         <a
           href="#"
           className="bg-gray-700 rounded hover:bg-gray-600 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
@@ -31,6 +32,12 @@ export default function MobileMenu({ toggleMenu }: MobileMenuProps) {
           className="bg-gray-700 rounded hover:bg-gray-600 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
         >
           Códigos Modelo
+        </a>
+        <a
+          href="/about"
+          className="bg-gray-700 rounded hover:bg-gray-600 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
+        >
+          Sobre 
         </a>
         <a
           href="#"

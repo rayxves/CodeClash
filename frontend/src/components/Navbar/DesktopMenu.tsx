@@ -10,6 +10,9 @@ export default function DesktopMenu({
 }: DesktopMenuProps) {
   return (
     <ul className="hidden md:flex space-x-6 text-sm items-center font-medium  text-whitesmoke relative">
+       <li className="hover:text-gray-300 hover:cursor-pointer">
+        <a href="/">Home</a>
+      </li>
       <li className="hover:text-gray-300 hover:cursor-pointer">
         <a href="/about">Sobre</a>
       </li>

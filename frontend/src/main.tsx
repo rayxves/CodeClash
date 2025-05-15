@@ -7,6 +7,8 @@ import ErrorPage from "./components/Home/ErrorPage.tsx";
 import AboutPage from "./components/About/AboutPage.tsx";
 import CodeModel from "./components/CodeModel/CodeModel.tsx";
 import Home from "./components/Home/Home.tsx";
+import CategoryPage from "./components/CodeModel/CategoryPage.tsx";
+import CodeModal from "./components/CodeModel/CodeModal.tsx";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,16 @@ const router = createBrowserRouter([
   {
     path: "code-model",
     element: <CodeModel />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "code-model/:language/:category",
+    element: <CategoryPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "code-model/:language/:category/code",
+    element: <CodeModal />,
     errorElement: <ErrorPage />,
   },
 ]);
