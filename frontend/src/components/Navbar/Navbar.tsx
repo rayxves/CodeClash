@@ -47,7 +47,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        <DesktopMenu toggleFilter={toggleFilter} filterOpen={filterOpen} />
+        <DesktopMenu toggleFilter={toggleFilter}  />
       </div>
 
       {filterOpen && (

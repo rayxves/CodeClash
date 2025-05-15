@@ -1,15 +1,12 @@
 "use client";
 import { Filter } from "lucide-react";
-import FilterDropdown from "./FilterDropdown";
 
 interface DesktopMenuProps {
   toggleFilter: (filterType: string) => void;
-  filterOpen: string | null;
 }
 
 export default function DesktopMenu({
   toggleFilter,
-  filterOpen,
 }: DesktopMenuProps) {
   return (
     <ul className="hidden md:flex space-x-6 text-sm items-center font-medium  text-whitesmoke relative">
@@ -20,7 +17,7 @@ export default function DesktopMenu({
         <a href="#">Submissão</a>
       </li>
       <li className="hover:text-gray-300 hover:cursor-pointer">
-        <a href="#">Códigos Modelo</a>
+        <a href="code-model">Códigos Modelo</a>
       </li>
       <li className="relative">
         <button

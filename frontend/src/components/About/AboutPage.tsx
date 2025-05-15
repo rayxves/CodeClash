@@ -1,5 +1,4 @@
 import { Code, Send, Filter, LayoutDashboard } from "lucide-react";
-import { Link } from "react-router-dom";
 
 export default function AboutPage() {
   return (

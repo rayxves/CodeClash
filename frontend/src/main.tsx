@@ -5,17 +5,24 @@ import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./components/Home/ErrorPage.tsx";
 import AboutPage from "./components/About/AboutPage.tsx";
-import { Home } from "lucide-react";
+import CodeModel from "./components/CodeModel/CodeModel.tsx";
+import Home from "./components/Home/Home.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home/>,
+    element: <Home />,
     errorElement: <ErrorPage />,
   },
   {
     path: "about",
     element: <AboutPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "code-model",
+    element: <CodeModel />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

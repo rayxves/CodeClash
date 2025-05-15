@@ -27,7 +27,7 @@ export default function MobileMenu({ toggleMenu }: MobileMenuProps) {
           Submissão
         </a>
         <a
-          href="#"
+          href="code-model"
           className="bg-gray-700 rounded hover:bg-gray-600 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
         >
           Códigos Modelo

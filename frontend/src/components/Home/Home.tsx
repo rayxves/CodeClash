@@ -1,14 +1,12 @@
 import CodeBlock from "../Navbar/CodeBlock";
-import Navbar from "../Navbar/Navbar";
 
 export default function Home() {
   return (
     <div className="min-h-screen min-w-screen bg-whitesmoke text-gray-800">
-    
       <section className="py-20 px-4 bg-gray-50">
-        <div className="container mx-auto flex flex-col md:flex-row items-start gap-10">
+        <div className="container mx-auto flex flex-col md:flex-row items-start mt-6 gap-10">
           <div className="md:w-1/2">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4">
               Desafie seus conhecimentos e desenvolva suas habilidades
             </h1>
             <p className="mb-6 text-gray-700">
@@ -17,8 +15,8 @@ export default function Home() {
               como programador.
             </p>
             <a
-              href="#"
-              className="text-blue-600 font-medium flex items-center hover:underline"
+              href="about"
+              className="text-button font-medium flex items-center hover:underline"
             >
               Saiba mais
               <svg
