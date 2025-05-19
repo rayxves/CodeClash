@@ -13,6 +13,8 @@ import {
   Type,
   LibraryBig,
   ChevronRight,
+  SendToBack,
+  Binary,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -69,6 +71,16 @@ const CATEGORIES = [
     name: "Manipulação de strings",
     alias: "strings",
     icon: <Type className="w-5 h-5 text-pink-600" />,
+  },
+  {
+    name: "Backtracking",
+    alias: "backtracking",
+    icon: <SendToBack className="w-5 h-5 text-pink-600" />,
+  },
+  {
+    name: "Manipulação de bits",
+    alias: "bit_manipulation",
+    icon: <Binary className="w-5 h-5 text-pink-600" />,
   },
   {
     name: "Others",

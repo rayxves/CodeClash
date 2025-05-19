@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -32,6 +32,7 @@ function getExtension(language: string) {
 
 export default function CodeModal() {
   const { language, category } = useParams();
+  const naviagte = useNavigate();
   return (
     <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
       <div className="w-full max-w-6xl mt-12">
@@ -74,19 +75,21 @@ export default function CodeModal() {
               className="px-3 py-1.5 text-xs sm:text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all flex items-center shadow-sm hover:shadow-md active:scale-95"
               aria-label="Fazer nova submissão"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Submeter
+              <Link to="/submission" className="flex items-center ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Submeter
+              </Link>
             </button>
           </div>
         </div>

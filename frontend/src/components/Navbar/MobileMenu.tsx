@@ -22,13 +22,13 @@ export default function MobileMenu({ toggleMenu }: MobileMenuProps) {
         </a>
        
         <a
-          href="#"
+          href="/submission"
           className="bg-gray-700 rounded hover:bg-gray-600 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
         >
           Submissão
         </a>
         <a
-          href="code-model"
+          href="/code-model"
           className="bg-gray-700 rounded hover:bg-gray-600 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
         >
           Códigos Modelo
@@ -40,7 +40,7 @@ export default function MobileMenu({ toggleMenu }: MobileMenuProps) {
           Sobre 
         </a>
         <a
-          href="#"
+          href="/submission"
           className="bg-button hover:bg-buttonhover text-whitesmoke px-4 py-2 rounded-md text-center  hover:cursor-pointer"
         >
           Get Started

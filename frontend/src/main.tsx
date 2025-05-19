@@ -9,6 +9,7 @@ import CodeModel from "./components/CodeModel/CodeModel.tsx";
 import Home from "./components/Home/Home.tsx";
 import CategoryPage from "./components/CodeModel/CategoryPage.tsx";
 import CodeModal from "./components/CodeModel/CodeModal.tsx";
+import SubmissionPage from "./components/Submission/SubmissionPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,11 @@ const router = createBrowserRouter([
   {
     path: "code-model/:language/:category/code",
     element: <CodeModal />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "submission",
+    element: <SubmissionPage />,
     errorElement: <ErrorPage />,
   },
 ]);

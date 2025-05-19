@@ -38,6 +38,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString);
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 builder.Configuration.AddEnvironmentVariables();
 
 
@@ -49,6 +59,8 @@ builder.Services.AddScoped<ICodeReferenceInterface, CodeReferenceService>();
 
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 app.UseRouting();
 app.UseAuthorization();
@@ -62,9 +74,6 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "");
     });
-
-
-    app.UseHttpsRedirection();
 
 
     app.Run();

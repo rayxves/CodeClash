@@ -17,10 +17,10 @@ export default function DesktopMenu({
         <a href="/about">Sobre</a>
       </li>
       <li className="hover:text-gray-300 hover:cursor-pointer">
-        <a href="#">Submissão</a>
+        <a href="/submission">Submissão</a>
       </li>
       <li className="hover:text-gray-300 hover:cursor-pointer">
-        <a href="code-model">Códigos Modelo</a>
+        <a href="/code-model">Códigos Modelo</a>
       </li>
       <li className="relative">
         <button
@@ -33,7 +33,7 @@ export default function DesktopMenu({
       </li>
       <li>
         <a
-          href="#"
+          href="submission"
           className="bg-button  hover:bg-buttonhover text-whitesmoke px-4 py-2 rounded-md"
         >
           Get Started
