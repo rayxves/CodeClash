@@ -161,12 +161,19 @@ public class CodeReferenceService : ICodeReferenceInterface
 
     public async Task<IEnumerable<object>> GetByLanguageAndNameAsync(string language, string name)
     {
+        Console.WriteLine("language " + language);
+        Console.WriteLine(name);
+        var lowerName = name.ToLower();
+        var lowerLanguage = language.ToLower();
+
         var matchingEntities = await _context.CodeReferences
-            .Where(e => EF.Functions.Like(e.Language.ToLower(), language.ToLower()) && EF.Functions.Like(e.Name, $"%{name}%"))
+            .Where(e => e.Language.ToLower() == lowerLanguage &&
+                        lowerName.Contains(e.Name.ToLower()))
             .ToListAsync();
 
         return matchingEntities.Select(e => e.ToCardModel());
     }
+
 
     public async Task<IEnumerable<object>> RecommendSimilarAsync(string userCodeAttempt)
     {
