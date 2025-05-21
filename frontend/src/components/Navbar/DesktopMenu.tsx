@@ -1,5 +1,5 @@
 "use client";
-import { Filter } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 
 interface DesktopMenuProps {
   toggleFilter: (filterType: string) => void;
@@ -9,7 +9,7 @@ export default function DesktopMenu({
   toggleFilter,
 }: DesktopMenuProps) {
   return (
-    <ul className="hidden md:flex space-x-6 text-sm items-center font-medium  text-whitesmoke relative">
+    <ul className="hidden lg:flex space-x-6 text-sm items-center font-medium  text-whitesmoke relative">
        <li className="hover:text-gray-300 hover:cursor-pointer">
         <a href="/">Home</a>
       </li>
@@ -27,8 +27,8 @@ export default function DesktopMenu({
           onClick={() => toggleFilter("name")}
           className="flex items-center gap-2 hover:text-gray-300 hover:cursor-pointer"
         >
-          <span>Filtros</span>
-          <Filter className="w-4 h-4" />
+          <span>Busca rápida</span>
+          <Lightbulb className="w-4 h-4" />
         </button>
       </li>
       <li>

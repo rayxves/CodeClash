@@ -20,7 +20,7 @@ import {
   Coffee,
 } from "lucide-react";
 
-const LANGUAGES: Language[] = [
+export const LANGUAGES: Language[] = [
   {
     name: "Python",
     icon: <Code2 className="w-5 h-5 text-blue-500" />,
@@ -43,7 +43,7 @@ const LANGUAGES: Language[] = [
   },
 ];
 
-const CATEGORIES: Category[] = [
+export const CATEGORIES: Category[] = [
   {
     name: "Ordenação",
     alias: "sort",

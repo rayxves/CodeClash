@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { Play, ChevronDown, Terminal, Code2, Settings } from "lucide-react";
+import {
+  Play,
+  ChevronDown,
+  Terminal,
+  Code2,
+  Settings,
+  Stars,
+} from "lucide-react";
 import MonacoEditor from "react-monaco-editor";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ExecutionOutput from "./ExecutionOutput";
 
@@ -25,9 +32,8 @@ const languages = [
   { name: "C#", id: "csharp", icon: <Code2 className="w-4 h-4" /> },
 ];
 
-
-
 export default function SubmissionPage() {
+  const navigate = useNavigate();
   const [code, setCode] = useState("// Write your code here\n");
   const [language, setLanguage] = useState("python");
   const [output, setOutput] = useState<Judge0Response | string | null>(null);
@@ -57,7 +63,7 @@ export default function SubmissionPage() {
           compile_output: null,
           message: error.response.data.error,
           status: {
-            id: 13, 
+            id: 13,
             description: "Error",
           },
         });
@@ -67,6 +73,10 @@ export default function SubmissionPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGetRecommendations = () => {
+    navigate(`/recommendations?code=${encodeURIComponent(code)}`);
   };
 
   return (
@@ -96,6 +106,21 @@ export default function SubmissionPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <div className="relative group">
+              <button
+                onClick={handleGetRecommendations}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!code.trim()}
+              >
+                <Stars className="w-4 h-4" />
+                Ver códigos similares
+              </button>
+              {!code.trim() && (
+                <div className="absolute z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 bottom-full mb-2">
+                  Escreva algum código para obter recomendações
+                </div>
+              )}
+            </div>
             <div className="relative">
               <select
                 className="appearance-none outline-none cursor-pointer bg-gray-800 border border-gray-700 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"

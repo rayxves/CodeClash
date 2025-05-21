@@ -15,6 +15,7 @@ export interface ApiResponse<T> {
     code: string;
     difficulty?: string;
     children?: CodeReference[];
+    recommendations?: CodeReference[]; 
   }
 
 export interface Language {

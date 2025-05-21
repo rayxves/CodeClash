@@ -15,47 +15,26 @@ import RecommendationsPage from "./components/CodeModel/Recomendation/Recomendat
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <App />,
     errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "code-model", element: <CodeModel /> },
+      { path: "code-model/:language/:category", element: <CategoryPage /> },
+      { path: "code-model/:language/:category/:name", element: <CodeModal /> },
+      { path: "submission", element: <SubmissionPage /> },
+      {
+        path: "recommendations/:language/:name",
+        element: <RecommendationsPage />,
+      },
+      { path: "recommendations", element: <RecommendationsPage /> },
+    ],
   },
-  {
-    path: "about",
-    element: <AboutPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "code-model",
-    element: <CodeModel />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "code-model/:language/:category",
-    element: <CategoryPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "code-model/:language/:category/:name",
-    element: <CodeModal key={location.pathname} />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "submission",
-    element: <SubmissionPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/recommendations/:language/:name",
-    element: <RecommendationsPage />,
-  },
-  {
-    path: "/recommendations",
-    element: <RecommendationsPage />,
-  }
 ]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
-    <App />
   </StrictMode>
 );

@@ -7,7 +7,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ toggleMenu }: MobileMenuProps) {
   return (
-    <div className="absolute top-full right-0 mt-0 bg-navbar rounded-b-md shadow-md py-4 pt-0 px-6 text-whitesmoke text-right w-fit z-50">
+    <div className="absolute top-full right-0 mt-0 bg-navbar rounded-b-md shadow-md py-4 pt-0 px-6  text-whitesmoke text-right w-fit z-50">
       <div className="flex justify-end mb-2">
         <button onClick={toggleMenu} aria-label="Fechar menu">
           <X className="w-4 h-4" />

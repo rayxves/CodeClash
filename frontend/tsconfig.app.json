@@ -23,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "languages.ts"]
+  "include": ["src", "languages.ts", "prisma-setup.ts"]
 }

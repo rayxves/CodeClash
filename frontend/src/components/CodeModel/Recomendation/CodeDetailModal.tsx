@@ -1,7 +1,7 @@
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { ChevronLeft } from "lucide-react";
 import type { CodeReference } from "../../../types/code";
+import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface CodeDetailModalProps {
   code: CodeReference;
@@ -33,7 +33,7 @@ export default function CodeDetailModal({
       <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh]">
         <SyntaxHighlighter
           language={code.language.toLowerCase()}
-          style={vscDarkPlus}
+          style={nightOwl}
           showLineNumbers
           wrapLines
           customStyle={{

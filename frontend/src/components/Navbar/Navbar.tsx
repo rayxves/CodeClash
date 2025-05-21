@@ -1,41 +1,40 @@
-"use client";
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 import DesktopMenu from "./DesktopMenu";
-import { Filter, Menu } from "lucide-react";
-import FilterDropdown from "./FilterDropdown";
+import { Lightbulb, Menu } from "lucide-react";
+import SearchDropdown from "./SearchDropdown";
 import logo from "../../assets/logo.jpg";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [filterOpen, setFilterOpen] = useState<string | null>(null);
+  const [searchType, setSearchType] = useState<string | null>(null);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => {
-      if (!prev) setFilterOpen(null);
+      if (!prev) setSearchType(null);
       return !prev;
     });
   };
 
-  const toggleFilter = (filterType: string) => {
-    setFilterOpen((prev) => {
-      if (prev !== filterType) setMenuOpen(false);
-      return prev === filterType ? null : filterType;
+  const toggleSearch = (type: string | null) => {
+    setSearchType((prev) => {
+      if (prev !== type) setMenuOpen(false);
+      return prev === type ? null : type;
     });
   };
 
   return (
     <nav className="w-full shadow-sm bg-navbar fixed top-0 left-0 z-50 ">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="container px-4 py-4 flex items-center justify-between min-w-full">
         <img src={logo} alt="CodeClash Logo" className="w-44" />
 
-        <div className="md:hidden flex items-end gap-6">
+        <div className="lg:hidden flex gap-6">
           <button
-            onClick={() => toggleFilter("name")}
+            onClick={() => toggleSearch("name")}
             className="flex items-center gap-2 text-sm font-medium  text-whitesmoke"
           >
-            <Filter className="w-4 h-4" />
-            <span>Filtros</span>
+            <Lightbulb className="w-4 h-4" />
+            <span>Busca rápida</span>
           </button>
 
           <button
@@ -47,22 +46,32 @@ export default function Navbar() {
           </button>
         </div>
 
-        <DesktopMenu toggleFilter={toggleFilter}  />
+        <DesktopMenu toggleFilter={toggleSearch} />
       </div>
 
-      {filterOpen && (
-        <div className="hidden md:block relative">
-          <FilterDropdown filterOpen={filterOpen} toggleFilter={toggleFilter} />
+      {searchType && (
+        <div className="hidden lg:block relative">
+          <SearchDropdown
+            onNavigation={() => {
+              setMenuOpen(false);
+              setSearchType(null);
+            }}
+          />
         </div>
       )}
 
-      {filterOpen && (
-        <div className="md:hidden relative">
-          <FilterDropdown filterOpen={filterOpen} toggleFilter={toggleFilter} />
+      {searchType && (
+        <div className="lg:hidden relative">
+          <SearchDropdown
+            onNavigation={() => {
+              setMenuOpen(false);
+              setSearchType(null);
+            }}
+          />
         </div>
       )}
       {menuOpen && (
-        <div className="md:hidden relative">
+        <div className="lg:hidden relative">
           <MobileMenu toggleMenu={toggleMenu} />
         </div>
       )}

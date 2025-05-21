@@ -1,6 +1,6 @@
-import { Code2, Stars } from "lucide-react";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Code2 } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface SourceCodeSectionProps {
   sourceCode: string;
@@ -23,7 +23,7 @@ export default function SourceCodeSection({
           </>
         ) : (
           <>
-            <Stars className="w-5 h-5 text-yellow-500 mr-2" />
+            <Code2 className="w-5 h-5 text-blue-600 mr-2" />
             Seu código analisado
           </>
         )}
@@ -31,7 +31,7 @@ export default function SourceCodeSection({
       <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh]">
         <SyntaxHighlighter
           language={language?.toLowerCase()}
-          style={vscDarkPlus}
+          style={nightOwl}
           showLineNumbers
           wrapLines
           customStyle={{
