@@ -14,31 +14,15 @@ public class CodeSubmissionFacade
     public CodeSubmissionFacade(IJudge0Interface judge0Client)
     {
         _judge0Client = judge0Client;
-        _handlerChain = BuildHandlerChain();
+        _handlerChain = SubmissionHandlerChainFactory.CreateHandlerChain(_judge0Client);
     }
-
-    private ISubmissionHandler BuildHandlerChain()
-    {
-        var chain = new LanguageValidator();
-        chain
-            .SetNext(new CodeNotEmptyValidator())
-            .SetNext(new SendToJudge0Handler(_judge0Client))
-            .SetNext(new CompilationErrorHandler())
-            .SetNext(new TimeoutHandler())
-            .SetNext(new RuntimeErrorHandler())
-            .SetNext(new UnprocessableEntityHandler())
-            .SetNext(new SuccessHandler());
-
-        return chain;
-    }
-
 
     public async Task<Judge0Response> SubmitCodeAsync(string sourceCode, string input, string languageName)
     {
 
         try
         {
-            var builder = SubmissionBuilderRegistry.GetBuilder(languageName);
+            var builder = SubmissionBuilderFactory.CreateBuilder(languageName);
             var request = builder.Build(sourceCode, input);
 
             var context = new SubmissionContext { Request = request };

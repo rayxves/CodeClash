@@ -15,7 +15,6 @@ public static class SubmissionBuilderRegistry
             new JavaSubmissionBuilder(),
             new CppSubmissionBuilder(),
             new CsharpSubmissionBuilder(),
-            new JavaScriptSubmissionBuilder()
         };
 
         _buildersByName = builders.ToDictionary(b => b.Language.Name.ToLowerInvariant());

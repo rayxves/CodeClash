@@ -1,43 +1,43 @@
 using Models;
-
-namespace Builders
+namespace Builders;
+public class SubmissionRequestBuilder : ISubmissionRequestBuilder
 {
-    public class SubmissionRequestBuilder
+    private readonly SubmissionRequest _request = new();
+
+    public ISubmissionRequestBuilder WithCode(string code)
     {
-        private readonly SubmissionRequest _request = new();
+        _request.Code = code ?? throw new ArgumentNullException(nameof(code));
+        return this;
+    }
 
-        public SubmissionRequestBuilder WithCode(string code)
+    public ISubmissionRequestBuilder WithInput(string input)
+    {
+        _request.Input = input ?? string.Empty;
+        return this;
+    }
+
+    public ISubmissionRequestBuilder WithLanguage(string language)
+    {
+        _request.Language = language ?? throw new ArgumentNullException(nameof(language));
+        return this;
+    }
+
+    public ISubmissionRequestBuilder WithLanguageId(int languageId)
+    {
+        if (languageId <= 0)
+            throw new ArgumentOutOfRangeException(nameof(languageId));
+        _request.LanguageId = languageId;
+        return this;
+    }
+
+    public SubmissionRequest Build()
+    {
+        return new SubmissionRequest
         {
-            _request.Code = code;
-            return this;
-        }
-
-        public SubmissionRequestBuilder WithInput(string input)
-        {
-            _request.Input = input;
-            return this;
-        }
-
-        public SubmissionRequestBuilder WithLanguage(string language)
-        {
-            _request.Language = language;
-            return this;
-        }
-
-        public SubmissionRequestBuilder WithLanguageId(int languageId)
-        {
-            _request.LanguageId = languageId;
-            return this;
-        }
-
-        public SubmissionRequest Build() => _request;
-
-        public static SubmissionRequest Create(string code, string input, string language, int languageId) =>
-            new SubmissionRequestBuilder()
-                .WithCode(code)
-                .WithInput(input)
-                .WithLanguage(language)
-                .WithLanguageId(languageId)
-                .Build();
+            Code = _request.Code,
+            Input = _request.Input,
+            Language = _request.Language,
+            LanguageId = _request.LanguageId
+        };
     }
 }
