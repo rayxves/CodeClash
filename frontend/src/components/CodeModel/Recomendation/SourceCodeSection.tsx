@@ -14,7 +14,7 @@ export default function SourceCodeSection({
   language,
 }: SourceCodeSectionProps) {
   return (
-    <div className="mb-8 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+    <div className="mb-8 bg-white p-3 rounded-xl shadow-sm border border-gray-200">
       <h2 className="text-lg font-semibold text-gray-800 mb-2 flex items-center">
         {sourceType === "model" ? (
           <>
@@ -40,7 +40,7 @@ export default function SourceCodeSection({
             background: "#1e1e2f",
             fontSize: "0.85rem",
             lineHeight: "1.5",
-            overflowX: "hidden",
+            overflowX: "auto",
             wordBreak: "break-word",
           }}
           lineNumberStyle={{

@@ -3,7 +3,10 @@ import type { CodeReference } from "./src/types/code";
 
 const api = axios.create({
   baseURL: "http://localhost:5070/api/code",
+  timeout: 10000,
 });
+
+const cache = new Map<string, CodeReference[]>();
 
 const excludeInterfaces = (items: CodeReference[]): CodeReference[] => {
   return items.filter((item) => {
@@ -22,6 +25,54 @@ const excludeInterfaces = (items: CodeReference[]): CodeReference[] => {
 
     return !isInterface && isValidItem;
   });
+};
+
+export const getByLanguageAndCategory = async (
+  language: string,
+  category: string,
+  options: { signal?: AbortSignal } = {}
+): Promise<CodeReference[]> => {
+  const cacheKey = `${language}-${category}`;
+  
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey)!;
+  }
+
+  try {
+    const response: AxiosResponse<CodeReference[]> = await api.get(
+      `/by-language-and-category?language=${encodeURIComponent(
+        language
+      )}&category=${encodeURIComponent(category)}`,
+      { signal: options.signal }
+    );
+
+    const filteredData = excludeInterfaces(
+      response.data.flatMap((item) => {
+        const hasValidCode = item.code && item.code.trim() !== "";
+        const hasNoChildren = !item.children || item.children.length === 0;
+
+        if (hasValidCode && hasNoChildren) return [item];
+
+        if (!hasValidCode && item.children?.length) {
+          return item.children.filter(
+            (child) => child.code && child.code.trim() !== ""
+          );
+        }
+
+        return [];
+      })
+    );
+
+    cache.set(cacheKey, filteredData);
+    return filteredData;
+  } catch (error) {
+    if (axios.isCancel(error)) {
+      console.log('Request canceled:', error.message);
+      return [];
+    }
+    console.error("API Error:", error);
+    throw error;
+  }
 };
 
 export const getByLanguage = async (
@@ -61,39 +112,6 @@ export const getByLanguageAndName = async (
       `/by-language-and-name?language=${encodeURIComponent(
         language
       )}&name=${encodeURIComponent(name)}`
-    );
-
-    return excludeInterfaces(
-      response.data.flatMap((item) => {
-        const hasValidCode = item.code && item.code.trim() !== "";
-        const hasNoChildren = !item.children || item.children.length === 0;
-
-        if (hasValidCode && hasNoChildren) return [item];
-
-        if (!hasValidCode && item.children?.length) {
-          return item.children.filter(
-            (child) => child.code && child.code.trim() !== ""
-          );
-        }
-
-        return [];
-      })
-    );
-  } catch (error) {
-    console.error("API Error:", error);
-    throw error;
-  }
-};
-
-export const getByLanguageAndCategory = async (
-  language: string,
-  category: string
-): Promise<CodeReference[]> => {
-  try {
-    const response: AxiosResponse<CodeReference[]> = await api.get(
-      `/by-language-and-category?language=${encodeURIComponent(
-        language
-      )}&category=${encodeURIComponent(category)}`
     );
 
     return excludeInterfaces(

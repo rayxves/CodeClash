@@ -42,7 +42,7 @@ export default function CodeDetailModal({
             background: "#1e1e2f",
             fontSize: "0.85rem",
             lineHeight: "1.5",
-            overflowX: "hidden",
+            overflowX: "auto",
             wordBreak: "break-word",
           }}
           lineNumberStyle={{

@@ -206,16 +206,16 @@ export default function CodeModal() {
               wrapLines
               customStyle={{
                 margin: 0,
-                padding: "1rem",
+                padding: "0.75rem sm:1rem",
                 background: "#1e1e2f",
-                fontSize: "0.85rem",
+                fontSize: "0.8rem sm:0.85rem",
                 lineHeight: "1.5",
-                overflowX: "hidden",
+                overflowX: "auto",
                 wordBreak: "break-word",
               }}
               lineNumberStyle={{
-                minWidth: "2.5em",
-                paddingRight: "1em",
+                minWidth: "2em sm:2.5em",
+                paddingRight: "0.5em sm:1em",
                 color: "#6e7681",
                 textAlign: "right",
               }}
@@ -227,7 +227,6 @@ export default function CodeModal() {
           <CodeFooter description={code.description} />
         </div>
 
-        {/* Recomendações padrão (se houver) */}
         {code.recommendations && code.recommendations.length > 0 && (
           <RecommendationsList
             recommendations={code.recommendations}

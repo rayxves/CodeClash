@@ -1,4 +1,4 @@
-import CodeBlock from "../Navbar/CodeBlock";
+import CodeBlock from "./CodeBlock";
 
 export default function Home() {
   return (

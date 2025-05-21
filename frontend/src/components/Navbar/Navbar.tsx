@@ -25,13 +25,13 @@ export default function Navbar() {
 
   return (
     <nav className="w-full shadow-sm bg-navbar fixed top-0 left-0 z-50 ">
-      <div className="container px-4 py-4 flex items-center justify-between min-w-full">
+      <div className="container px-2 sm:px-4 py-4 flex items-center justify-between min-w-full">
         <img src={logo} alt="CodeClash Logo" className="w-44" />
 
-        <div className="lg:hidden flex gap-6">
+        <div className="lg:hidden flex items-center gap-3">
           <button
             onClick={() => toggleSearch("name")}
-            className="flex items-center gap-2 text-sm font-medium  text-whitesmoke"
+            className="flex gap-1 text-sm font-medium  text-whitesmoke"
           >
             <Lightbulb className="w-4 h-4" />
             <span>Busca rápida</span>
@@ -40,7 +40,7 @@ export default function Navbar() {
           <button
             onClick={toggleMenu}
             aria-label="Abrir menu"
-            className=" text-whitesmoke"
+            className=" text-whitesmoke flex items-center"
           >
             <Menu className="w-6 h-6" />
           </button>

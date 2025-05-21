@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -18,13 +17,35 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 body {
   margin: 0;
   box-sizing: border-box;
-  height: 100vh;
-  width: 100vw;
+  overflow-x: hidden;
   min-height: 100vh;
+}
+
+/* Estilização suave para todo o site */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2d3748;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #4a5568 #2d3748;
 }
 
 @media (prefers-color-scheme: light) {

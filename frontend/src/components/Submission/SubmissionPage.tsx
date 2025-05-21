@@ -80,10 +80,10 @@ export default function SubmissionPage() {
   };
 
   return (
-    <div className="bg-gray-950 min-h-screen text-gray-100 mt-16">
+    <div className="bg-gray-950 min-h-screen text-gray-100 mt-16 px-1 sm:px-4 md:px-6 pb-10">
       <Link
         to="/"
-        className="pt-4 pl-4 flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base group"
+        className="pt-4 pl-4 flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base group mb-5"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -99,31 +99,16 @@ export default function SubmissionPage() {
         </svg>
         <span className="whitespace-nowrap">Voltar </span>
       </Link>
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-          <div className="flex items-center gap-3">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 px-4">
+        <div className="flex flex-col w-full md:w-auto">
+          <div className="flex items-center gap-3 mb-4">
             <h2 className="text-xl font-semibold">Code Playground</h2>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative group">
-              <button
-                onClick={handleGetRecommendations}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!code.trim()}
-              >
-                <Stars className="w-4 h-4" />
-                Ver códigos similares
-              </button>
-              {!code.trim() && (
-                <div className="absolute z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 bottom-full mb-2">
-                  Escreva algum código para obter recomendações
-                </div>
-              )}
-            </div>
-            <div className="relative">
+          <div className="flex justify-between items-center w-full mb-2 md:hidden">
+            <div className="relative w-32">
               <select
-                className="appearance-none outline-none cursor-pointer bg-gray-800 border border-gray-700 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                className="appearance-none outline-none cursor-pointer bg-gray-800 border border-gray-700 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 w-full"
                 onChange={(e) => setLanguage(e.target.value)}
                 value={language}
               >
@@ -136,74 +121,138 @@ export default function SubmissionPage() {
               <ChevronDown className="absolute right-3 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
             </div>
 
+            <div className="relative group">
+              <button
+                onClick={handleGetRecommendations}
+                className="flex items-center gap-2 bg-button hover:ring-1 hover:ring-blue-700 px-3 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!code.trim()}
+              >
+                <Stars className="w-4 h-4" />
+                <span className="whitespace-nowrap">Códigos similares</span>
+              </button>
+              {!code.trim() && (
+                <div className="absolute z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 bottom-full mb-2 right-0">
+                  Escreva algum código para obter recomendações
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="w-full flex items-center justify-end">
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50"
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 px-2 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 w-full  sm:w-fit sm:px-4 md:hidden mt-2"
             >
               {isLoading ? (
                 "Running..."
               ) : (
                 <>
                   <Play className="w-4 h-4" />
-                  Run Code
+                  <span className="whitespace-nowrap">Run Code</span>
                 </>
               )}
             </button>
           </div>
         </div>
 
-        <div className="border border-gray-800 rounded-lg overflow-hidden">
-          <div className="bg-gray-900 px-4 py-2 border-b border-gray-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-blue-400" />
-              <span className="text-sm font-mono">
-                {languages.find((l) => l.id === language)?.name ?? "Python"}
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Settings className="w-4 h-4 text-gray-400" />
-              <select
-                value={fontSize}
-                onChange={(e) => setFontSize(Number(e.target.value))}
-                className="bg-gray-800 text-sm rounded px-2 py-1 border border-gray-700 outline-none"
-              >
-                {[12, 14, 16, 18, 20].map((size) => (
-                  <option key={size} value={size}>
-                    {size}px
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className="hidden md:flex items-center gap-3 w-full md:w-auto">
+          <div className="relative">
+            <select
+              className="appearance-none outline-none cursor-pointer bg-gray-800 border border-gray-700 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              onChange={(e) => setLanguage(e.target.value)}
+              value={language}
+            >
+              {languages.map((lang) => (
+                <option key={lang.id} value={lang.id}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-2.5 h-4 w-4 text-gray-400 pointer-events-none" />
           </div>
 
-          <MonacoEditor
-            height="60vh"
-            language={
-              languages.find((l) => l.id === language)?.name.toLowerCase() ??
-              "python"
-            }
-            theme="vs-dark"
-            value={code}
-            onChange={(value) => setCode(value || "")}
-            options={{
-              fontSize,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              padding: { top: 15, bottom: 15 },
-            }}
-          />
+          <div className="relative group">
+            <button
+              onClick={handleGetRecommendations}
+              className="flex items-center gap-2 bg-button hover:ring-1 hover:ring-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!code.trim()}
+            >
+              <Stars className="w-4 h-4" />
+              <span className="whitespace-nowrap">Ver códigos similares</span>
+            </button>
+            {!code.trim() && (
+              <div className="absolute z-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 bottom-full mb-2">
+                Escreva algum código para obter recomendações
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50"
+          >
+            {isLoading ? (
+              "Running..."
+            ) : (
+              <>
+                <Play className="w-4 h-4" />
+                <span className="whitespace-nowrap">Run Code</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+      <div className="border border-gray-800 rounded-lg overflow-hidden mx-3">
+        <div className="bg-gray-900 px-4 py-2 border-b border-gray-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Terminal className="w-4 h-4 text-blue-400" />
+            <span className="text-sm font-mono">
+              {languages.find((l) => l.id === language)?.name ?? "Python"}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Settings className="w-4 h-4 text-gray-400" />
+            <select
+              value={fontSize}
+              onChange={(e) => setFontSize(Number(e.target.value))}
+              className="bg-gray-800 text-sm rounded px-2 py-1 border border-gray-700 outline-none"
+            >
+              {[12, 14, 16, 18, 20].map((size) => (
+                <option key={size} value={size}>
+                  {size}px
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="mt-6 border border-gray-800 rounded-lg overflow-hidden">
-          <div className="bg-gray-900 px-4 py-2 border-b border-gray-800 flex items-center">
-            <Terminal className="w-4 h-4 text-blue-400 mr-2" />
-            <span className="text-sm font-medium">Output</span>
-          </div>
-          <div className="bg-gray-900 p-4 font-mono text-sm min-h-[100px]">
-            <ExecutionOutput result={output} />
-          </div>
+        <MonacoEditor
+          height="60vh"
+          language={
+            languages.find((l) => l.id === language)?.name.toLowerCase() ??
+            "python"
+          }
+          theme="vs-dark"
+          value={code}
+          onChange={(value) => setCode(value || "")}
+          options={{
+            fontSize,
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            automaticLayout: true,
+            padding: { top: 15, bottom: 15 },
+          }}
+        />
+      </div>
+
+      <div className="mt-6 border border-gray-800 rounded-lg overflow-hidden mx-3">
+        <div className="bg-gray-900 px-4 py-2 border-b border-gray-800 flex items-center">
+          <Terminal className="w-4 h-4 text-blue-400 mr-2" />
+          <span className="text-sm font-medium">Output</span>
+        </div>
+        <div className="bg-gray-900 p-4 font-mono text-sm min-h-[100px]">
+          <ExecutionOutput result={output} />
         </div>
       </div>
     </div>

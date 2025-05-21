@@ -1,33 +1,50 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { getByLanguageAndCategory } from "../../../../api";
 import type { CodeReference } from "../../../types/code";
-import CodeList from "../CodeModal/CodeList";
 import EmptyState from "./EmptyState";
 import SearchBar from "./SearchBar";
 import type { CategoryPageParams } from "../../../types/routes";
+
+const CodeList = lazy(() => import("../CodeModal/CodeList"));
 
 export default function CategoryPage() {
   const { language = "", category = "" } = useParams<CategoryPageParams>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [codes, setCodes] = useState<CodeReference[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [filteredCodes, setFilteredCodes] = useState(codes);
+  const [filteredCodes, setFilteredCodes] = useState<CodeReference[]>([]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
     const fetchCodes = async () => {
       setLoading(true);
       try {
-        const data = await getByLanguageAndCategory(language, category);
-        setCodes(data);
-      } catch (error) {
-        console.error("Error fetching codes:", error);
+        const data = await getByLanguageAndCategory(language, category, {
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          setCodes(data);
+          setFilteredCodes(data);
+        }
+      } catch (error: any) {
+        if (error.name !== "AbortError") {
+          console.error("Error fetching codes:", error);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
-    fetchCodes();
+    const debounceTimer = setTimeout(fetchCodes, 300);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+      clearTimeout(debounceTimer);
+    };
   }, [language, category]);
 
   useEffect(() => {
@@ -41,9 +58,26 @@ export default function CategoryPage() {
     }
   }, [searchTerm, codes]);
 
+  useEffect(() => {
+    document.title = `${category} em ${language} | Algoritmos de Programação`;
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        `Coleção de algoritmos de ${category} implementados em ${language}. Inclui exemplos práticos e explicações.`
+      );
+    } else {
+      const newMeta = document.createElement("meta");
+      newMeta.name = "description";
+      newMeta.content = `Coleção de algoritmos de ${category} implementados em ${language}. Inclui exemplos práticos e explicações.`;
+      document.head.appendChild(newMeta);
+    }
+  }, [category, language]);
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto mt-12">
+    <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 overflow-x-hidden">
+      <div className="max-w-6xl mx-auto mt-12">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <Link
             to="/code-model"
@@ -51,7 +85,7 @@ export default function CategoryPage() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 sm:h-5 sm:w-5 mr-1 group-hover:-translate-x-0.5 transition-transform"
+              className="h-4 w-4 sm:h-5 sm:w-5 mr-1 group-hover:-translate-x-0.5 transition-transform flex-shrink-0"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -61,7 +95,7 @@ export default function CategoryPage() {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="whitespace-nowrap">Voltar </span>
+            <span className="whitespace-nowrap">Voltar</span>
           </Link>
 
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 capitalize">
@@ -73,17 +107,33 @@ export default function CategoryPage() {
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
         {loading ? (
-          <div>Loading...</div>
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            aria-busy="true"
+          >
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="h-40 bg-gray-200 animate-pulse rounded-lg"
+              />
+            ))}
+          </div>
         ) : filteredCodes.length > 0 ? (
-          <CodeList
-            codes={filteredCodes}
-            language={language}
-            category={category}
-          />
+          <Suspense
+            fallback={
+              <div className="h-20 bg-gray-200 animate-pulse rounded-lg" />
+            }
+          >
+            <CodeList
+              codes={filteredCodes}
+              language={language}
+              category={category}
+            />
+          </Suspense>
         ) : (
           <EmptyState searchTerm={searchTerm} />
         )}
       </div>
-    </div>
+    </main>
   );
 }
