@@ -229,10 +229,7 @@ export default function SubmissionPage() {
 
         <MonacoEditor
           height="60vh"
-          language={
-            languages.find((l) => l.id === language)?.name.toLowerCase() ??
-            "python"
-          }
+          language={language}
           theme="vs-dark"
           value={code}
           onChange={(value) => setCode(value || "")}
@@ -242,6 +239,7 @@ export default function SubmissionPage() {
             scrollBeyondLastLine: false,
             automaticLayout: true,
             padding: { top: 15, bottom: 15 },
+            renderWhitespace: "selection",
           }}
         />
       </div>

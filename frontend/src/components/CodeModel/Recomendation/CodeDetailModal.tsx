@@ -30,24 +30,24 @@ export default function CodeDetailModal({
         </span>
       </div>
 
-      <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh]">
+      <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh] text-xs sm:text-sm">
         <SyntaxHighlighter
-          language={code.language.toLowerCase()}
+          language={getExtension(code.language.toLowerCase())}
           style={nightOwl}
           showLineNumbers
           wrapLines
           customStyle={{
             margin: 0,
-            padding: "1rem",
+            padding: "0.5rem",
             background: "#1e1e2f",
-            fontSize: "0.85rem",
-            lineHeight: "1.5",
+            lineHeight: "1.4",
             overflowX: "auto",
             wordBreak: "break-word",
           }}
           lineNumberStyle={{
-            minWidth: "2.5em",
-            paddingRight: "1em",
+            minWidth: "1.75em",
+            paddingRight: "0.75em",
+            marginRight: "0.25em",
             color: "#6e7681",
             textAlign: "right",
           }}

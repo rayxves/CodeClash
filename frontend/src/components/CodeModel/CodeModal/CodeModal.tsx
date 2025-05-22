@@ -49,16 +49,24 @@ export default function CodeModal() {
             setCode(languageSpecificResults[0]);
           } else {
             const nameSearchResults = await searchByName(decodedCodeName);
-            setNameSearchResults(
-              nameSearchResults.filter(
-                (code) => code.language.toLowerCase() === decodedLanguage
-              )
+            const nameSearchResultsByLanguage = nameSearchResults.filter(
+              (code) => code.language.toLowerCase() === decodedLanguage
             );
-
-            throw new Error(
-              `Algoritmo "${decodedCodeName}" não encontrado. ` +
-                `Mostrando ${nameSearchResults.length} resultados com nomes similares em ${decodedLanguage}.`
-            );
+            if (nameSearchResultsByLanguage.length > 0) {
+              setNameSearchResults(nameSearchResultsByLanguage);
+              throw new Error(
+                `Algoritmo "${decodedCodeName}" não encontrado. ` +
+                  `Mostrando ${
+                    nameSearchResultsByLanguage.length
+                  } resultados com nomes similares em ${decodedLanguage.toLowerCase()}.`
+              );
+            } else {
+              setNameSearchResults(nameSearchResults);
+              throw new Error(
+                `Algoritmo "${decodedCodeName}" não encontrado. ` +
+                  `Mostrando ${nameSearchResults.length} resultados com nomes similares.`
+              );
+            }
           }
         } else {
           const categoryResults = await getByLanguageAndCategory(
@@ -198,7 +206,7 @@ export default function CodeModal() {
             </span>
           </div>
 
-          <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh]">
+          <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh] text-xs sm:text-sm">
             <SyntaxHighlighter
               language={code.language.toLowerCase()}
               style={vscDarkPlus}
@@ -206,7 +214,7 @@ export default function CodeModal() {
               wrapLines
               customStyle={{
                 margin: 0,
-                padding: "0.75rem sm:1rem",
+                padding: "0.75rem 1rem",
                 background: "#1e1e2f",
                 fontSize: "0.8rem sm:0.85rem",
                 lineHeight: "1.5",
@@ -214,8 +222,9 @@ export default function CodeModal() {
                 wordBreak: "break-word",
               }}
               lineNumberStyle={{
-                minWidth: "2em sm:2.5em",
-                paddingRight: "0.5em sm:1em",
+                minWidth: "2em",
+                paddingRight: "1.5em",
+                marginRight: "0.5em",
                 color: "#6e7681",
                 textAlign: "right",
               }}

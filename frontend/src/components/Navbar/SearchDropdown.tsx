@@ -81,11 +81,11 @@ export default function SearchDropdown({ onNavigation }: SearchDropdownProps) {
         return "Buscar linguagem...";
       case "category":
         return selectedLanguage
-          ? `Buscar categoria em ${selectedLanguage}...`
+          ? `Buscar categoria em ${selectedLanguage.toLowerCase()}...`
           : "Selecione uma linguagem primeiro";
       case "name":
         return selectedLanguage && selectedCategory
-          ? `Buscar código em ${selectedLanguage}/${selectedCategory}...`
+          ? `Buscar código em ${selectedLanguage.toLowerCase()}/${selectedCategory}...`
           : "Selecione linguagem e categoria primeiro";
       default:
         return "Buscar...";

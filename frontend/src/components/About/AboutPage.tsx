@@ -1,10 +1,4 @@
-import {
-  Code,
-  Send,
-  Filter,
-  LayoutDashboard,
-  Rocket
-} from "lucide-react";
+import { Code, Send, Filter, LayoutDashboard, Rocket } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -111,7 +105,7 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="https://github.com/seu-usuario/seu-repositorio"
+                href="https://github.com/rayxves/CodeClash"
                 className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all shadow hover:shadow-md"
               >
                 <svg
