@@ -1,6 +1,6 @@
 # CodeClash
 
-**CodeClash** é uma plataforma criada para ajudar usuários a praticar e aprimorar suas habilidades em programação por meio da submissão, exploração e aprendizado de algoritmos e códigos. Com recursos como submissão de código, modelos prontos, busca rápida e recomendações baseadas no seu algoritmo ou em outros estudados, a plataforma promove uma experiência de aprendizado prática e acessível.
+CodeClash é uma plataforma desenvolvida para ajudar usuários a praticar e aprimorar suas habilidades em programação, oferecendo um ambiente onde é possível submeter, explorar e aprender algoritmos e códigos de forma prática. Com recursos como submissão automática de código, modelos prontos, busca rápida e recomendações personalizadas baseadas no seu algoritmo submetido ou nos algoritmos que você já explorou, a plataforma proporciona uma experiência de aprendizado acessível e eficiente.
 
 ## ✨ Funcionalidades
 
