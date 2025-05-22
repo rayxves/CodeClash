@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Interfaces;
 using Services.Extensions;
 using Data;
+using System.Text.RegularExpressions;
 
 namespace Services;
 
@@ -127,11 +128,22 @@ public class CodeReferenceService : ICodeReferenceInterface
 
     public async Task<IEnumerable<object>> SearchByNameAsync(string name)
     {
-        var matchingEntities = await _context.CodeReferences
-            .Where(e => EF.Functions.Like(e.Name, $"%{name}%"))
-            .ToListAsync();
+        var searchTerm = name.ToLower();
 
-        return matchingEntities.Select(e => e.ToCardModel());
+        var normalizedSearchTerm = Regex.Replace(searchTerm, @"[^a-zA-Z0-9]", "");
+
+        var query = _context.CodeReferences
+            .Where(e =>
+                EF.Functions.Like(e.Name.ToLower(), $"%{searchTerm}%") ||
+                EF.Functions.Like(e.Name.ToLower(), $"%_{searchTerm}%") ||
+                EF.Functions.Like(e.Name.ToLower(), $"%{searchTerm}_%"));
+
+            var results = await query.ToListAsync();
+
+            return results
+                .Where(e => Regex.Replace(e.Name, @"[^a-zA-Z0-9]", "").Contains(normalizedSearchTerm, StringComparison.OrdinalIgnoreCase))
+                .Select(e => e.ToCardModel())
+                .ToList();
     }
 
     public async Task<IEnumerable<object>> GetByLanguageAndCategoryAsync(string language, string category)
@@ -161,8 +173,6 @@ public class CodeReferenceService : ICodeReferenceInterface
 
     public async Task<IEnumerable<object>> GetByLanguageAndNameAsync(string language, string name)
     {
-        Console.WriteLine("language " + language);
-        Console.WriteLine(name);
         var lowerName = name.ToLower();
         var lowerLanguage = language.ToLower();
 
