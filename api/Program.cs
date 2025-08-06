@@ -66,7 +66,6 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        await context.Database.MigrateAsync();
         await DbSeeder.SeedDatabaseAsync(context);
     }
     catch (Exception ex)
