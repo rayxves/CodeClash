@@ -75,6 +75,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "");
     });
 
-
-    app.Run();
 }
+
+app.Run();
