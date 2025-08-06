@@ -1,12 +1,11 @@
+# Estágio de compilação
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-COPY api/api.csproj ./api/
-RUN dotnet restore ./api/api.csproj
+COPY api.csproj .
+RUN dotnet restore "api.csproj"
 
-COPY api/. ./api/
-
-WORKDIR /src/api
+COPY . .
 
 RUN dotnet publish "api.csproj" -c Release -o /app/publish
 
