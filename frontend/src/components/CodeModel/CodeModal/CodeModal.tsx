@@ -208,7 +208,7 @@ export default function CodeModal() {
 
           <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh] text-xs sm:text-sm">
             <SyntaxHighlighter
-              language={code.language.toLowerCase()}
+              language={getExtension(code.language.toLowerCase())}
               style={vscDarkPlus}
               showLineNumbers
               wrapLines
@@ -254,7 +254,7 @@ function getExtension(language: string): string {
     java: "java",
     "c#": "cs",
     csharp: "cs",
-    cpp: "cpp",
+    cpp: "c++",
     "c++": "cpp",
   };
 

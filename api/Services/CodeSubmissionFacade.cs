@@ -19,24 +19,44 @@ public class CodeSubmissionFacade
 
     public async Task<Judge0Response> SubmitCodeAsync(string sourceCode, string input, string languageName)
     {
-
         try
         {
-            var builder = SubmissionBuilderFactory.CreateBuilder(languageName);
-            var request = builder.Build(sourceCode, input);
+            var language = Language.GetAll().FirstOrDefault(l =>
+                    l.Name.Equals(languageName, StringComparison.OrdinalIgnoreCase) ||
+                    l.Judge0Alias.Equals(languageName, StringComparison.OrdinalIgnoreCase)
+                );
+
+            if (language == null)
+            {
+                throw new NotSupportedException($"Language '{languageName}' is not supported.");
+            }
+
+            var request = new SubmissionRequest
+            {
+                Code = sourceCode,
+                Input = input,
+                Language = language.Name,
+                LanguageId = language.Id
+            };
 
             var context = new SubmissionContext { Request = request };
             await _handlerChain.HandleAsync(context);
 
-            if (!string.IsNullOrWhiteSpace(context.ErrorMessage))
-                throw new Exception(context.ErrorMessage);
+            if (context.IsCompleted && !string.IsNullOrWhiteSpace(context.ErrorMessage))
+            {
+                throw new InvalidOperationException(context.ErrorMessage);
+            }
 
-            return context.Response ?? throw new Exception("Erro desconhecido ao processar a submissão.");
+            if (context.Response == null)
+            {
+                throw new Exception("An unknown error occurred while processing the submission.");
+            }
+
+            return context.Response;
         }
         catch (Exception ex)
         {
-            throw new Exception($"{ex.Message}", ex);
+            throw new Exception($"Submission failed: {ex.Message}", ex);
         }
     }
-
 }
