@@ -2,7 +2,7 @@ import axios, { type AxiosResponse } from "axios";
 import type { CodeReference } from "./src/types/code";
 
 const api = axios.create({
-  baseURL: "http://localhost:5070/api/code",
+  baseURL: "https://codeclash-api.onrender.com/api/code",
   timeout: 10000,
 });
 

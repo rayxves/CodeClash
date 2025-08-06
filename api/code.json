@@ -1,0 +1,1442 @@
+[
+  {
+    "Id": 1,
+    "ParentId": null,
+    "Name": "sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for various sorting algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 2,
+    "ParentId": 1,
+    "Name": "Bubble Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        swapped = False\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n                swapped = True\n        if not swapped:\n            break",
+    "Description": "A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.",
+    "Children": []
+  },
+  {
+    "Id": 3,
+    "ParentId": 1,
+    "Name": "Selection Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def selection_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        min_idx = i\n        for j in range(i+1, n):\n            if arr[j] < arr[min_idx]:\n                min_idx = j\n        arr[i], arr[min_idx] = arr[min_idx], arr[i]",
+    "Description": "An in-place comparison sorting algorithm. It divides the input list into two parts: a sorted sublist of items which is built up from left to right and a sublist of the remaining unsorted items.",
+    "Children": []
+  },
+  {
+    "Id": 4,
+    "ParentId": 1,
+    "Name": "Insertion Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i-1\n        while j >= 0 and key < arr[j] :\n                arr[j+1] = arr[j]\n                j -= 1\n        arr[j+1] = key",
+    "Description": "A simple sorting algorithm that builds the final sorted array one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort.",
+    "Children": []
+  },
+  {
+    "Id": 5,
+    "ParentId": 1,
+    "Name": "Merge Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def merge_sort(arr):\n    if len(arr) > 1:\n        mid = len(arr)//2\n        L = arr[:mid]\n        R = arr[mid:]\n        merge_sort(L)\n        merge_sort(R)\n        i = j = k = 0\n        while i < len(L) and j < len(R):\n            if L[i] < R[j]:\n                arr[k] = L[i]\n                i += 1\n            else:\n                arr[k] = R[j]\n                j += 1\n            k += 1\n        while i < len(L):\n            arr[k] = L[i]\n            i += 1\n            k += 1\n        while j < len(R):\n            arr[k] = R[j]\n            j += 1\n            k += 1",
+    "Description": "An efficient, stable, comparison-based sorting algorithm. Most implementations produce a stable sort, which means that the order of equal elements is the same in the input and output.",
+    "Children": []
+  },
+  {
+    "Id": 6,
+    "ParentId": 1,
+    "Name": "Quick Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def partition(arr, low, high):\n    pivot = arr[high]\n    i = low - 1\n    for j in range(low, high):\n        if arr[j] <= pivot:\n            i = i + 1\n            arr[i], arr[j] = arr[j], arr[i]\n    arr[i + 1], arr[high] = arr[high], arr[i + 1]\n    return i + 1\n\ndef quick_sort(arr, low, high):\n    if low < high:\n        pi = partition(arr, low, high)\n        quick_sort(arr, low, pi - 1)\n        quick_sort(arr, pi + 1, high)",
+    "Description": "An efficient sorting algorithm. It works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot.",
+    "Children": []
+  },
+  {
+    "Id": 7,
+    "ParentId": 1,
+    "Name": "Heap Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def heapify(arr, n, i):\n    largest = i\n    l = 2 * i + 1\n    r = 2 * i + 2\n    if l < n and arr[i] < arr[l]:\n        largest = l\n    if r < n and arr[largest] < arr[r]:\n        largest = r\n    if largest != i:\n        arr[i], arr[largest] = arr[largest], arr[i]\n        heapify(arr, n, largest)\n\ndef heap_sort(arr):\n    n = len(arr)\n    for i in range(n // 2 - 1, -1, -1):\n        heapify(arr, n, i)\n    for i in range(n - 1, 0, -1):\n        arr[i], arr[0] = arr[0], arr[i]\n        heapify(arr, i, 0)",
+    "Description": "A comparison-based sorting algorithm. Heapsort can be thought of as an improved selection sort: like selection sort, it divides its input into a sorted and an unsorted region, and it iteratively shrinks the unsorted region by extracting the largest element and moving it to the sorted region.",
+    "Children": []
+  },
+  {
+    "Id": 8,
+    "ParentId": 1,
+    "Name": "Counting Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def counting_sort(arr):\n    max_val = max(arr)\n    m = max_val + 1\n    count = [0] * m\n    for a in arr:\n        count[a] += 1\n    i = 0\n    for a in range(m):\n        for c in range(count[a]):\n            arr[i] = a\n            i += 1\n    return arr",
+    "Description": "An algorithm for sorting a collection of objects according to keys that are small integers; that is, it is an integer sorting algorithm. It operates by counting the number of objects that have each distinct key value, and using arithmetic on those counts to determine the positions of each key value in the output sequence.",
+    "Children": []
+  },
+  {
+    "Id": 9,
+    "ParentId": 1,
+    "Name": "Radix Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def counting_sort_for_radix(arr, exp):\n    n = len(arr)\n    output = [0] * n\n    count = [0] * 10\n    for i in range(n):\n        index = arr[i] // exp\n        count[index % 10] += 1\n    for i in range(1, 10):\n        count[i] += count[i - 1]\n    i = n - 1\n    while i >= 0:\n        index = arr[i] // exp\n        output[count[index % 10] - 1] = arr[i]\n        count[index % 10] -= 1\n        i -= 1\n    for i in range(n):\n        arr[i] = output[i]\n\ndef radix_sort(arr):\n    max1 = max(arr)\n    exp = 1\n    while max1 / exp > 0:\n        counting_sort_for_radix(arr, exp)\n        exp *= 10",
+    "Description": "A non-comparative sorting algorithm. It avoids comparison by creating and distributing elements into buckets according to their radix. For elements with more than one significant digit, this bucketing process is repeated for each digit, while preserving the ordering of the prior step, until all digits have been considered.",
+    "Children": []
+  },
+  {
+    "Id": 10,
+    "ParentId": 1,
+    "Name": "Bucket Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def bucket_sort(arr):\n    bucket = []\n    for i in range(len(arr)):\n        bucket.append([])\n    for j in arr:\n        index_b = int(10 * j)\n        bucket[index_b].append(j)\n    for i in range(len(arr)):\n        bucket[i] = sorted(bucket[i])\n    k = 0\n    for i in range(len(arr)):\n        for j in range(len(bucket[i])):\n            arr[k] = bucket[i][j]\n            k += 1\n    return arr",
+    "Description": "A sorting algorithm that works by distributing the elements of an array into a number of buckets. Each bucket is then sorted individually, either using a different sorting algorithm, or by recursively applying the bucket sorting algorithm.",
+    "Children": []
+  },
+  {
+    "Id": 11,
+    "ParentId": 1,
+    "Name": "Shell Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def shell_sort(arr):\n    n = len(arr)\n    gap = n//2\n    while gap > 0:\n        for i in range(gap,n):\n            temp = arr[i]\n            j = i\n            while j >= gap and arr[j-gap] > temp:\n                arr[j] = arr[j-gap]\n                j -= gap\n            arr[j] = temp\n        gap //= 2",
+    "Description": "A highly efficient, in-place, comparison-based sorting algorithm. It can be seen as either a generalization of sorting by exchange (bubble sort) or sorting by insertion (insertion sort).",
+    "Children": []
+  },
+  {
+    "Id": 12,
+    "ParentId": 1,
+    "Name": "Comb Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def get_next_gap(gap):\n    gap = (gap * 10)//13\n    if gap < 1:\n        return 1\n    return gap\n\ndef comb_sort(arr):\n    n = len(arr)\n    gap = n\n    swapped = True\n    while gap != 1 or swapped == True:\n        gap = get_next_gap(gap)\n        swapped = False\n        for i in range(0, n-gap):\n            if arr[i] > arr[i + gap]:\n                arr[i], arr[i + gap]=arr[i + gap], arr[i]\n                swapped = True",
+    "Description": "A relatively simple sorting algorithm. It improves on bubble sort by using a gap of size more than 1. The gap starts with a large value and shrinks by a factor of 1.3 in every iteration until it reaches the value 1.",
+    "Children": []
+  },
+  {
+    "Id": 13,
+    "ParentId": 1,
+    "Name": "Pancake Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def flip(arr, i):\n    start = 0\n    while start < i:\n        arr[start], arr[i] = arr[i], arr[start]\n        start += 1\n        i -= 1\n\ndef pancake_sort(arr):\n    n = len(arr)\n    curr_size = n\n    while curr_size > 1:\n        mi = arr.index(max(arr[0:curr_size]))\n        if mi != curr_size - 1:\n            flip(arr, mi)\n            flip(arr, curr_size - 1)\n        curr_size -= 1",
+    "Description": "The only allowed operation is to flip a prefix of the array. The goal is to sort the array with the minimum number of flips.",
+    "Children": []
+  },
+  {
+    "Id": 14,
+    "ParentId": 1,
+    "Name": "Gnome Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def gnome_sort(arr):\n    n = len(arr)\n    index = 0\n    while index < n:\n        if index == 0:\n            index = index + 1\n        if arr[index] >= arr[index - 1]:\n            index = index + 1\n        else:\n            arr[index], arr[index - 1] = arr[index - 1], arr[index]\n            index = index - 1",
+    "Description": "A sorting algorithm which is similar to insertion sort except that moving the element to its proper place is accomplished by a series of swaps, as in bubble sort.",
+    "Children": []
+  },
+  {
+    "Id": 15,
+    "ParentId": 1,
+    "Name": "Cocktail Shaker Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def cocktail_shaker_sort(arr):\n    n = len(arr)\n    swapped = True\n    start = 0\n    end = n-1\n    while (swapped == True):\n        swapped = False\n        for i in range(start, end):\n            if (arr[i] > arr[i + 1]) :\n                arr[i], arr[i + 1] = arr[i + 1], arr[i]\n                swapped = True\n        if (swapped == False):\n            break\n        swapped = False\n        end = end-1\n        for i in range(end-1, start-1, -1):\n            if (arr[i] > arr[i + 1]):\n                arr[i], arr[i + 1] = arr[i + 1], arr[i]\n                swapped = True\n        start = start+1",
+    "Description": "A variation of Bubble Sort that sorts in both directions on each pass through the list.",
+    "Children": []
+  },
+  {
+    "Id": 16,
+    "ParentId": 1,
+    "Name": "Tim Sort",
+    "Category": "sort",
+    "Language": "Python",
+    "Code": "def tim_sort(arr):\n    arr.sort()\n",
+    "Description": "A hybrid stable sorting algorithm, derived from merge sort and insertion sort, designed to perform well on many kinds of real-world data. It is the default sorting algorithm in Python.",
+    "Children": []
+  },
+  {
+    "Id": 17,
+    "ParentId": null,
+    "Name": "data_structure",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for various data structures.",
+    "Children": []
+  },
+  {
+    "Id": 18,
+    "ParentId": 17,
+    "Name": "Singly Linked List",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.next = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n\n    def append(self, data):\n        new_node = Node(data)\n        if not self.head:\n            self.head = new_node\n            return\n        last_node = self.head\n        while last_node.next:\n            last_node = last_node.next\n        last_node.next = new_node",
+    "Description": "A linear data structure where elements are stored in nodes, and each node points to the next node in the sequence.",
+    "Children": []
+  },
+  {
+    "Id": 19,
+    "ParentId": 17,
+    "Name": "Stack",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "stack = []\nstack.append('a')\nstack.append('b')\nstack.append('c')\nprint(f'Initial stack: {stack}')\nprint(f'Popped value: {stack.pop()}')\nprint(f'Stack after pop: {stack}')",
+    "Description": "A linear data structure that follows the Last-In-First-Out (LIFO) principle. Python's list can be used as a stack.",
+    "Children": []
+  },
+  {
+    "Id": 20,
+    "ParentId": 17,
+    "Name": "Queue",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "from collections import deque\n\nqueue = deque(['a', 'b', 'c'])\nprint(f'Initial queue: {queue}')\nqueue.append('d')\nprint(f'Queue after append: {queue}')\nprint(f'Popped value: {queue.popleft()}')\nprint(f'Queue after pop: {queue}')",
+    "Description": "A linear data structure that follows the First-In-First-Out (FIFO) principle. collections.deque is efficient for appends and pops from both ends.",
+    "Children": []
+  },
+  {
+    "Id": 21,
+    "ParentId": 17,
+    "Name": "Binary Search Tree",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "class Node:\n    def __init__(self, key):\n        self.left = None\n        self.right = None\n        self.val = key\n\ndef insert(root, key):\n    if root is None:\n        return Node(key)\n    else:\n        if root.val == key:\n            return root\n        elif root.val < key:\n            root.right = insert(root.right, key)\n        else:\n            root.left = insert(root.left, key)\n    return root",
+    "Description": "A node-based binary tree data structure which has the following properties: the left subtree of a node contains only nodes with keys lesser than the node’s key; the right subtree of a node contains only nodes with keys greater than the node’s key; the left and right subtree each must also be a binary search tree.",
+    "Children": []
+  },
+  {
+    "Id": 22,
+    "ParentId": 17,
+    "Name": "Trie (Prefix Tree)",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end_of_word = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                node.children[char] = TrieNode()\n            node = node.children[char]\n        node.is_end_of_word = True",
+    "Description": "A tree-like data structure that proves to be quite efficient for solving problems related to strings. It is used to store and retrieve keys in a dataset of strings.",
+    "Children": []
+  },
+  {
+    "Id": 23,
+    "ParentId": 17,
+    "Name": "Min-Heap",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "import heapq\n\nheap = []\nheapq.heappush(heap, 4)\nheapq.heappush(heap, 1)\nheapq.heappush(heap, 7)\nprint(f'Heap: {heap}')\nprint(f'Popped smallest item: {heapq.heappop(heap)}')",
+    "Description": "A specialized tree-based data structure that satisfies the heap property: in a min heap, for any given node C, if P is a parent node of C, then the key (the value) of P is less than or equal to the key of C.",
+    "Children": []
+  },
+  {
+    "Id": 24,
+    "ParentId": 17,
+    "Name": "Hash Table (Dictionary)",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "hash_table = {}\nhash_table['one'] = 1\nhash_table['two'] = 2\n\nprint(hash_table['one'])\nif 'three' in hash_table:\n    print(hash_table['three'])\nelse:\n    print('Key not found')",
+    "Description": "A data structure that implements an associative array abstract data type, a structure that can map keys to values. Python's dictionary is a powerful implementation of a hash table.",
+    "Children": []
+  },
+  {
+    "Id": 25,
+    "ParentId": 17,
+    "Name": "Doubly Linked List",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.next = None\n        self.prev = None\n\nclass DoublyLinkedList:\n    def __init__(self):\n        self.head = None\n\n    def append(self, data):\n        new_node = Node(data)\n        if self.head is None:\n            self.head = new_node\n            return\n        last = self.head\n        while last.next:\n            last = last.next\n        last.next = new_node\n        new_node.prev = last",
+    "Description": "A linked data structure that consists of a set of sequentially linked records called nodes. Each node contains three fields: two link fields (references to the previous and to the next node in the sequence of nodes) and one data field.",
+    "Children": []
+  },
+  {
+    "Id": 26,
+    "ParentId": 17,
+    "Name": "Graph (Adjacency List)",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "from collections import defaultdict\n\nclass Graph:\n    def __init__(self):\n        self.graph = defaultdict(list)\n\n    def add_edge(self, u, v):\n        self.graph[u].append(v)\n\n    def __str__(self):\n        return str(dict(self.graph))",
+    "Description": "A data structure that consists of a finite set of vertices or nodes or points, together with a set of unordered pairs of these vertices for an undirected graph or a set of ordered pairs for a directed graph.",
+    "Children": []
+  },
+  {
+    "Id": 27,
+    "ParentId": 17,
+    "Name": "Disjoint Set Union (DSU)",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "parent = {}\nrank = {}\n\ndef make_set(v):\n    parent[v] = v\n    rank[v] = 0\n\ndef find_set(v):\n    if v == parent[v]:\n        return v\n    parent[v] = find_set(parent[v])\n    return parent[v]\n\ndef union_sets(a, b):\n    a = find_set(a)\n    b = find_set(b)\n    if a != b:\n        if rank[a] < rank[b]:\n            a, b = b, a\n        parent[b] = a\n        if rank[a] == rank[b]:\n            rank[a] += 1",
+    "Description": "A data structure that stores a collection of disjoint (non-overlapping) sets. It provides operations for adding new sets, merging sets (replacing them by their union), and finding a representative member of a set.",
+    "Children": []
+  },
+  {
+    "Id": 28,
+    "ParentId": 17,
+    "Name": "Fenwick Tree",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "def update(tree, index, val, n):\n    index += 1\n    while index <= n:\n        tree[index] += val\n        index += index & (-index)\n\ndef query(tree, index):\n    index += 1\n    s = 0\n    while index > 0:\n        s += tree[index]\n        index -= index & (-index)\n    return s",
+    "Description": "A data structure that can efficiently update elements and calculate prefix sums in a table of numbers.",
+    "Children": []
+  },
+  {
+    "Id": 29,
+    "ParentId": 17,
+    "Name": "Segment Tree",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "def build_segment_tree(arr, tree, v, tl, tr):\n    if tl == tr:\n        tree[v] = arr[tl]\n    else:\n        tm = (tl + tr) // 2\n        build_segment_tree(arr, tree, v*2, tl, tm)\n        build_segment_tree(arr, tree, v*2+1, tm+1, tr)\n        tree[v] = tree[v*2] + tree[v*2+1]\n\ndef query_sum(tree, v, tl, tr, l, r):\n    if l > r:\n        return 0\n    if l == tl and r == tr:\n        return tree[v]\n    tm = (tl + tr) // 2\n    left_sum = query_sum(tree, v*2, tl, tm, l, min(r, tm))\n    right_sum = query_sum(tree, v*2+1, tm+1, tr, max(l, tm+1), r)\n    return left_sum + right_sum",
+    "Description": "A tree data structure for storing information about intervals, or segments. It allows querying which of the stored segments contain a given point.",
+    "Children": []
+  },
+  {
+    "Id": 30,
+    "ParentId": 17,
+    "Name": "Priority Queue",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "import heapq\n\npq = []\nheapq.heappush(pq, (2, 'task1'))\nheapq.heappush(pq, (1, 'task2'))\nheapq.heappush(pq, (3, 'task3'))\n\nwhile pq:\n    priority, task = heapq.heappop(pq)\n    print(f'Processing {task} with priority {priority}')",
+    "Description": "An abstract data type which is like a regular queue or stack data structure, but where additionally each element has a 'priority' associated with it.",
+    "Children": []
+  },
+  {
+    "Id": 31,
+    "ParentId": 17,
+    "Name": "Deque",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "from collections import deque\n\nd = deque()\nd.append('b')\nd.appendleft('a')\nd.append('c')\nprint(d)\nd.pop()\nd.popleft()\nprint(d)",
+    "Description": "A double-ended queue. It can be used to add or remove elements from both ends. Deques support thread-safe, memory efficient appends and pops from either side of the deque with approximately the same O(1) performance in either direction.",
+    "Children": []
+  },
+  {
+    "Id": 32,
+    "ParentId": 17,
+    "Name": "Circular Linked List",
+    "Category": "data_structure",
+    "Language": "Python",
+    "Code": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.next = None\n\nclass CircularLinkedList:\n    def __init__(self):\n        self.head = None\n\n    def append(self, data):\n        new_node = Node(data)\n        if not self.head:\n            self.head = new_node\n            self.head.next = self.head\n        else:\n            temp = self.head\n            while temp.next != self.head:\n                temp = temp.next\n            temp.next = new_node\n            new_node.next = self.head",
+    "Description": "A linked list where all nodes are connected to form a circle. There is no NULL at the end. A circular linked list can be a singly circular linked list or a doubly circular linked list.",
+    "Children": []
+  },
+  {
+    "Id": 33,
+    "ParentId": null,
+    "Name": "search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for various search algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 34,
+    "ParentId": 33,
+    "Name": "Linear Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def linear_search(arr, x):\n    for i in range(len(arr)):\n        if arr[i] == x:\n            return i\n    return -1",
+    "Description": "A method for finding an element within a list. It sequentially checks each element of the list until a match is found or the whole list has been searched.",
+    "Children": []
+  },
+  {
+    "Id": 35,
+    "ParentId": 33,
+    "Name": "Binary Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def binary_search(arr, x):\n    low = 0\n    high = len(arr) - 1\n    while low <= high:\n        mid = (high + low) // 2\n        if arr[mid] < x:\n            low = mid + 1\n        elif arr[mid] > x:\n            high = mid - 1\n        else:\n            return mid\n    return -1",
+    "Description": "An efficient algorithm for finding an item from a sorted list of items. It works by repeatedly dividing in half the portion of the list that could contain the item, until you've narrowed down the possible locations to just one.",
+    "Children": []
+  },
+  {
+    "Id": 36,
+    "ParentId": 33,
+    "Name": "Recursive Binary Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def binary_search_recursive(arr, low, high, x):\n    if high >= low:\n        mid = (high + low) // 2\n        if arr[mid] == x:\n            return mid\n        elif arr[mid] > x:\n            return binary_search_recursive(arr, low, mid - 1, x)\n        else:\n            return binary_search_recursive(arr, mid + 1, high, x)\n    else:\n        return -1",
+    "Description": "A recursive implementation of the binary search algorithm.",
+    "Children": []
+  },
+  {
+    "Id": 37,
+    "ParentId": 33,
+    "Name": "Depth-First Search (DFS)",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    visited.add(start)\n    print(start)\n    for next_node in graph[start]:\n        if next_node not in visited:\n            dfs(graph, next_node, visited)\n    return visited",
+    "Description": "An algorithm for traversing or searching tree or graph data structures. The algorithm starts at the root node and explores as far as possible along each branch before backtracking.",
+    "Children": []
+  },
+  {
+    "Id": 38,
+    "ParentId": 33,
+    "Name": "Breadth-First Search (BFS)",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "from collections import deque\n\ndef bfs(graph, start):\n    visited = {start}\n    queue = deque([start])\n    while queue:\n        vertex = queue.popleft()\n        print(vertex)\n        for neighbor in graph[vertex]:\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(neighbor)",
+    "Description": "An algorithm for traversing or searching tree or graph data structures. It starts at the tree root and explores all of the neighbor nodes at the present depth prior to moving on to the nodes at the next depth level.",
+    "Children": []
+  },
+  {
+    "Id": 39,
+    "ParentId": 33,
+    "Name": "Jump Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "import math\n\ndef jump_search(arr, x):\n    n = len(arr)\n    step = int(math.sqrt(n))\n    prev = 0\n    while arr[min(step, n)-1] < x:\n        prev = step\n        step += int(math.sqrt(n))\n        if prev >= n:\n            return -1\n    while arr[prev] < x:\n        prev += 1\n        if prev == min(step, n):\n            return -1\n    if arr[prev] == x:\n        return prev\n    return -1",
+    "Description": "A searching algorithm for sorted arrays. The basic idea is to check fewer elements (than linear search) by jumping ahead by fixed steps or skipping some elements in place of searching all elements.",
+    "Children": []
+  },
+  {
+    "Id": 40,
+    "ParentId": 33,
+    "Name": "Interpolation Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def interpolation_search(arr, x):\n    low = 0\n    high = len(arr) - 1\n    while low <= high and x >= arr[low] and x <= arr[high]:\n        if low == high:\n            if arr[low] == x:\n                return low\n            return -1\n        pos = low + int(((float(high - low) / (arr[high] - arr[low])) * (x - arr[low])))\n        if arr[pos] == x:\n            return pos\n        if arr[pos] < x:\n            low = pos + 1\n        else:\n            high = pos - 1\n    return -1",
+    "Description": "An algorithm for searching for a key in a sorted array that has been 'uniformly distributed'. It is an improvement over Binary Search for instances where the values in a sorted array are uniformly distributed.",
+    "Children": []
+  },
+  {
+    "Id": 41,
+    "ParentId": 33,
+    "Name": "Exponential Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def binary_search_for_exp(arr, l, r, x):\n    if r >= l:\n        mid = l + (r-l)//2\n        if arr[mid] == x:\n            return mid\n        if arr[mid] > x:\n            return binary_search_for_exp(arr, l, mid - 1, x)\n        return binary_search_for_exp(arr, mid + 1, r, x)\n    return -1\n\ndef exponential_search(arr, x):\n    n = len(arr)\n    if arr[0] == x:\n        return 0\n    i = 1\n    while i < n and arr[i] <= x:\n        i = i * 2\n    return binary_search_for_exp(arr, i//2, min(i, n-1), x)",
+    "Description": "An algorithm, created by Jon Bentley and Andrew Chi-Chih Yao in 1976, for searching sorted, unbounded/infinite lists. It can also be used to search in bounded arrays.",
+    "Children": []
+  },
+  {
+    "Id": 42,
+    "ParentId": 33,
+    "Name": "Ternary Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def ternary_search(arr, l, r, x):\n    if r >= l:\n        mid1 = l + (r - l) // 3\n        mid2 = r - (r - l) // 3\n        if arr[mid1] == x:\n            return mid1\n        if arr[mid2] == x:\n            return mid2\n        if x < arr[mid1]:\n            return ternary_search(arr, l, mid1 - 1, x)\n        elif x > arr[mid2]:\n            return ternary_search(arr, mid2 + 1, r, x)\n        else:\n            return ternary_search(arr, mid1 + 1, mid2 - 1, x)\n    return -1",
+    "Description": "A decrease and conquer search algorithm that splits the array into three parts and determines which part the key lies in.",
+    "Children": []
+  },
+  {
+    "Id": 43,
+    "ParentId": 33,
+    "Name": "Find First Occurrence",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def find_first(arr, x):\n    low, high = 0, len(arr) - 1\n    result = -1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == x:\n            result = mid\n            high = mid - 1\n        elif arr[mid] < x:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return result",
+    "Description": "Finds the index of the first occurrence of a target value in a sorted array. If the target is not found, returns -1.",
+    "Children": []
+  },
+  {
+    "Id": 44,
+    "ParentId": 33,
+    "Name": "Find Last Occurrence",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def find_last(arr, x):\n    low, high = 0, len(arr) - 1\n    result = -1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == x:\n            result = mid\n            low = mid + 1\n        elif arr[mid] < x:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return result",
+    "Description": "Finds the index of the last occurrence of a target value in a sorted array. If the target is not found, returns -1.",
+    "Children": []
+  },
+  {
+    "Id": 45,
+    "ParentId": 33,
+    "Name": "Search in Rotated Sorted Array",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def search_rotated(arr, target):\n    low, high = 0, len(arr) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == target:\n            return mid\n        if arr[low] <= arr[mid]:\n            if arr[low] <= target < arr[mid]:\n                high = mid - 1\n            else:\n                low = mid + 1\n        else:\n            if arr[mid] < target <= arr[high]:\n                low = mid + 1\n            else:\n                high = mid - 1\n    return -1",
+    "Description": "Searches for a target value in a sorted array that has been rotated at some unknown pivot.",
+    "Children": []
+  },
+  {
+    "Id": 46,
+    "ParentId": 33,
+    "Name": "Find Minimum in Rotated Sorted Array",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def find_min_rotated(arr):\n    low, high = 0, len(arr) - 1\n    while low < high:\n        mid = (low + high) // 2\n        if arr[mid] > arr[high]:\n            low = mid + 1\n        else:\n            high = mid\n    return arr[low]",
+    "Description": "Finds the minimum element in a sorted array that has been rotated at some unknown pivot.",
+    "Children": []
+  },
+  {
+    "Id": 47,
+    "ParentId": 33,
+    "Name": "Count Occurrences in Sorted Array",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def find_first(arr, x):\n    low, high, res = 0, len(arr) - 1, -1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == x: res, high = mid, mid - 1\n        elif arr[mid] < x: low = mid + 1\n        else: high = mid - 1\n    return res\n\ndef find_last(arr, x):\n    low, high, res = 0, len(arr) - 1, -1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == x: res, low = mid, mid + 1\n        elif arr[mid] < x: low = mid + 1\n        else: high = mid - 1\n    return res\n\ndef count_occurrences(arr, x):\n    first = find_first(arr, x)\n    if first == -1: return 0\n    last = find_last(arr, x)\n    return last - first + 1",
+    "Description": "Counts the number of occurrences of a target value in a sorted array.",
+    "Children": []
+  },
+  {
+    "Id": 48,
+    "ParentId": 33,
+    "Name": "Fibonacci Search",
+    "Category": "search",
+    "Language": "Python",
+    "Code": "def fibonacci_search(arr, x):\n    n = len(arr)\n    fibMMm2 = 0\n    fibMMm1 = 1\n    fibM = fibMMm2 + fibMMm1\n    while fibM < n:\n        fibMMm2 = fibMMm1\n        fibMMm1 = fibM\n        fibM = fibMMm2 + fibMMm1\n    offset = -1\n    while fibM > 1:\n        i = min(offset + fibMMm2, n - 1)\n        if arr[i] < x:\n            fibM = fibMMm1\n            fibMMm1 = fibMMm2\n            fibMMm2 = fibM - fibMMm1\n            offset = i\n        elif arr[i] > x:\n            fibM = fibMMm2\n            fibMMm1 = fibMMm1 - fibMMm2\n            fibMMm2 = fibM - fibMMm1\n        else:\n            return i\n    if fibMMm1 and arr[n-1] == x:\n        return n-1\n    return -1",
+    "Description": "A comparison-based technique that uses Fibonacci numbers to search an element in a sorted array.",
+    "Children": []
+  },
+  {
+    "Id": 49,
+    "ParentId": null,
+    "Name": "math",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for various mathematical algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 50,
+    "ParentId": 49,
+    "Name": "Factorial",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def factorial(n):\n    if n < 0:\n        return 'Factorial does not exist for negative numbers'\n    elif n == 0:\n        return 1\n    else:\n        res = 1\n        for i in range(1, n + 1):\n            res = res * i\n        return res",
+    "Description": "Calculates the factorial of a non-negative integer, which is the product of all positive integers up to that number.",
+    "Children": []
+  },
+  {
+    "Id": 51,
+    "ParentId": 49,
+    "Name": "Fibonacci Sequence",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def fibonacci(n):\n    if n <= 0:\n        return []\n    elif n == 1:\n        return [0]\n    fib_list = [0, 1]\n    while len(fib_list) < n:\n        next_fib = fib_list[-1] + fib_list[-2]\n        fib_list.append(next_fib)\n    return fib_list",
+    "Description": "Generates the Fibonacci sequence up to the nth term. Each number is the sum of the two preceding ones, starting from 0 and 1.",
+    "Children": []
+  },
+  {
+    "Id": 52,
+    "ParentId": 49,
+    "Name": "Greatest Common Divisor (GCD)",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a",
+    "Description": "Finds the largest positive integer that divides two integers without leaving a remainder. Uses the Euclidean algorithm.",
+    "Children": []
+  },
+  {
+    "Id": 53,
+    "ParentId": 49,
+    "Name": "Check for Prime Number",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def is_prime(n):\n    if n <= 1:\n        return False\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            return False\n    return True",
+    "Description": "Checks if a given integer is a prime number (a number greater than 1 that has no positive divisors other than 1 and itself).",
+    "Children": []
+  },
+  {
+    "Id": 54,
+    "ParentId": 49,
+    "Name": "Sieve of Eratosthenes",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def sieve_of_eratosthenes(n):\n    primes = [True for i in range(n+1)]\n    p = 2\n    while (p * p <= n):\n        if (primes[p] == True):\n            for i in range(p * p, n+1, p):\n                primes[i] = False\n        p += 1\n    prime_numbers = []\n    for p in range(2, n+1):\n        if primes[p]:\n            prime_numbers.append(p)\n    return prime_numbers",
+    "Description": "An efficient algorithm for finding all prime numbers up to a specified integer.",
+    "Children": []
+  },
+  {
+    "Id": 55,
+    "ParentId": 49,
+    "Name": "Modular Exponentiation",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def power(base, exp, mod):\n    res = 1\n    base %= mod\n    while exp > 0:\n        if exp % 2 == 1:\n            res = (res * base) % mod\n        base = (base * base) % mod\n        exp //= 2\n    return res",
+    "Description": "Calculates the remainder of (base^exp) when divided by a modulus. This is also known as power in modular arithmetic.",
+    "Children": []
+  },
+  {
+    "Id": 56,
+    "ParentId": 49,
+    "Name": "Combination (nCr)",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "import math\n\ndef nCr(n, r):\n    if r > n:\n        return 0\n    f = math.factorial\n    return f(n) // f(r) // f(n-r)",
+    "Description": "Calculates the number of ways to choose r items from a set of n items without regard to the order of selection.",
+    "Children": []
+  },
+  {
+    "Id": 57,
+    "ParentId": 49,
+    "Name": "Permutation (nPr)",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "import math\n\ndef nPr(n, r):\n    if r > n:\n        return 0\n    f = math.factorial\n    return f(n) // f(n-r)",
+    "Description": "Calculates the number of ways to choose and arrange r items from a set of n items.",
+    "Children": []
+  },
+  {
+    "Id": 58,
+    "ParentId": 49,
+    "Name": "Palindrome Number Check",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def is_palindrome_number(n):\n    if n < 0:\n        return False\n    original = n\n    reverse = 0\n    while n > 0:\n        reverse = reverse * 10 + n % 10\n        n //= 10\n    return original == reverse",
+    "Description": "Checks if a number is a palindrome (reads the same forwards and backwards) without converting it to a string.",
+    "Children": []
+  },
+  {
+    "Id": 59,
+    "ParentId": 49,
+    "Name": "Matrix Multiplication",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def matrix_multiply(A, B):\n    rows_A = len(A)\n    cols_A = len(A[0])\n    rows_B = len(B)\n    cols_B = len(B[0])\n\n    if cols_A != rows_B:\n        return 'Cannot multiply matrices'\n\n    C = [[0 for row in range(cols_B)] for col in range(rows_A)]\n\n    for i in range(rows_A):\n        for j in range(cols_B):\n            for k in range(cols_A):\n                C[i][j] += A[i][k] * B[k][j]\n    return C",
+    "Description": "Performs matrix multiplication on two given matrices.",
+    "Children": []
+  },
+  {
+    "Id": 60,
+    "ParentId": 49,
+    "Name": "Catalan Numbers",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def catalan(n):\n    if n <= 1:\n        return 1\n    res = 0\n    for i in range(n):\n        res += catalan(i) * catalan(n - 1 - i)\n    return res",
+    "Description": "A sequence of natural numbers that occur in various counting problems, often involving recursively-defined objects.",
+    "Children": []
+  },
+  {
+    "Id": 61,
+    "ParentId": 49,
+    "Name": "Euler's Totient Function",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def phi(n):\n    result = n\n    p = 2\n    while p * p <= n:\n        if n % p == 0:\n            while n % p == 0:\n                n //= p\n            result -= result // p\n        p += 1\n    if n > 1:\n        result -= result // n\n    return result",
+    "Description": "Counts the positive integers up to a given integer n that are relatively prime to n.",
+    "Children": []
+  },
+  {
+    "Id": 62,
+    "ParentId": 49,
+    "Name": "Extended Euclidean Algorithm",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def extended_gcd(a, b):\n    if a == 0:\n        return b, 0, 1\n    gcd, x1, y1 = extended_gcd(b % a, a)\n    x = y1 - (b // a) * x1\n    y = x1\n    return gcd, x, y",
+    "Description": "An extension to the Euclidean algorithm, which computes, besides the greatest common divisor (GCD) of integers a and b, also the coefficients of Bézout's identity.",
+    "Children": []
+  },
+  {
+    "Id": 63,
+    "ParentId": 49,
+    "Name": "Least Common Multiple (LCM)",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n\ndef lcm(a, b):\n    return (a * b) // gcd(a, b) if a != 0 and b != 0 else 0",
+    "Description": "Calculates the smallest positive integer that is divisible by both a and b.",
+    "Children": []
+  },
+  {
+    "Id": 64,
+    "ParentId": 49,
+    "Name": "Square Root (Newton's Method)",
+    "Category": "math",
+    "Language": "Python",
+    "Code": "def sqrt_newton(n, tolerance=0.00001):\n    if n < 0:\n        return None\n    guess = n\n    while abs(guess * guess - n) > tolerance:\n        guess = (guess + n / guess) / 2.0\n    return guess",
+    "Description": "Calculates the square root of a number using Newton's method, an iterative approach for finding successively better approximations to the roots of a real-valued function.",
+    "Children": []
+  },
+  {
+    "Id": 65,
+    "ParentId": null,
+    "Name": "dynamic_programming",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for dynamic programming algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 66,
+    "ParentId": 65,
+    "Name": "Fibonacci (Memoization)",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "memo = {}\ndef fib_memo(n):\n    if n in memo:\n        return memo[n]\n    if n <= 1:\n        return n\n    result = fib_memo(n-1) + fib_memo(n-2)\n    memo[n] = result\n    return result",
+    "Description": "Calculates the nth Fibonacci number using a top-down dynamic programming approach (memoization) to store results of subproblems.",
+    "Children": []
+  },
+  {
+    "Id": 67,
+    "ParentId": 65,
+    "Name": "Fibonacci (Tabulation)",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def fib_tab(n):\n    if n <= 1:\n        return n\n    dp = [0] * (n + 1)\n    dp[1] = 1\n    for i in range(2, n + 1):\n        dp[i] = dp[i-1] + dp[i-2]\n    return dp[n]",
+    "Description": "Calculates the nth Fibonacci number using a bottom-up dynamic programming approach (tabulation) by building a table of solutions.",
+    "Children": []
+  },
+  {
+    "Id": 68,
+    "ParentId": 65,
+    "Name": "0/1 Knapsack Problem",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def knapsack(W, wt, val):\n    n = len(val)\n    dp = [[0 for x in range(W + 1)] for x in range(n + 1)]\n    for i in range(n + 1):\n        for w in range(W + 1):\n            if i == 0 or w == 0:\n                dp[i][w] = 0\n            elif wt[i-1] <= w:\n                dp[i][w] = max(val[i-1] + dp[i-1][w-wt[i-1]], dp[i-1][w])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][W]",
+    "Description": "Given weights and values of n items, put these items in a knapsack of capacity W to get the maximum total value. You cannot break an item.",
+    "Children": []
+  },
+  {
+    "Id": 69,
+    "ParentId": 65,
+    "Name": "Longest Common Subsequence",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def lcs(X, Y):\n    m = len(X)\n    n = len(Y)\n    dp = [[0]*(n+1) for i in range(m+1)]\n    for i in range(m+1):\n        for j in range(n+1):\n            if i == 0 or j == 0:\n                dp[i][j] = 0\n            elif X[i-1] == Y[j-1]:\n                dp[i][j] = dp[i-1][j-1] + 1\n            else:\n                dp[i][j] = max(dp[i-1][j], dp[i][j-1])\n    return dp[m][n]",
+    "Description": "Finds the length of the longest subsequence present in two given sequences.",
+    "Children": []
+  },
+  {
+    "Id": 70,
+    "ParentId": 65,
+    "Name": "Longest Increasing Subsequence",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def lis(arr):\n    n = len(arr)\n    lis = [1]*n\n    for i in range(1, n):\n        for j in range(0, i):\n            if arr[i] > arr[j] and lis[i] < lis[j] + 1:\n                lis[i] = lis[j]+1\n    return max(lis) if lis else 0",
+    "Description": "Finds the length of the longest subsequence of a given sequence in which the subsequence's elements are in sorted order, lowest to highest.",
+    "Children": []
+  },
+  {
+    "Id": 71,
+    "ParentId": 65,
+    "Name": "Edit Distance",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def edit_distance(str1, str2):\n    m, n = len(str1), len(str2)\n    dp = [[0 for x in range(n + 1)] for x in range(m + 1)]\n    for i in range(m + 1):\n        for j in range(n + 1):\n            if i == 0:\n                dp[i][j] = j\n            elif j == 0:\n                dp[i][j] = i\n            elif str1[i-1] == str2[j-1]:\n                dp[i][j] = dp[i-1][j-1]\n            else:\n                dp[i][j] = 1 + min(dp[i][j-1], dp[i-1][j], dp[i-1][j-1])\n    return dp[m][n]",
+    "Description": "Finds the minimum number of single-character edits (insertions, deletions or substitutions) required to change one word into the other.",
+    "Children": []
+  },
+  {
+    "Id": 72,
+    "ParentId": 65,
+    "Name": "Coin Change Problem",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def coin_change(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for i in range(coin, amount + 1):\n            dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+    "Description": "Finds the minimum number of coins that you need to make up a given amount, given a list of coin denominations.",
+    "Children": []
+  },
+  {
+    "Id": 73,
+    "ParentId": 65,
+    "Name": "Subset Sum Problem",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def subset_sum(arr, sum_val):\n    n = len(arr)\n    dp = [[False for i in range(sum_val + 1)] for i in range(n + 1)]\n    for i in range(n + 1):\n        dp[i][0] = True\n    for i in range(1, n + 1):\n        for j in range(1, sum_val + 1):\n            if arr[i-1] > j:\n                dp[i][j] = dp[i-1][j]\n            if arr[i-1] <= j:\n                dp[i][j] = (dp[i-1][j] or dp[i-1][j - arr[i-1]])\n    return dp[n][sum_val]",
+    "Description": "Determines if there is a subset of the given set with a sum equal to a given sum value.",
+    "Children": []
+  },
+  {
+    "Id": 74,
+    "ParentId": 65,
+    "Name": "Rod Cutting Problem",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def rod_cutting(prices, n):\n    val = [0 for x in range(n+1)]\n    for i in range(1, n+1):\n        max_val = -float('inf')\n        for j in range(i):\n            max_val = max(max_val, prices[j] + val[i-j-1])\n        val[i] = max_val\n    return val[n]",
+    "Description": "Given a rod of length n inches and an array of prices that contains prices of all pieces of size smaller than n. Determine the maximum value obtainable by cutting up the rod and selling the pieces.",
+    "Children": []
+  },
+  {
+    "Id": 75,
+    "ParentId": 65,
+    "Name": "Matrix Chain Multiplication",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "import sys\ndef matrix_chain_order(p):\n    n = len(p) - 1\n    m = [[0 for x in range(n)] for x in range(n)]\n    for L in range(2, n + 1):\n        for i in range(n - L + 1):\n            j = i + L - 1\n            m[i][j] = sys.maxsize\n            for k in range(i, j):\n                q = m[i][k] + m[k+1][j] + p[i]*p[k+1]*p[j+1]\n                if q < m[i][j]:\n                    m[i][j] = q\n    return m[0][n-1]",
+    "Description": "Determines the optimal parenthesization of a chain of matrix multiplications to minimize the number of scalar multiplications.",
+    "Children": []
+  },
+  {
+    "Id": 76,
+    "ParentId": 65,
+    "Name": "Word Break Problem",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def word_break(s, word_dict):\n    word_set = set(word_dict)\n    dp = [False] * (len(s) + 1)\n    dp[0] = True\n    for i in range(1, len(s) + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in word_set:\n                dp[i] = True\n                break\n    return dp[len(s)]",
+    "Description": "Given a non-empty string and a dictionary containing a list of non-empty words, determine if the string can be segmented into a space-separated sequence of one or more dictionary words.",
+    "Children": []
+  },
+  {
+    "Id": 77,
+    "ParentId": 65,
+    "Name": "Maximum Subarray Sum (Kadane's)",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def max_subarray_sum(arr):\n    max_so_far = -float('inf')\n    max_ending_here = 0\n    for i in range(len(arr)):\n        max_ending_here = max_ending_here + arr[i]\n        if max_so_far < max_ending_here:\n            max_so_far = max_ending_here\n        if max_ending_here < 0:\n            max_ending_here = 0\n    return max_so_far",
+    "Description": "Finds the contiguous subarray within a one-dimensional array of numbers which has the largest sum.",
+    "Children": []
+  },
+  {
+    "Id": 78,
+    "ParentId": 65,
+    "Name": "Binomial Coefficient",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def binomial_coefficient(n, k):\n    if k > n:\n        return 0\n    if k == 0 or k == n:\n        return 1\n    dp = [[0 for x in range(k+1)] for x in range(n+1)]\n    for i in range(n+1):\n        for j in range(min(i, k)+1):\n            if j == 0 or j == i:\n                dp[i][j] = 1\n            else:\n                dp[i][j] = dp[i-1][j-1] + dp[i-1][j]\n    return dp[n][k]",
+    "Description": "Calculates the coefficient of the x^k term in the polynomial expansion of the binomial power (1 + x)^n.",
+    "Children": []
+  },
+  {
+    "Id": 79,
+    "ParentId": 65,
+    "Name": "Egg Dropping Puzzle",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def egg_drop(n, k):\n    dp = [[0 for x in range(k + 1)] for x in range(n + 1)]\n    for i in range(1, n + 1):\n        dp[i][1] = 1\n        dp[i][0] = 0\n    for j in range(1, k + 1):\n        dp[1][j] = j\n    for i in range(2, n + 1):\n        for j in range(2, k + 1):\n            dp[i][j] = float('inf')\n            for x in range(1, j + 1):\n                res = 1 + max(dp[i-1][x-1], dp[i][j-x])\n                if res < dp[i][j]:\n                    dp[i][j] = res\n    return dp[n][k]",
+    "Description": "Determines the minimum number of trials required in the worst-case to determine the critical floor from which an egg will break when dropped from a k-story building with n eggs.",
+    "Children": []
+  },
+  {
+    "Id": 80,
+    "ParentId": 65,
+    "Name": "Unbounded Knapsack",
+    "Category": "dynamic_programming",
+    "Language": "Python",
+    "Code": "def unbounded_knapsack(W, wt, val):\n    n = len(val)\n    dp = [0 for i in range(W + 1)]\n    for i in range(W + 1):\n        for j in range(n):\n            if (wt[j] <= i):\n                dp[i] = max(dp[i], dp[i - wt[j]] + val[j])\n    return dp[W]",
+    "Description": "A variation of the knapsack problem where we can use one or more instances of any item.",
+    "Children": []
+  },
+  {
+    "Id": 81,
+    "ParentId": null,
+    "Name": "strings",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for string manipulation algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 82,
+    "ParentId": 81,
+    "Name": "Check for Palindrome",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def is_palindrome(s):\n    return s == s[::-1]",
+    "Description": "Checks if a given string is a palindrome (reads the same forwards and backwards).",
+    "Children": []
+  },
+  {
+    "Id": 83,
+    "ParentId": 81,
+    "Name": "Reverse a String",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def reverse_string(s):\n    return s[::-1]",
+    "Description": "Reverses the characters of a given string.",
+    "Children": []
+  },
+  {
+    "Id": 84,
+    "ParentId": 81,
+    "Name": "Check for Anagrams",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "from collections import Counter\n\ndef are_anagrams(s1, s2):\n    return Counter(s1) == Counter(s2)",
+    "Description": "Checks if two strings are anagrams of each other (contain the same characters in different orders).",
+    "Children": []
+  },
+  {
+    "Id": 85,
+    "ParentId": 81,
+    "Name": "Longest Substring Without Repeating Characters",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def length_of_longest_substring(s):\n    char_map = {}\n    start = 0\n    max_length = 0\n    for end in range(len(s)):\n        if s[end] in char_map:\n            start = max(start, char_map[s[end]] + 1)\n        char_map[s[end]] = end\n        max_length = max(max_length, end - start + 1)\n    return max_length",
+    "Description": "Finds the length of the longest substring without repeating characters.",
+    "Children": []
+  },
+  {
+    "Id": 86,
+    "ParentId": 81,
+    "Name": "Valid Parentheses",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def is_valid_parentheses(s):\n    stack = []\n    mapping = {')': '(', '}': '{', ']': '['}\n    for char in s:\n        if char in mapping:\n            top_element = stack.pop() if stack else '#'\n            if mapping[char] != top_element:\n                return False\n        else:\n            stack.append(char)\n    return not stack",
+    "Description": "Determines if a string of parentheses is valid (e.g., '()[]{}' is valid).",
+    "Children": []
+  },
+  {
+    "Id": 87,
+    "ParentId": 81,
+    "Name": "Knuth-Morris-Pratt (KMP) Algorithm",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def compute_lps_array(pat):\n    m = len(pat)\n    lps = [0] * m\n    length = 0\n    i = 1\n    while i < m:\n        if pat[i] == pat[length]:\n            length += 1\n            lps[i] = length\n            i += 1\n        else:\n            if length != 0:\n                length = lps[length-1]\n            else:\n                lps[i] = 0\n                i += 1\n    return lps\n\ndef kmp_search(txt, pat):\n    n = len(txt)\n    m = len(pat)\n    lps = compute_lps_array(pat)\n    i = 0\n    j = 0\n    while i < n:\n        if pat[j] == txt[i]:\n            i += 1\n            j += 1\n        if j == m:\n            print(f'Found pattern at index {i-j}')\n            j = lps[j-1]\n        elif i < n and pat[j] != txt[i]:\n            if j != 0:\n                j = lps[j-1]\n            else:\n                i += 1",
+    "Description": "An efficient algorithm for finding occurrences of a 'word' W within a main text string T by employing the observation that when a mismatch occurs, the word itself embodies sufficient information to determine where the next match could begin.",
+    "Children": []
+  },
+  {
+    "Id": 88,
+    "ParentId": 81,
+    "Name": "Rabin-Karp Algorithm",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def rabin_karp(text, pattern, d, q):\n    n = len(text)\n    m = len(pattern)\n    p = 0\n    t = 0\n    h = 1\n    result = []\n    for i in range(m - 1):\n        h = (h * d) % q\n    for i in range(m):\n        p = (d * p + ord(pattern[i])) % q\n        t = (d * t + ord(text[i])) % q\n    for i in range(n - m + 1):\n        if p == t:\n            if text[i:i + m] == pattern:\n                result.append(i)\n        if i < n - m:\n            t = (d * (t - ord(text[i]) * h) + ord(text[i + m])) % q\n            if t < 0:\n                t = t + q\n    return result",
+    "Description": "A string-searching algorithm that uses hashing to find any one of a set of pattern strings in a text.",
+    "Children": []
+  },
+  {
+    "Id": 89,
+    "ParentId": 81,
+    "Name": "Group Anagrams",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "from collections import defaultdict\n\ndef group_anagrams(strs):\n    anagram_map = defaultdict(list)\n    for word in strs:\n        sorted_word = ''.join(sorted(word))\n        anagram_map[sorted_word].append(word)\n    return list(anagram_map.values())",
+    "Description": "Groups a list of strings into sublists of anagrams.",
+    "Children": []
+  },
+  {
+    "Id": 90,
+    "ParentId": 81,
+    "Name": "Implement strStr()",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def strStr(haystack, needle):\n    if not needle:\n        return 0\n    return haystack.find(needle)",
+    "Description": "Finds the first occurrence of a substring (needle) in a string (haystack).",
+    "Children": []
+  },
+  {
+    "Id": 91,
+    "ParentId": 81,
+    "Name": "Remove Duplicate Characters",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def remove_duplicates(s):\n    return ''.join(dict.fromkeys(s))",
+    "Description": "Removes duplicate characters from a string while preserving the order of the first occurrence of each character.",
+    "Children": []
+  },
+  {
+    "Id": 92,
+    "ParentId": 81,
+    "Name": "Count Vowels and Consonants",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def count_vowels_consonants(s):\n    vowels = 'aeiouAEIOU'\n    vowel_count = 0\n    consonant_count = 0\n    for char in s:\n        if char.isalpha():\n            if char in vowels:\n                vowel_count += 1\n            else:\n                consonant_count += 1\n    return {'vowels': vowel_count, 'consonants': consonant_count}",
+    "Description": "Counts the number of vowels and consonants in a given string.",
+    "Children": []
+  },
+  {
+    "Id": 93,
+    "ParentId": 81,
+    "Name": "Z-Algorithm",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def get_z_array(s):\n    n = len(s)\n    z = [0] * n\n    l, r, k = 0, 0, 0\n    for i in range(1, n):\n        if i > r:\n            l, r = i, i\n            while r < n and s[r - l] == s[r]:\n                r += 1\n            z[i] = r - l\n            r -= 1\n        else:\n            k = i - l\n            if z[k] < r - i + 1:\n                z[i] = z[k]\n            else:\n                l = i\n                while r < n and s[r - l] == s[r]:\n                    r += 1\n                z[i] = r - l\n                r -= 1\n    return z",
+    "Description": "A linear time string searching algorithm. It preprocesses the string and creates an array called Z-array. The Z-array for a string str of length n is an array of length n where Z[i] stores the length of the longest substring starting from str[i] which is also a prefix of str[0..n-1].",
+    "Children": []
+  },
+  {
+    "Id": 94,
+    "ParentId": 81,
+    "Name": "Manacher's Algorithm",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def longest_palindromic_substring(s):\n    if not s: return ''\n    t = '#'.join(f'^{s}$')\n    n = len(t)\n    p = [0] * n\n    c, r = 0, 0\n    for i in range(1, n - 1):\n        p[i] = (r > i) and min(r - i, p[2 * c - i])\n        while t[i + 1 + p[i]] == t[i - 1 - p[i]]:\n            p[i] += 1\n        if i + p[i] > r:\n            c, r = i, i + p[i]\n    max_len, center_index = max((n, i) for i, n in enumerate(p))\n    return s[(center_index - max_len) // 2 : (center_index + max_len) // 2]",
+    "Description": "An algorithm to find the longest palindromic substring in any given string in linear time.",
+    "Children": []
+  },
+  {
+    "Id": 95,
+    "ParentId": 81,
+    "Name": "String to Integer (atoi)",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def my_atoi(s):\n    s = s.strip()\n    if not s:\n        return 0\n    sign = -1 if s[0] == '-' else 1\n    if s[0] in ['+', '-']:\n        s = s[1:]\n    res = 0\n    for char in s:\n        if not char.isdigit():\n            break\n        res = res * 10 + int(char)\n    INT_MAX = 2**31 - 1\n    INT_MIN = -2**31\n    res *= sign\n    if res > INT_MAX:\n        return INT_MAX\n    if res < INT_MIN:\n        return INT_MIN\n    return res",
+    "Description": "Converts a string to an integer, handling whitespace, signs, and overflow.",
+    "Children": []
+  },
+  {
+    "Id": 96,
+    "ParentId": 81,
+    "Name": "Find all substrings",
+    "Category": "strings",
+    "Language": "Python",
+    "Code": "def find_all_substrings(s):\n    n = len(s)\n    substrings = []\n    for i in range(n):\n        for j in range(i, n):\n            substrings.append(s[i:j+1])\n    return substrings",
+    "Description": "Generates all possible contiguous substrings of a given string.",
+    "Children": []
+  },
+  {
+    "Id": 97,
+    "ParentId": null,
+    "Name": "backtracking",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for backtracking algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 98,
+    "ParentId": 97,
+    "Name": "Generate All Permutations",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def permute(nums):\n    def backtrack(start):\n        if start == len(nums):\n            result.append(list(nums))\n            return\n        for i in range(start, len(nums)):\n            nums[start], nums[i] = nums[i], nums[start]\n            backtrack(start + 1)\n            nums[start], nums[i] = nums[i], nums[start]\n    result = []\n    backtrack(0)\n    return result",
+    "Description": "Generates all possible permutations of a given list of numbers.",
+    "Children": []
+  },
+  {
+    "Id": 99,
+    "ParentId": 97,
+    "Name": "Generate All Subsets (Power Set)",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def subsets(nums):\n    def backtrack(start, path):\n        result.append(list(path))\n        for i in range(start, len(nums)):\n            path.append(nums[i])\n            backtrack(i + 1, path)\n            path.pop()\n    result = []\n    backtrack(0, [])\n    return result",
+    "Description": "Generates all possible subsets (the power set) of a given list of numbers.",
+    "Children": []
+  },
+  {
+    "Id": 100,
+    "ParentId": 97,
+    "Name": "N-Queens Problem",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def solve_n_queens(n):\n    def is_safe(board, row, col):\n        for i in range(col):\n            if board[row][i] == 1:\n                return False\n        for i, j in zip(range(row, -1, -1), range(col, -1, -1)):\n            if board[i][j] == 1:\n                return False\n        for i, j in zip(range(row, n, 1), range(col, -1, -1)):\n            if board[i][j] == 1:\n                return False\n        return True\n\n    def solve(board, col):\n        if col >= n:\n            solutions.append([row[:] for row in board])\n            return True\n        res = False\n        for i in range(n):\n            if is_safe(board, i, col):\n                board[i][col] = 1\n                res = solve(board, col + 1) or res\n                board[i][col] = 0\n        return res\n\n    solutions = []\n    board = [[0] * n for _ in range(n)]\n    solve(board, 0)\n    return solutions",
+    "Description": "The N-Queens puzzle is the problem of placing N chess queens on an N×N chessboard so that no two queens threaten each other.",
+    "Children": []
+  },
+  {
+    "Id": 101,
+    "ParentId": 97,
+    "Name": "Sudoku Solver",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def solve_sudoku(board):\n    def find_empty(bo):\n        for i in range(len(bo)):\n            for j in range(len(bo[0])):\n                if bo[i][j] == 0:\n                    return (i, j)\n        return None\n\n    def is_valid(bo, num, pos):\n        for i in range(len(bo[0])):\n            if bo[pos[0]][i] == num and pos[1] != i:\n                return False\n        for i in range(len(bo)):\n            if bo[i][pos[1]] == num and pos[0] != i:\n                return False\n        box_x, box_y = pos[1] // 3, pos[0] // 3\n        for i in range(box_y*3, box_y*3 + 3):\n            for j in range(box_x * 3, box_x*3 + 3):\n                if bo[i][j] == num and (i,j) != pos:\n                    return False\n        return True\n\n    find = find_empty(board)\n    if not find:\n        return True\n    else:\n        row, col = find\n    for i in range(1,10):\n        if is_valid(board, i, (row, col)):\n            board[row][col] = i\n            if solve_sudoku(board):\n                return True\n            board[row][col] = 0\n    return False",
+    "Description": "Solves a Sudoku puzzle using a backtracking algorithm.",
+    "Children": []
+  },
+  {
+    "Id": 102,
+    "ParentId": 97,
+    "Name": "Combination Sum",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def combination_sum(candidates, target):\n    def backtrack(remain, comb, start):\n        if remain == 0:\n            result.append(list(comb))\n            return\n        elif remain < 0:\n            return\n        for i in range(start, len(candidates)):\n            comb.append(candidates[i])\n            backtrack(remain - candidates[i], comb, i)\n            comb.pop()\n    result = []\n    backtrack(target, [], 0)\n    return result",
+    "Description": "Finds all unique combinations in a list of candidate numbers where the numbers sum to a target.",
+    "Children": []
+  },
+  {
+    "Id": 103,
+    "ParentId": 97,
+    "Name": "Word Search",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def exist(board, word):\n    def backtrack(row, col, index):\n        if index == len(word):\n            return True\n        if not (0 <= row < len(board) and 0 <= col < len(board[0])) or board[row][col] != word[index]:\n            return False\n        \n        temp, board[row][col] = board[row][col], '#'\n        found = (backtrack(row+1, col, index+1) or\n                 backtrack(row-1, col, index+1) or\n                 backtrack(row, col+1, index+1) or\n                 backtrack(row, col-1, index+1))\n        board[row][col] = temp\n        return found\n\n    for i in range(len(board)):\n        for j in range(len(board[0])):\n            if backtrack(i, j, 0):\n                return True\n    return False",
+    "Description": "Given a 2D board and a word, find if the word exists in the grid.",
+    "Children": []
+  },
+  {
+    "Id": 104,
+    "ParentId": 97,
+    "Name": "Rat in a Maze",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def solve_maze(maze):\n    n = len(maze)\n    sol = [[0] * n for _ in range(n)]\n\n    def is_safe(x, y):\n        return 0 <= x < n and 0 <= y < n and maze[x][y] == 1\n\n    def solve(x, y):\n        if x == n - 1 and y == n - 1 and maze[x][y] == 1:\n            sol[x][y] = 1\n            return True\n        \n        if is_safe(x, y):\n            if sol[x][y] == 1:\n                return False\n            sol[x][y] = 1\n            if solve(x + 1, y) or solve(x, y + 1):\n                return True\n            sol[x][y] = 0\n            return False\n        return False\n\n    if solve(0, 0):\n        return sol\n    return 'No solution found'",
+    "Description": "A maze is given as N*N binary matrix of blocks where source block is the upper left most block i.e., maze[0][0] and destination block is lower rightmost block i.e., maze[N-1][N-1]. A rat starts from source and has to reach the destination. The rat can move only in two directions: forward and down.",
+    "Children": []
+  },
+  {
+    "Id": 105,
+    "ParentId": 97,
+    "Name": "Generate Parentheses",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def generate_parenthesis(n):\n    def backtrack(s='', left=0, right=0):\n        if len(s) == 2 * n:\n            ans.append(s)\n            return\n        if left < n:\n            backtrack(s + '(', left + 1, right)\n        if right < left:\n            backtrack(s + ')', left, right + 1)\n\n    ans = []\n    backtrack()\n    return ans",
+    "Description": "Generates all combinations of well-formed parentheses for a given number of pairs.",
+    "Children": []
+  },
+  {
+    "Id": 106,
+    "ParentId": 97,
+    "Name": "Letter Combinations of a Phone Number",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def letter_combinations(digits):\n    if not digits: return []\n    mapping = {'2':'abc', '3':'def', '4':'ghi', '5':'jkl', '6':'mno', '7':'pqrs', '8':'tuv', '9':'wxyz'}\n    ans = []\n    def backtrack(combination, next_digits):\n        if not next_digits:\n            ans.append(combination)\n            return\n        for letter in mapping[next_digits[0]]:\n            backtrack(combination + letter, next_digits[1:])\n    backtrack('', digits)\n    return ans",
+    "Description": "Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent.",
+    "Children": []
+  },
+  {
+    "Id": 107,
+    "ParentId": 97,
+    "Name": "Palindrome Partitioning",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def partition(s):\n    def is_palindrome(sub):\n        return sub == sub[::-1]\n\n    def backtrack(start, path):\n        if start == len(s):\n            result.append(list(path))\n            return\n        for i in range(start, len(s)):\n            substring = s[start:i+1]\n            if is_palindrome(substring):\n                path.append(substring)\n                backtrack(i + 1, path)\n                path.pop()\n\n    result = []\n    backtrack(0, [])\n    return result",
+    "Description": "Given a string, partition it such that every substring of the partition is a palindrome.",
+    "Children": []
+  },
+  {
+    "Id": 108,
+    "ParentId": 97,
+    "Name": "Permutations II (with duplicates)",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "from collections import Counter\ndef permute_unique(nums):\n    def backtrack(comb, counter):\n        if len(comb) == len(nums):\n            results.append(list(comb))\n            return\n        for num in counter:\n            if counter[num] > 0:\n                comb.append(num)\n                counter[num] -= 1\n                backtrack(comb, counter)\n                counter[num] += 1\n                comb.pop()\n    \n    results = []\n    backtrack([], Counter(nums))\n    return results",
+    "Description": "Given a collection of numbers that might contain duplicates, return all possible unique permutations.",
+    "Children": []
+  },
+  {
+    "Id": 109,
+    "ParentId": 97,
+    "Name": "Knight's Tour",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def solve_knights_tour(n):\n    board = [[-1 for i in range(n)] for i in range(n)]\n    moves_x = [2, 1, -1, -2, -2, -1, 1, 2]\n    moves_y = [1, 2, 2, 1, -1, -2, -2, -1]\n    board[0][0] = 0\n    pos = 1\n\n    def solve(board, x, y, pos):\n        if pos == n**2:\n            return True\n        for i in range(8):\n            new_x = x + moves_x[i]\n            new_y = y + moves_y[i]\n            if 0 <= new_x < n and 0 <= new_y < n and board[new_x][new_y] == -1:\n                board[new_x][new_y] = pos\n                if solve(board, new_x, new_y, pos + 1):\n                    return True\n                board[new_x][new_y] = -1\n        return False\n\n    if solve(board, 0, 0, 1):\n        return board\n    return 'No solution exists'",
+    "Description": "A sequence of moves of a knight on a chessboard such that the knight visits every square exactly once.",
+    "Children": []
+  },
+  {
+    "Id": 110,
+    "ParentId": 97,
+    "Name": "M-Coloring Problem",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def is_safe_color(graph, v, color, c):\n    for i in range(len(graph)):\n        if graph[v][i] == 1 and color[i] == c:\n            return False\n    return True\n\ndef graph_coloring(graph, m, color, v):\n    if v == len(graph):\n        return True\n    for c in range(1, m + 1):\n        if is_safe_color(graph, v, color, c):\n            color[v] = c\n            if graph_coloring(graph, m, color, v + 1):\n                return True\n            color[v] = 0\n    return False",
+    "Description": "A problem of coloring the vertices of a graph with at most m colors such that no two adjacent vertices have the same color.",
+    "Children": []
+  },
+  {
+    "Id": 111,
+    "ParentId": 97,
+    "Name": "Path with Maximum Gold",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "def get_maximum_gold(grid):\n    def dfs(r, c):\n        if not (0 <= r < len(grid) and 0 <= c < len(grid[0]) and grid[r][c] > 0):\n            return 0\n        \n        gold = grid[r][c]\n        grid[r][c] = 0\n        max_gold = 0\n        for dr, dc in [(0,1), (0,-1), (1,0), (-1,0)]:\n            max_gold = max(max_gold, dfs(r + dr, c + dc))\n        \n        grid[r][c] = gold\n        return gold + max_gold\n\n    max_path_gold = 0\n    for r in range(len(grid)):\n        for c in range(len(grid[0])):\n            max_path_gold = max(max_path_gold, dfs(r, c))\n    return max_path_gold",
+    "Description": "In a gold mine grid of size m * n, each cell in this mine has an integer representing the amount of gold in that cell, 0 if it is empty. Return the maximum amount of gold you can collect.",
+    "Children": []
+  },
+  {
+    "Id": 112,
+    "ParentId": 97,
+    "Name": "Beautiful Arrangement",
+    "Category": "backtracking",
+    "Language": "Python",
+    "Code": "class Solution:\n    def countArrangement(self, n: int) -> int:\n        self.count = 0\n        visited = [False] * (n + 1)\n        self.backtrack(n, 1, visited)\n        return self.count\n\n    def backtrack(self, n, pos, visited):\n        if pos > n:\n            self.count += 1\n            return\n        for i in range(1, n + 1):\n            if not visited[i] and (pos % i == 0 or i % pos == 0):\n                visited[i] = True\n                self.backtrack(n, pos + 1, visited)\n                visited[i] = False",
+    "Description": "Suppose you have n integers labeled 1 through n. A permutation of those n integers perm (1-indexed) is called a beautiful arrangement if for every i (1 <= i <= n), either perm[i] is divisible by i or i is divisible by perm[i].",
+    "Children": []
+  },
+  {
+    "Id": 113,
+    "ParentId": null,
+    "Name": "bit_manipulation",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for bit manipulation algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 114,
+    "ParentId": 113,
+    "Name": "Check if a number is even or odd",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def is_even(n):\n    return (n & 1) == 0",
+    "Description": "Checks if a number is even or odd using the bitwise AND operator. If the last bit is 1, the number is odd; otherwise, it's even.",
+    "Children": []
+  },
+  {
+    "Id": 115,
+    "ParentId": 113,
+    "Name": "Count set bits",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def count_set_bits(n):\n    count = 0\n    while n > 0:\n        n &= (n - 1)\n        count += 1\n    return count",
+    "Description": "Counts the number of set bits (1s) in the binary representation of an integer using Brian Kernighan's algorithm.",
+    "Children": []
+  },
+  {
+    "Id": 116,
+    "ParentId": 113,
+    "Name": "Check if the i-th bit is set",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def is_bit_set(n, i):\n    return (n & (1 << i)) != 0",
+    "Description": "Checks if the bit at the i-th position (from the right, 0-indexed) is set to 1.",
+    "Children": []
+  },
+  {
+    "Id": 117,
+    "ParentId": 113,
+    "Name": "Set the i-th bit",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def set_bit(n, i):\n    return n | (1 << i)",
+    "Description": "Sets the bit at the i-th position to 1.",
+    "Children": []
+  },
+  {
+    "Id": 118,
+    "ParentId": 113,
+    "Name": "Clear the i-th bit",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def clear_bit(n, i):\n    return n & ~(1 << i)",
+    "Description": "Clears the bit at the i-th position (sets it to 0).",
+    "Children": []
+  },
+  {
+    "Id": 119,
+    "ParentId": 113,
+    "Name": "Toggle the i-th bit",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def toggle_bit(n, i):\n    return n ^ (1 << i)",
+    "Description": "Toggles the bit at the i-th position (flips 0 to 1 and 1 to 0).",
+    "Children": []
+  },
+  {
+    "Id": 120,
+    "ParentId": 113,
+    "Name": "Check if a number is a power of 2",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def is_power_of_two(n):\n    return n > 0 and (n & (n - 1)) == 0",
+    "Description": "Checks if a given positive integer is a power of two. Powers of two in binary have only one set bit.",
+    "Children": []
+  },
+  {
+    "Id": 121,
+    "ParentId": 113,
+    "Name": "Find the single number in an array",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def find_single_number(nums):\n    result = 0\n    for num in nums:\n        result ^= num\n    return result",
+    "Description": "Given a non-empty array of integers where every element appears twice except for one, find that single one. Uses the XOR property (a ^ a = 0 and a ^ 0 = a).",
+    "Children": []
+  },
+  {
+    "Id": 122,
+    "ParentId": 113,
+    "Name": "Swap two numbers without a temporary variable",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def swap_numbers(a, b):\n    a = a ^ b\n    b = a ^ b\n    a = a ^ b\n    return a, b",
+    "Description": "Swaps the values of two integer variables using XOR operations.",
+    "Children": []
+  },
+  {
+    "Id": 123,
+    "ParentId": 113,
+    "Name": "Find the two non-repeating elements",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def find_two_non_repeating(nums):\n    xor_all = 0\n    for num in nums:\n        xor_all ^= num\n    rightmost_set_bit = xor_all & -xor_all\n    num1, num2 = 0, 0\n    for num in nums:\n        if num & rightmost_set_bit:\n            num1 ^= num\n        else:\n            num2 ^= num\n    return num1, num2",
+    "Description": "Finds the two elements that appear only once in an array where all other elements appear twice.",
+    "Children": []
+  },
+  {
+    "Id": 124,
+    "ParentId": 113,
+    "Name": "Gray Code",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def gray_code(n):\n    return n ^ (n >> 1)",
+    "Description": "Converts a binary number to its Gray code equivalent. The Gray code is a binary numeral system where two successive values differ in only one bit.",
+    "Children": []
+  },
+  {
+    "Id": 125,
+    "ParentId": 113,
+    "Name": "Reverse bits of a given integer",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def reverse_bits(n):\n    res = 0\n    for i in range(32):\n        res <<= 1\n        if (n & 1) == 1:\n            res ^= 1\n        n >>= 1\n    return res",
+    "Description": "Reverses the bits of a 32-bit unsigned integer.",
+    "Children": []
+  },
+  {
+    "Id": 126,
+    "ParentId": 113,
+    "Name": "Sum of two integers without using + and -",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def get_sum(a, b):\n    mask = 0xffffffff\n    while (b & mask) > 0:\n        carry = (a & b) << 1\n        a = a ^ b\n        b = carry\n    return (a & mask) if b > 0 else a",
+    "Description": "Calculates the sum of two integers using bitwise operations, simulating the process of a full adder.",
+    "Children": []
+  },
+  {
+    "Id": 127,
+    "ParentId": 113,
+    "Name": "Find position of the only set bit",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "import math\ndef find_position_of_set_bit(n):\n    if not (n > 0 and (n & (n - 1)) == 0):\n        return -1\n    return int(math.log2(n)) + 1",
+    "Description": "If a number has only one set bit, this function returns the position of that bit. Otherwise, it returns -1.",
+    "Children": []
+  },
+  {
+    "Id": 128,
+    "ParentId": 113,
+    "Name": "Divide two integers without multiplication, division, mod",
+    "Category": "bit_manipulation",
+    "Language": "Python",
+    "Code": "def divide(dividend, divisor):\n    if dividend == -2**31 and divisor == -1:\n        return 2**31 - 1\n    sign = -1 if (dividend < 0) ^ (divisor < 0) else 1\n    dividend, divisor = abs(dividend), abs(divisor)\n    quotient = 0\n    while dividend >= divisor:\n        temp, i = divisor, 1\n        while dividend >= temp:\n            dividend -= temp\n            quotient += i\n            i <<= 1\n            temp <<= 1\n    return sign * quotient",
+    "Description": "Divides two integers without using multiplication, division, or the modulo operator, typically using bit shifting and subtraction.",
+    "Children": []
+  },
+  {
+    "Id": 129,
+    "ParentId": null,
+    "Name": "other",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "",
+    "Description": "Parent category for miscellaneous but important algorithms.",
+    "Children": []
+  },
+  {
+    "Id": 130,
+    "ParentId": 129,
+    "Name": "Two Sum Problem",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def two_sum(nums, target):\n    num_map = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in num_map:\n            return [num_map[complement], i]\n        num_map[num] = i\n    return []",
+    "Description": "Given an array of integers, return indices of the two numbers such that they add up to a specific target.",
+    "Children": []
+  },
+  {
+    "Id": 131,
+    "ParentId": 129,
+    "Name": "Kadane's Algorithm",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def max_subarray_sum(arr):\n    max_so_far = -float('inf')\n    max_ending_here = 0\n    for num in arr:\n        max_ending_here += num\n        if max_so_far < max_ending_here:\n            max_so_far = max_ending_here\n        if max_ending_here < 0:\n            max_ending_here = 0\n    return max_so_far",
+    "Description": "An efficient algorithm to find the contiguous subarray within a one-dimensional array of numbers that has the largest sum.",
+    "Children": []
+  },
+  {
+    "Id": 132,
+    "ParentId": 129,
+    "Name": "Sliding Window Maximum",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "from collections import deque\n\ndef sliding_window_max(nums, k):\n    if not nums or k == 0:\n        return []\n    if k >= len(nums):\n        return [max(nums)]\n    \n    deq = deque()\n    result = []\n    for i in range(len(nums)):\n        if deq and deq[0] == i - k:\n            deq.popleft()\n        while deq and nums[deq[-1]] < nums[i]:\n            deq.pop()\n        deq.append(i)\n        if i >= k - 1:\n            result.append(nums[deq[0]])\n    return result",
+    "Description": "Given an array and an integer k, find the maximum for each and every contiguous subarray of size k.",
+    "Children": []
+  },
+  {
+    "Id": 133,
+    "ParentId": 129,
+    "Name": "LRU Cache",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cache = OrderedDict()\n        self.capacity = capacity\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)",
+    "Description": "A Least Recently Used (LRU) Cache organizes items in order of use, allowing you to quickly identify which item hasn't been used for the longest amount of time.",
+    "Children": []
+  },
+  {
+    "Id": 134,
+    "ParentId": 129,
+    "Name": "Meeting Rooms II",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "import heapq\n\ndef min_meeting_rooms(intervals):\n    if not intervals:\n        return 0\n    intervals.sort(key=lambda x: x[0])\n    free_rooms = []\n    heapq.heappush(free_rooms, intervals[0][1])\n    for i in range(1, len(intervals)):\n        if free_rooms[0] <= intervals[i][0]:\n            heapq.heappop(free_rooms)\n        heapq.heappush(free_rooms, intervals[i][1])\n    return len(free_rooms)",
+    "Description": "Given an array of meeting time intervals, find the minimum number of conference rooms required.",
+    "Children": []
+  },
+  {
+    "Id": 135,
+    "ParentId": 129,
+    "Name": "Next Permutation",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def next_permutation(nums):\n    i = len(nums) - 2\n    while i >= 0 and nums[i + 1] <= nums[i]:\n        i -= 1\n    if i >= 0:\n        j = len(nums) - 1\n        while nums[j] <= nums[i]:\n            j -= 1\n        nums[i], nums[j] = nums[j], nums[i]\n    \n    left, right = i + 1, len(nums) - 1\n    while left < right:\n        nums[left], nums[right] = nums[right], nums[left]\n        left += 1\n        right -= 1",
+    "Description": "Implement the next lexicographical permutation of a list of numbers.",
+    "Children": []
+  },
+  {
+    "Id": 136,
+    "ParentId": 129,
+    "Name": "Dutch National Flag Problem",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def sort_colors(nums):\n    low, mid, high = 0, 0, len(nums) - 1\n    while mid <= high:\n        if nums[mid] == 0:\n            nums[low], nums[mid] = nums[mid], nums[low]\n            low += 1\n            mid += 1\n        elif nums[mid] == 1:\n            mid += 1\n        else:\n            nums[mid], nums[high] = nums[high], nums[mid]\n            high -= 1",
+    "Description": "Given an array containing 0s, 1s, and 2s, sort them in-place.",
+    "Children": []
+  },
+  {
+    "Id": 137,
+    "ParentId": 129,
+    "Name": "Josephus Problem",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def josephus(n, k):\n    if n == 1:\n        return 1\n    else:\n        return (josephus(n - 1, k) + k - 1) % n + 1",
+    "Description": "In a circle of n people, every k-th person is eliminated. The problem is to find the position of the last person remaining.",
+    "Children": []
+  },
+  {
+    "Id": 138,
+    "ParentId": 129,
+    "Name": "Reservoir Sampling",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "import random\n\ndef reservoir_sampling(stream, k):\n    reservoir = [0] * k\n    for i in range(k):\n        reservoir[i] = stream[i]\n    for i in range(k, len(stream)):\n        j = random.randrange(i + 1)\n        if j < k:\n            reservoir[j] = stream[i]\n    return reservoir",
+    "Description": "A family of randomized algorithms for choosing a simple random sample of k items from a population of unknown size n in a single pass over the items.",
+    "Children": []
+  },
+  {
+    "Id": 139,
+    "ParentId": 129,
+    "Name": "Boyer-Moore Voting Algorithm",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def majority_element(nums):\n    count = 0\n    candidate = None\n    for num in nums:\n        if count == 0:\n            candidate = num\n        count += (1 if num == candidate else -1)\n    return candidate",
+    "Description": "Finds the majority element in an array (the element that appears more than n/2 times).",
+    "Children": []
+  },
+  {
+    "Id": 140,
+    "ParentId": 129,
+    "Name": "Topological Sort",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "from collections import defaultdict\n\nclass Graph:\n    def __init__(self, vertices):\n        self.graph = defaultdict(list)\n        self.V = vertices\n\n    def add_edge(self, u, v):\n        self.graph[u].append(v)\n\n    def topological_sort_util(self, v, visited, stack):\n        visited[v] = True\n        for i in self.graph[v]:\n            if not visited[i]:\n                self.topological_sort_util(i, visited, stack)\n        stack.insert(0, v)\n\n    def topological_sort(self):\n        visited = [False] * self.V\n        stack = []\n        for i in range(self.V):\n            if not visited[i]:\n                self.topological_sort_util(i, visited, stack)\n        return stack",
+    "Description": "A linear ordering of the vertices of a directed acyclic graph (DAG) such that for every directed edge from vertex u to vertex v, u comes before v in the ordering.",
+    "Children": []
+  },
+  {
+    "Id": 141,
+    "ParentId": 129,
+    "Name": "Cycle Detection in a Linked List",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def has_cycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False",
+    "Description": "Detects if a linked list has a cycle using Floyd's Tortoise and Hare algorithm.",
+    "Children": []
+  },
+  {
+    "Id": 142,
+    "ParentId": 129,
+    "Name": "Find the Celebrity",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def knows(a, b):\n    # This is a placeholder function provided by the problem.\n    # It returns True if a knows b, False otherwise.\n    pass\n\ndef find_celebrity(n):\n    candidate = 0\n    for i in range(1, n):\n        if knows(candidate, i):\n            candidate = i\n    for i in range(n):\n        if i != candidate and (knows(candidate, i) or not knows(i, candidate)):\n            return -1\n    return candidate",
+    "Description": "In a party of n people, a celebrity is a person who is known by everyone but knows no one. The problem is to find the celebrity.",
+    "Children": []
+  },
+  {
+    "Id": 143,
+    "ParentId": 129,
+    "Name": "Flood Fill Algorithm",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def flood_fill(screen, x, y, new_color):\n    prev_color = screen[x][y]\n    if prev_color == new_color:\n        return\n    q = [(x, y)]\n    screen[x][y] = new_color\n    while q:\n        curr_x, curr_y = q.pop(0)\n        for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:\n            next_x, next_y = curr_x + dx, curr_y + dy\n            if 0 <= next_x < len(screen) and 0 <= next_y < len(screen[0]) and screen[next_x][next_y] == prev_color:\n                screen[next_x][next_y] = new_color\n                q.append((next_x, next_y))",
+    "Description": "An algorithm that determines the area connected to a given node in a multi-dimensional array.",
+    "Children": []
+  },
+  {
+    "Id": 144,
+    "ParentId": 129,
+    "Name": "Trapping Rain Water",
+    "Category": "other",
+    "Language": "Python",
+    "Code": "def trap(height):\n    if not height: return 0\n    left, right = 0, len(height) - 1\n    left_max, right_max = height[left], height[right]\n    ans = 0\n    while left < right:\n        if left_max < right_max:\n            left += 1\n            left_max = max(left_max, height[left])\n            ans += left_max - height[left]\n        else:\n            right -= 1\n            right_max = max(right_max, height[right])\n            ans += right_max - height[right]\n    return ans",
+    "Description": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+    "Children": []
+  }
+]
