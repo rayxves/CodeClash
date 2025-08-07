@@ -20,10 +20,7 @@ public static class DbSeeder
 
     public static async Task SeedDatabaseAsync(ApplicationDbContext context)
     {
-        if (await context.CodeReferences.AnyAsync())
-        {
-            return;
-        }
+       
 
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var filePath = Path.Combine(baseDir, "code.json");
@@ -44,7 +41,13 @@ public static class DbSeeder
 
             foreach (var group in categories)
             {
+
                 var parentDto = group.Single(item => item.ParentId == null);
+                if (await context.CodeReferences.AnyAsync(c => c.Category == parentDto.Category && c.Language == parentDto.Language))
+                {
+                    return;
+                }
+
                 var parentEntity = new CodeReferenceEntity
                 {
                     Name = parentDto.Name,

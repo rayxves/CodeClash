@@ -50,9 +50,9 @@ builder.Services.AddCors(options =>
 
 builder.Configuration.AddEnvironmentVariables();
 
+builder.Services.AddHttpClient();
 
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
-builder.Services.AddHttpClient();
 builder.Services.AddScoped<IJudge0Interface, Judge0Client>();
 builder.Services.AddScoped<CodeSubmissionFacade>();
 builder.Services.AddScoped<ICodeReferenceInterface, CodeReferenceService>();

@@ -20,7 +20,7 @@ export default function LanguageSelector({
         {languages.map((lang) => (
           <button
             key={lang.name}
-            onClick={() => setSelectedLanguage(lang)}
+            onClick={() => {localStorage.setItem("language", lang.name); setSelectedLanguage(lang)}}
             className={`flex flex-col items-center justify-center py-2 rounded-xl border transition-all ${
               selectedLanguage.name === lang.name
                 ? "border-blue-400 bg-white shadow-md"

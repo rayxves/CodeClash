@@ -12,7 +12,7 @@ import {
 } from "../../../../api";
 import type { CodeModalParams } from "../../../types/routes";
 import RecommendationsList from "../Recomendation/RecomendationList";
-import { Code2 } from "lucide-react";
+import { ClipboardCopy, Code2 } from "lucide-react";
 
 export default function CodeModal() {
   const {
@@ -21,7 +21,7 @@ export default function CodeModal() {
     name = "",
   } = useParams<CodeModalParams>();
   const navigate = useNavigate();
-
+  const [copySuccess, setCopySuccess] = useState("");
   const [code, setCode] = useState<CodeReference | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,6 +112,17 @@ export default function CodeModal() {
     return null;
   };
 
+  const handleCopyClick = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopySuccess("Código copiado!");
+    } catch (error: any) {
+      setCopySuccess("Falha ao copiar.");
+    }
+
+    setTimeout(() => setCopySuccess(""), 2000);
+  };
+
   const handleSelectRecommendedCode = (code: CodeReference) => {
     navigate(
       `/code-model/${encodeURIComponent(code.language)}/${encodeURIComponent(
@@ -186,7 +197,13 @@ export default function CodeModal() {
 
   return (
     <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
-      <div className="w-full max-w-6xl mt-12">
+      {copySuccess && (
+        <div className="text-gray-900 text-sm text-center mt-10 absolute top-52 right-10 sm:right-20 lg:right-28 bg-gray-300 px-2 py-1 rounded-md">
+          {copySuccess}
+        </div>
+      )}
+
+      <div className="w-full max-w-6xl mt-8">
         <CodeHeader language={language} category={category} name={name} />
 
         <div className="w-full bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 mb-8">
@@ -201,9 +218,17 @@ export default function CodeModal() {
                 {code.name}.{getExtension(code.language.toLowerCase())}
               </h2>
             </div>
-            <span className="text-gray-400 text-xs font-mono bg-gray-700 px-2 py-0.5 rounded-md">
-              {code.language}
-            </span>
+
+            <div className="w-fit flex gap-4 items-center justify-end">
+              <span className="text-gray-400 text-xs font-mono bg-gray-700 px-2 py-0.5 rounded-md">
+                {code.language}
+              </span>
+              <ClipboardCopy
+                className="hover:cursor-copy"
+                size={16}
+                onClick={async () => await handleCopyClick(code.code)}
+              />
+            </div>
           </div>
 
           <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh] text-xs sm:text-sm">

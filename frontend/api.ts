@@ -16,9 +16,7 @@ const excludeInterfaces = (items: CodeReference[]): CodeReference[] => {
     if (isInterface && item.children?.length) {
       const validChildren = item.children.filter(
         (child) =>
-          child.code &&
-          child.code.trim() !== "" &&
-          !child.name.startsWith("I")
+          child.code && child.code.trim() !== "" && !child.name.startsWith("I")
       );
       return validChildren.length > 0;
     }
@@ -33,7 +31,7 @@ export const getByLanguageAndCategory = async (
   options: { signal?: AbortSignal } = {}
 ): Promise<CodeReference[]> => {
   const cacheKey = `${language}-${category}`;
-  
+
   if (cache.has(cacheKey)) {
     return cache.get(cacheKey)!;
   }
@@ -67,7 +65,7 @@ export const getByLanguageAndCategory = async (
     return filteredData;
   } catch (error) {
     if (axios.isCancel(error)) {
-      console.log('Request canceled:', error.message);
+      console.log("Request canceled:", error.message);
       return [];
     }
     console.error("API Error:", error);

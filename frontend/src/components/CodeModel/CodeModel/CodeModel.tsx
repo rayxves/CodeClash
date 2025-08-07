@@ -92,33 +92,42 @@ export const CATEGORIES: Category[] = [
 ];
 
 export default function CodeModel() {
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>(LANGUAGES[0]);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(
+    LANGUAGES[0]
+  );
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const filteredCategories = CATEGORIES.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const language = localStorage.getItem("language")
+    ? LANGUAGES.find(
+        (lang) =>
+          lang.name.toLowerCase() ===
+          localStorage.getItem("language")?.toLowerCase()
+      ) || LANGUAGES[0]
+    : selectedLanguage;
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6">
       <Link
         to="/"
         className="mt-12 flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base group mb-6"
-      >
-      </Link>
+      ></Link>
       <div className="max-w-4xl mx-auto">
         <LanguageSelector
           languages={LANGUAGES}
-          selectedLanguage={selectedLanguage}
+          selectedLanguage={language}
           setSelectedLanguage={setSelectedLanguage}
         />
 
         <div className="flex items-center gap-3 mb-4 p-3 bg-white rounded-lg shadow-sm">
-          <div className={`p-2 rounded-full ${selectedLanguage.color}`}>
-            {selectedLanguage.icon}
+          <div className={`p-2 rounded-full ${language.color}`}>
+            {language.icon}
           </div>
           <h2 className="text-xl font-semibold text-gray-800">
-            {selectedLanguage.name}
+            {language.name}
           </h2>
         </div>
 
@@ -126,7 +135,7 @@ export default function CodeModel() {
 
         <CategoryList
           categories={filteredCategories}
-          selectedLanguage={selectedLanguage}
+          selectedLanguage={language}
         />
       </div>
     </div>
