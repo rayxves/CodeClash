@@ -1,0 +1,502 @@
+[
+  {
+    "Id": 51,
+    "Title": "Soma dos Dígitos",
+    "Description": "Dado um número inteiro não-negativo, calcule a soma de todos os seus dígitos.\n\n## Entrada\nA entrada consiste em um único número inteiro N (0 <= N <= 10^9).\n\n## Saída\nImprima a soma dos dígitos de N.",
+    "Difficulty": "Fácil",
+    "Category": "math",
+    "TestCases": [
+      {
+        "Id": 201, "Input": "123", "ExpectedOutput": "6\n", "ProblemId": 51, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 202, "Input": "9876", "ExpectedOutput": "30\n", "ProblemId": 51, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 203, "Input": "0", "ExpectedOutput": "0\n", "ProblemId": 51, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 204, "Input": "100000000", "ExpectedOutput": "1\n", "ProblemId": 51, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 52,
+    "Title": "Verificador de Anagramas",
+    "Description": "Dadas duas strings, s1 e s2, verifique se elas são anagramas uma da outra. Um anagrama é uma palavra ou frase formada pelo rearranjo das letras de outra, como 'listen' e 'silent'. Considere as letras como case-sensitive.\n\n## Entrada\nDuas linhas, cada uma contendo uma string (comprimento de 1 a 1000).\n\n## Saída\nImprima \"SIM\" se forem anagramas, \"NAO\" caso contrário.",
+    "Difficulty": "Fácil",
+    "Category": "strings",
+    "TestCases": [
+      {
+        "Id": 205, "Input": "listen\nsilent", "ExpectedOutput": "SIM\n", "ProblemId": 52, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 206, "Input": "hello\nworld", "ExpectedOutput": "NAO\n", "ProblemId": 52, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 207, "Input": "anagram\nnagaram", "ExpectedOutput": "SIM\n", "ProblemId": 52, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 208, "Input": "rat\ncar", "ExpectedOutput": "NAO\n", "ProblemId": 52, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 53,
+    "Title": "Pico do Vetor",
+    "Description": "Um elemento de pico é um elemento que é maior ou igual a seus vizinhos imediatos. Dado um vetor de entrada, encontre qualquer elemento de pico e retorne seu valor. Para um elemento na borda, considere apenas um vizinho.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 1000). A segunda linha contém N inteiros.\n\n## Saída\nImprima o valor de qualquer um dos elementos de pico.",
+    "Difficulty": "Médio",
+    "Category": "search",
+    "TestCases": [
+      {
+        "Id": 209, "Input": "7\n1 2 3 4 3 2 1", "ExpectedOutput": "4\n", "ProblemId": 53, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 210, "Input": "5\n1 2 1 3 5", "ExpectedOutput": "2\n", "ProblemId": 53, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 211, "Input": "2\n2 1", "ExpectedOutput": "2\n", "ProblemId": 53, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 212, "Input": "1\n100", "ExpectedOutput": "100\n", "ProblemId": 53, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 54,
+    "Title": "Subarray de Soma Máxima",
+    "Description": "Dado um vetor de inteiros, encontre o subarray contíguo (contendo pelo menos um número) que tem a maior soma e retorne essa soma. Esta é a implementação clássica do Algoritmo de Kadane.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 10^5). A segunda linha contém N inteiros.\n\n## Saída\nImprima a soma máxima do subarray.",
+    "Difficulty": "Médio",
+    "Category": "dynamic_programming",
+    "TestCases": [
+      {
+        "Id": 213, "Input": "9\n-2 1 -3 4 -1 2 1 -5 4", "ExpectedOutput": "6\n", "ProblemId": 54, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 214, "Input": "5\n1 2 3 4 5", "ExpectedOutput": "15\n", "ProblemId": 54, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 215, "Input": "5\n-1 -2 -3 -4 -5", "ExpectedOutput": "-1\n", "ProblemId": 54, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 216, "Input": "1\n5", "ExpectedOutput": "5\n", "ProblemId": 54, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 55,
+    "Title": "Gerar Parênteses",
+    "Description": "Dado um número N de pares de parênteses, escreva uma função para gerar todas as combinações de parênteses bem formados.\n\n## Entrada\nUm único inteiro N (1 <= N <= 8).\n\n## Saída\nImprima cada combinação válida em uma nova linha, em ordem lexicográfica.",
+    "Difficulty": "Difícil",
+    "Category": "backtracking",
+    "TestCases": [
+      {
+        "Id": 217, "Input": "3", "ExpectedOutput": "((()))\n(()())\n(())()\n()(())\n()()()\n", "ProblemId": 55, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 218, "Input": "1", "ExpectedOutput": "()\n", "ProblemId": 55, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 219, "Input": "2", "ExpectedOutput": "(()) \n()()\n", "ProblemId": 55, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 220, "Input": "4", "ExpectedOutput": "(((())))\n((()()))\n((())())\n((()))()\n(()(()))\n(()()())\n(()())()\n(())(())\n(())()()\n()((()))\n()(()())\n()(())()\n()()(())\n()()()()\n", "ProblemId": 55, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 56,
+    "Title": "Validade de Sudoku",
+    "Description": "Determine se um tabuleiro de Sudoku 9x9 é válido. Apenas as células preenchidas precisam ser validadas de acordo com as seguintes regras:\n1. Cada linha deve conter os dígitos 1-9 sem repetição.\n2. Cada coluna deve conter os dígitos 1-9 sem repetição.\n3. Cada um dos nove sub-quadrados 3x3 da grade deve conter os dígitos 1-9 sem repetição.\n\n## Entrada\nNove linhas, cada uma contendo 9 caracteres (dígitos de '1'-'9' ou '.' para células vazias), representando o tabuleiro.\n\n## Saída\nImprima \"SIM\" se o tabuleiro for válido, \"NAO\" caso contrário.",
+    "Difficulty": "Médio",
+    "Category": "other",
+    "TestCases": [
+      {
+        "Id": 221, "Input": "53..7....\n6..195...\n.98....6.\n8...6...3\n4..8.3..1\n7...2...6\n.6....28.\n...419..5\n....8..79", "ExpectedOutput": "SIM\n", "ProblemId": 56, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 222, "Input": "83..7....\n6..195...\n.98....6.\n8...6...3\n4..8.3..1\n7...2...6\n.6....28.\n...419..5\n....8..79", "ExpectedOutput": "NAO\n", "ProblemId": 56, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 223, "Input": ".........\n.........\n.........\n.........\n.........\n.........\n.........\n.........\n.........", "ExpectedOutput": "SIM\n", "ProblemId": 56, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 310, "Input": "53..7....\n6..195...\n.98....6.\n8...6...3\n4..8.3..1\n7...2...6\n.6....28.\n...419..5\n...88..79", "ExpectedOutput": "NAO\n", "ProblemId": 56, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 57,
+    "Title": "Espiral da Matriz",
+    "Description": "Dada uma matriz m x n, retorne todos os elementos da matriz em ordem espiral (começando do canto superior esquerdo e movendo-se para a direita, para baixo, para a esquerda e para cima).\n\n## Entrada\nAs duas primeiras linhas contêm M e N (1 <= M, N <= 10). As próximas M linhas contêm N inteiros cada.\n\n## Saída\nImprima os elementos em ordem espiral, separados por um espaço.",
+    "Difficulty": "Médio",
+    "Category": "data_structure",
+    "TestCases": [
+      {
+        "Id": 224, "Input": "3 3\n1 2 3\n4 5 6\n7 8 9", "ExpectedOutput": "1 2 3 6 9 8 7 4 5\n", "ProblemId": 57, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 225, "Input": "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12", "ExpectedOutput": "1 2 3 4 8 12 11 10 9 5 6 7\n", "ProblemId": 57, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 226, "Input": "1 5\n1 2 3 4 5", "ExpectedOutput": "1 2 3 4 5\n", "ProblemId": 57, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 227, "Input": "4 1\n1\n2\n3\n4", "ExpectedOutput": "1 2 3 4\n", "ProblemId": 57, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 58,
+    "Title": "Número de Ilhas",
+    "Description": "Dado um grid 2D binário que representa um mapa de '1's (terra) e '0's (água), retorne o número de ilhas. Uma ilha é cercada por água e é formada pela conexão de terras adjacentes horizontal ou verticalmente.\n\n## Entrada\nAs duas primeiras linhas contêm M e N (1 <= M, N <= 100). As próximas M linhas contêm N caracteres ('1' ou '0').\n\n## Saída\nImprima o número de ilhas.",
+    "Difficulty": "Difícil",
+    "Category": "search",
+    "TestCases": [
+      {
+        "Id": 228, "Input": "4 5\n11110\n11010\n11000\n00000", "ExpectedOutput": "1\n", "ProblemId": 58, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 229, "Input": "4 5\n11000\n11000\n00100\n00011", "ExpectedOutput": "3\n", "ProblemId": 58, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 230, "Input": "1 1\n0", "ExpectedOutput": "0\n", "ProblemId": 58, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 231, "Input": "5 5\n10101\n01010\n10101\n01010\n10101", "ExpectedOutput": "13\n", "ProblemId": 58, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 59,
+    "Title": "Raiz Quadrada Inteira",
+    "Description": "Dado um inteiro não-negativo x, calcule e retorne a raiz quadrada de x. Como o tipo de retorno é um inteiro, a parte decimal é truncada e apenas a parte inteira do resultado é retornada.\n\n## Entrada\nUm único inteiro x (0 <= x <= 2^31 - 1).\n\n## Saída\nImprima a raiz quadrada inteira de x.",
+    "Difficulty": "Fácil",
+    "Category": "math",
+    "TestCases": [
+      {
+        "Id": 232, "Input": "4", "ExpectedOutput": "2\n", "ProblemId": 59, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 233, "Input": "8", "ExpectedOutput": "2\n", "ProblemId": 59, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 234, "Input": "0", "ExpectedOutput": "0\n", "ProblemId": 59, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 235, "Input": "2147395599", "ExpectedOutput": "46339\n", "ProblemId": 59, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 60,
+    "Title": "Subconjuntos",
+    "Description": "Dado um conjunto de inteiros distintos, retorne todos os subconjuntos possíveis (o conjunto de potência).\n\n## Entrada\nA primeira linha contém N (1 <= N <= 10). A segunda linha contém N inteiros distintos.\n\n## Saída\nImprima cada subconjunto em uma nova linha, com elementos separados por espaço. A ordem não importa. Uma linha em branco representa o conjunto vazio.",
+    "Difficulty": "Difícil",
+    "Category": "backtracking",
+    "TestCases": [
+      {
+        "Id": 236, "Input": "3\n1 2 3", "ExpectedOutput": "\n1\n2\n1 2\n3\n1 3\n2 3\n1 2 3\n", "ProblemId": 60, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 237, "Input": "1\n0", "ExpectedOutput": "\n0\n", "ProblemId": 60, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 311, "Input": "2\n1 2", "ExpectedOutput": "\n1\n2\n1 2\n", "ProblemId": 60, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 312, "Input": "0\n", "ExpectedOutput": "\n", "ProblemId": 60, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 61,
+    "Title": "Primeiro Caractere Único",
+    "Description": "Dada uma string, encontre o primeiro caractere não repetido nela e retorne seu índice. Se não existir, retorne -1.\n\n## Entrada\nUma única string (letras minúsculas, 1 <= comprimento <= 10^5).\n\n## Saída\nImprima o índice de base 0 do primeiro caractere único ou -1.",
+    "Difficulty": "Fácil",
+    "Category": "strings",
+    "TestCases": [
+      {
+        "Id": 238, "Input": "leetcode", "ExpectedOutput": "0\n", "ProblemId": 61, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 239, "Input": "loveleetcode", "ExpectedOutput": "2\n", "ProblemId": 61, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 240, "Input": "aabb", "ExpectedOutput": "-1\n", "ProblemId": 61, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 241, "Input": "z", "ExpectedOutput": "0\n", "ProblemId": 61, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 62,
+    "Title": "Elemento Majoritário",
+    "Description": "Dado um vetor de tamanho n, encontre o elemento majoritário. O elemento majoritário é o elemento que aparece mais de ⌊n / 2⌋ vezes. Você pode assumir que o elemento majoritário sempre existe no vetor.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 5 * 10^4). A segunda linha contém N inteiros.\n\n## Saída\nImprima o elemento majoritário.",
+    "Difficulty": "Fácil",
+    "Category": "sort",
+    "TestCases": [
+      {
+        "Id": 242, "Input": "7\n2 2 1 1 1 2 2", "ExpectedOutput": "2\n", "ProblemId": 62, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 243, "Input": "3\n3 2 3", "ExpectedOutput": "3\n", "ProblemId": 62, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 244, "Input": "1\n10", "ExpectedOutput": "10\n", "ProblemId": 62, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 245, "Input": "5\n6 6 6 7 7", "ExpectedOutput": "6\n", "ProblemId": 62, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 63,
+    "Title": "Subindo Escadas",
+    "Description": "Você está subindo uma escada. Leva n degraus para chegar ao topo. Cada vez, você pode subir 1 ou 2 degraus. De quantas maneiras distintas você pode subir até o topo?\n\n## Entrada\nUm único inteiro n (1 <= n <= 45).\n\n## Saída\nImprima o número de maneiras distintas.",
+    "Difficulty": "Fácil",
+    "Category": "dynamic_programming",
+    "TestCases": [
+      {
+        "Id": 246, "Input": "2", "ExpectedOutput": "2\n", "ProblemId": 63, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 247, "Input": "3", "ExpectedOutput": "3\n", "ProblemId": 63, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 248, "Input": "1", "ExpectedOutput": "1\n", "ProblemId": 63, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 249, "Input": "45", "ExpectedOutput": "1836311903\n", "ProblemId": 63, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 64,
+    "Title": "Encontre a Diferença",
+    "Description": "Você recebe duas strings, s e t. A string t é gerada pelo embaralhamento aleatório da string s e, em seguida, pela adição de mais uma letra em uma posição aleatória. Retorne a letra que foi adicionada a t.\n\n## Entrada\nDuas linhas, a primeira contendo a string s e a segunda contendo a string t. (0 <= s.length <= 1000, t.length == s.length + 1, apenas letras minúsculas).\n\n## Saída\nImprima a letra que foi adicionada.",
+    "Difficulty": "Fácil",
+    "Category": "bit_manipulation",
+    "TestCases": [
+      {
+        "Id": 250, "Input": "abcd\nabcde", "ExpectedOutput": "e\n", "ProblemId": 64, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 251, "Input": "\na", "ExpectedOutput": "a\n", "ProblemId": 64, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 252, "Input": "a\nea", "ExpectedOutput": "e\n", "ProblemId": 64, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 313, "Input": "ae\nbea", "ExpectedOutput": "b\n", "ProblemId": 64, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 65,
+    "Title": "Título da Coluna do Excel",
+    "Description": "Dado um inteiro positivo, retorne seu título de coluna correspondente como aparece em uma planilha do Excel. Ex: 1 -> A, 2 -> B, ..., 26 -> Z, 27 -> AA, 28 -> AB, ...\n\n## Entrada\nUm único inteiro positivo N (1 <= N <= 2^31 - 1).\n\n## Saída\nImprima o título da coluna do Excel.",
+    "Difficulty": "Fácil",
+    "Category": "math",
+    "TestCases": [
+      {
+        "Id": 254, "Input": "1", "ExpectedOutput": "A\n", "ProblemId": 65, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 255, "Input": "28", "ExpectedOutput": "AB\n", "ProblemId": 65, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 256, "Input": "701", "ExpectedOutput": "ZY\n", "ProblemId": 65, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 257, "Input": "26", "ExpectedOutput": "Z\n", "ProblemId": 65, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 66,
+    "Title": "Comprar e Vender Ações",
+    "Description": "Você recebe um vetor `precos`, onde `precos[i]` é o preço de uma determinada ação no i-ésimo dia. Você quer maximizar seu lucro escolhendo um único dia para comprar uma ação e escolhendo um dia diferente no futuro para vender essa ação. Retorne o lucro máximo que você pode obter. Se não puder obter lucro, retorne 0.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 10^5). A segunda linha contém N inteiros representando os preços.\n\n## Saída\nImprima o lucro máximo.",
+    "Difficulty": "Fácil",
+    "Category": "other",
+    "TestCases": [
+      {
+        "Id": 258, "Input": "6\n7 1 5 3 6 4", "ExpectedOutput": "5\n", "ProblemId": 66, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 259, "Input": "5\n7 6 4 3 1", "ExpectedOutput": "0\n", "ProblemId": 66, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 260, "Input": "2\n2 10", "ExpectedOutput": "8\n", "ProblemId": 66, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 261, "Input": "1\n100", "ExpectedOutput": "0\n", "ProblemId": 66, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 67,
+    "Title": "Happy Number",
+    "Description": "Um 'happy number' é um número definido pelo seguinte processo: começando com qualquer inteiro positivo, substitua o número pela soma dos quadrados de seus dígitos. Repita o processo até que o número seja igual a 1 (onde ele permanecerá), ou ele entre em um ciclo infinito que não inclui 1. Esses números para os quais o processo termina em 1 são 'happy numbers'. Retorne true se n for um happy number e false caso contrário.\n\n## Entrada\nUm único inteiro n (1 <= n <= 2^31 - 1).\n\n## Saída\nImprima \"SIM\" se for um happy number, \"NAO\" caso contrário.",
+    "Difficulty": "Fácil",
+    "Category": "math",
+    "TestCases": [
+      {
+        "Id": 262, "Input": "19", "ExpectedOutput": "SIM\n", "ProblemId": 67, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 263, "Input": "2", "ExpectedOutput": "NAO\n", "ProblemId": 67, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 264, "Input": "7", "ExpectedOutput": "SIM\n", "ProblemId": 67, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 265, "Input": "1111111", "ExpectedOutput": "SIM\n", "ProblemId": 67, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 68,
+    "Title": "Substrings Palindrômicas",
+    "Description": "Dada uma string, sua tarefa é contar quantas substrings palindrômicas existem nesta string. Substrings com diferentes índices de início ou fim são contadas como substrings diferentes, mesmo que consistam nos mesmos caracteres.\n\n## Entrada\nUma única string (1 <= comprimento <= 1000).\n\n## Saída\nImprima o número de substrings palindrômicas.",
+    "Difficulty": "Médio",
+    "Category": "dynamic_programming",
+    "TestCases": [
+      {
+        "Id": 266, "Input": "abc", "ExpectedOutput": "3\n", "ProblemId": 68, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 267, "Input": "aaa", "ExpectedOutput": "6\n", "ProblemId": 68, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 268, "Input": "arara", "ExpectedOutput": "9\n", "ProblemId": 68, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 269, "Input": "x", "ExpectedOutput": "1\n", "ProblemId": 68, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 69,
+    "Title": "Caminho de Soma Mínima no Triângulo",
+    "Description": "Dado um triângulo de números, encontre o caminho de soma mínima do topo até a base. Para cada passo, você pode se mover para números adjacentes na linha abaixo.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 200), o número de linhas do triângulo. As próximas N linhas contêm os números do triângulo.\n\n## Saída\nImprima a soma mínima do caminho.",
+    "Difficulty": "Médio",
+    "Category": "dynamic_programming",
+    "TestCases": [
+      {
+        "Id": 270, "Input": "4\n2\n3 4\n6 5 7\n4 1 8 3", "ExpectedOutput": "11\n", "ProblemId": 69, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 271, "Input": "1\n-10", "ExpectedOutput": "-10\n", "ProblemId": 69, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 272, "Input": "2\n1\n-1 -1", "ExpectedOutput": "0\n", "ProblemId": 69, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 314, "Input": "3\n1\n2 3\n1 1 1", "ExpectedOutput": "4\n", "ProblemId": 69, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 70,
+    "Title": "Intersecção de Dois Vetores",
+    "Description": "Dados dois vetores de inteiros, escreva uma função para calcular sua intersecção. Cada elemento no resultado deve ser único.\n\n## Entrada\nDuas linhas. Cada linha começa com um inteiro N (1 <= N <= 1000), seguido por N inteiros do vetor.\n\n## Saída\nImprima os elementos da intersecção, em ordem crescente, separados por espaço.",
+    "Difficulty": "Fácil",
+    "Category": "data_structure",
+    "TestCases": [
+      {
+        "Id": 273, "Input": "4 1 2 2 1\n2 2 2", "ExpectedOutput": "2\n", "ProblemId": 70, "isHidden": false, "Order": 1
+      },
+      {
+        "Id": 274, "Input": "5 4 9 5 1 8\n4 9 8 4 9", "ExpectedOutput": "4 8 9\n", "ProblemId": 70, "isHidden": false, "Order": 2
+      },
+      {
+        "Id": 275, "Input": "3 1 2 3\n3 4 5 6", "ExpectedOutput": "\n", "ProblemId": 70, "isHidden": true, "Order": 3
+      },
+      {
+        "Id": 315, "Input": "4 -1 0 1 2\n5 0 -2 -1 5 10", "ExpectedOutput": "-1 0\n", "ProblemId": 70, "isHidden": true, "Order": 4
+      }
+    ]
+  },
+  {
+    "Id": 71, "Title": "Robô em um Círculo", "Description": "Um robô em um plano infinito começa na origem (0, 0) e está virado para o norte. O robô pode receber um dos três tipos de comandos: \"G\" para avançar uma unidade, \"L\" para virar 90 graus para a esquerda, \"R\" para virar 90 graus para a direita. O robô executa uma sequência de comandos repetidamente. Retorne true se e somente se houver um círculo no plano tal que o robô nunca saia do círculo.\n\n## Entrada\nUma única string contendo a sequência de comandos (G, L, R).\n\n## Saída\nImprima \"SIM\" se o robô permanecer em um círculo, \"NAO\" caso contrário.", "Difficulty": "Médio", "Category": "math", "TestCases": [
+      { "Id": 276, "Input": "GGLLGG", "ExpectedOutput": "SIM\n", "ProblemId": 71, "isHidden": false, "Order": 1 },
+      { "Id": 277, "Input": "GG", "ExpectedOutput": "NAO\n", "ProblemId": 71, "isHidden": false, "Order": 2 },
+      { "Id": 278, "Input": "GL", "ExpectedOutput": "SIM\n", "ProblemId": 71, "isHidden": true, "Order": 3 },
+      { "Id": 279, "Input": "R", "ExpectedOutput": "SIM\n", "ProblemId": 71, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 72, "Title": "Inverter Bits", "Description": "Dado um inteiro de 32 bits sem sinal, retorne o número com seus bits invertidos.\n\n## Entrada\nUm único inteiro N (representando um inteiro de 32 bits sem sinal).\n\n## Saída\nImprima o inteiro resultante da inversão dos bits de N.", "Difficulty": "Fácil", "Category": "bit_manipulation", "TestCases": [
+      { "Id": 280, "Input": "43261596", "ExpectedOutput": "964176192\n", "ProblemId": 72, "isHidden": false, "Order": 1 },
+      { "Id": 281, "Input": "1", "ExpectedOutput": "2147483648\n", "ProblemId": 72, "isHidden": false, "Order": 2 },
+      { "Id": 282, "Input": "0", "ExpectedOutput": "0\n", "ProblemId": 72, "isHidden": true, "Order": 3 },
+      { "Id": 283, "Input": "2147483648", "ExpectedOutput": "1\n", "ProblemId": 72, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 73, "Title": "Jump Game", "Description": "Você recebe um vetor de inteiros. Você está posicionado inicialmente no primeiro índice do vetor, e cada elemento no vetor representa o seu comprimento máximo de salto naquela posição. Retorne true se você puder alcançar o último índice, ou false caso contrário.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 10^4). A segunda linha contém N inteiros não-negativos.\n\n## Saída\nImprima \"SIM\" se puder alcançar o final, \"NAO\" caso contrário.", "Difficulty": "Médio", "Category": "dynamic_programming", "TestCases": [
+      { "Id": 284, "Input": "5\n2 3 1 1 4", "ExpectedOutput": "SIM\n", "ProblemId": 73, "isHidden": false, "Order": 1 },
+      { "Id": 285, "Input": "5\n3 2 1 0 4", "ExpectedOutput": "NAO\n", "ProblemId": 73, "isHidden": false, "Order": 2 },
+      { "Id": 286, "Input": "1\n10", "ExpectedOutput": "SIM\n", "ProblemId": 73, "isHidden": true, "Order": 3 },
+      { "Id": 287, "Input": "2\n0 1", "ExpectedOutput": "NAO\n", "ProblemId": 73, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 74, "Title": "Detecção de Ciclo", "Description": "Dado um vetor de inteiros `arr` onde `arr[i]` representa um salto para o índice `arr[i]`. Partindo do índice 0, determine se existe um ciclo. Um ciclo existe se você visitar o mesmo índice mais de uma vez.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 1000). A segunda linha contém N inteiros, onde 0 <= arr[i] < N.\n\n## Saída\nImprima \"SIM\" se houver um ciclo, \"NAO\" caso contrário.", "Difficulty": "Fácil", "Category": "data_structure", "TestCases": [
+      { "Id": 288, "Input": "4\n1 2 3 0", "ExpectedOutput": "SIM\n", "ProblemId": 74, "isHidden": false, "Order": 1 },
+      { "Id": 289, "Input": "4\n1 2 3 1", "ExpectedOutput": "SIM\n", "ProblemId": 74, "isHidden": false, "Order": 2 },
+      { "Id": 290, "Input": "5\n1 2 3 4 4", "ExpectedOutput": "NAO\n", "ProblemId": 74, "isHidden": true, "Order": 3 },
+      { "Id": 291, "Input": "2\n1 0", "ExpectedOutput": "SIM\n", "ProblemId": 74, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 75, "Title": "Zigzag Conversion", "Description": "A string \"PAYPALISHIRING\" é escrita em um padrão em zigue-zague em um determinado número de linhas. Escreva o código que receberá uma string e o número de linhas e fará essa conversão.\n\n## Entrada\nA primeira linha contém a string (1 <= comprimento <= 1000). A segunda linha contém o número de linhas N (1 <= N <= 1000).\n\n## Saída\nImprima a string convertida.", "Difficulty": "Médio", "Category": "strings", "TestCases": [
+      { "Id": 292, "Input": "PAYPALISHIRING\n3", "ExpectedOutput": "PAHNAPLSIIGYIR\n", "ProblemId": 75, "isHidden": false, "Order": 1 },
+      { "Id": 293, "Input": "PAYPALISHIRING\n4", "ExpectedOutput": "PINALSIGYAHRPI\n", "ProblemId": 75, "isHidden": false, "Order": 2 },
+      { "Id": 294, "Input": "A\n1", "ExpectedOutput": "A\n", "ProblemId": 75, "isHidden": true, "Order": 3 },
+      { "Id": 295, "Input": "AB\n2", "ExpectedOutput": "AB\n", "ProblemId": 75, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 76, "Title": "União de Vetores Ordenados", "Description": "Dados dois vetores de inteiros, `v1` e `v2`, ordenados em ordem crescente, retorne um novo vetor que seja a união de `v1` e `v2`, também em ordem crescente e sem duplicatas.\n\n## Entrada\nDuas linhas. A primeira começa com N1, seguida por N1 inteiros ordenados. A segunda começa com N2, seguida por N2 inteiros ordenados. (0 <= N1, N2 <= 1000).\n\n## Saída\nImprima os elementos do vetor de união, separados por espaço.", "Difficulty": "Fácil", "Category": "data_structure", "TestCases": [
+      { "Id": 296, "Input": "4 1 3 5 7\n4 2 4 6 8", "ExpectedOutput": "1 2 3 4 5 6 7 8\n", "ProblemId": 76, "isHidden": false, "Order": 1 },
+      { "Id": 297, "Input": "3 1 2 2\n2 2 3", "ExpectedOutput": "1 2 3\n", "ProblemId": 76, "isHidden": false, "Order": 2 },
+      { "Id": 298, "Input": "3 1 1 1\n0", "ExpectedOutput": "1\n", "ProblemId": 76, "isHidden": true, "Order": 3 },
+      { "Id": 299, "Input": "0\n0", "ExpectedOutput": "\n", "ProblemId": 76, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 77, "Title": "Letras Faltando", "Description": "Você recebe uma string contendo 25 letras minúsculas distintas do alfabeto inglês ('a'-'z'). Sua tarefa é encontrar a letra que falta.\n\n## Entrada\nUma única string com 25 caracteres.\n\n## Saída\nImprima a letra que falta.", "Difficulty": "Fácil", "Category": "strings", "TestCases": [
+      { "Id": 300, "Input": "abcdefghijklmnopqrstuvwxy", "ExpectedOutput": "z\n", "ProblemId": 77, "isHidden": false, "Order": 1 },
+      { "Id": 301, "Input": "abcdfghijklmnopqrstuvwxyz", "ExpectedOutput": "e\n", "ProblemId": 77, "isHidden": false, "Order": 2 },
+      { "Id": 302, "Input": "abcdefghijklmopqrstuvwxyz", "ExpectedOutput": "n\n", "ProblemId": 77, "isHidden": true, "Order": 3 },
+      { "Id": 316, "Input": "bcdefghijklmnopqrstuvwxyza", "ExpectedOutput": "\n", "ProblemId": 77, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 78, "Title": "Multiplicação de Matrizes", "Description": "Dadas duas matrizes A (de dimensão m x n) e B (de dimensão n x p), calcule a matriz produto C = A * B (de dimensão m x p).\n\n## Entrada\nA primeira linha contém m e n. As próximas m linhas contêm a matriz A. A linha seguinte contém n e p. As próximas n linhas contêm a matriz B.\n\n## Saída\nImprima a matriz resultante C, com elementos de cada linha separados por um espaço.", "Difficulty": "Médio", "Category": "data_structure", "TestCases": [
+      { "Id": 303, "Input": "2 3\n1 2 3\n4 5 6\n3 2\n7 8\n9 10\n11 12", "ExpectedOutput": "58 64 \n139 154 \n", "ProblemId": 78, "isHidden": false, "Order": 1 },
+      { "Id": 304, "Input": "2 2\n1 0\n0 1\n2 2\n5 6\n7 8", "ExpectedOutput": "5 6 \n7 8 \n", "ProblemId": 78, "isHidden": false, "Order": 2 },
+      { "Id": 317, "Input": "1 3\n1 2 3\n3 1\n4\n5\n6", "ExpectedOutput": "32 \n", "ProblemId": 78, "isHidden": true, "Order": 3 },
+      { "Id": 318, "Input": "1 1\n5\n1 1\n10", "ExpectedOutput": "50 \n", "ProblemId": 78, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 79, "Title": "Remover N-ésimo Nó do Final da Lista", "Description": "Dado um vetor e um inteiro n, remova o n-ésimo elemento do final do vetor e retorne o vetor modificado. (Simulando uma lista ligada).\n\n## Entrada\nA primeira linha contém N, o tamanho do vetor, e K, o n-ésimo nó a ser removido. A segunda linha contém N inteiros.\n\n## Saída\nImprima o vetor modificado com elementos separados por espaço.", "Difficulty": "Fácil", "Category": "data_structure", "TestCases": [
+      { "Id": 305, "Input": "5 2\n1 2 3 4 5", "ExpectedOutput": "1 2 3 5\n", "ProblemId": 79, "isHidden": false, "Order": 1 },
+      { "Id": 306, "Input": "1 1\n1", "ExpectedOutput": "\n", "ProblemId": 79, "isHidden": false, "Order": 2 },
+      { "Id": 307, "Input": "2 1\n1 2", "ExpectedOutput": "1\n", "ProblemId": 79, "isHidden": true, "Order": 3 },
+      { "Id": 319, "Input": "5 5\n1 2 3 4 5", "ExpectedOutput": "2 3 4 5\n", "ProblemId": 79, "isHidden": true, "Order": 4 }
+    ]
+  },
+  {
+    "Id": 80, "Title": "Rotação de Imagem", "Description": "Você recebe uma matriz n x n representando uma imagem. Rotacione a imagem em 90 graus no sentido horário.\n\n## Entrada\nA primeira linha contém N (1 <= N <= 20). As próximas N linhas contêm a matriz.\n\n## Saída\nImprima a matriz rotacionada.", "Difficulty": "Médio", "Category": "data_structure", "TestCases": [
+      { "Id": 308, "Input": "3\n1 2 3\n4 5 6\n7 8 9", "ExpectedOutput": "7 4 1 \n8 5 2 \n9 6 3 \n", "ProblemId": 80, "isHidden": false, "Order": 1 },
+      { "Id": 309, "Input": "4\n5 1 9 11\n2 4 8 10\n13 3 6 7\n15 14 12 16", "ExpectedOutput": "15 13 2 5 \n14 3 4 1 \n12 6 8 9 \n16 7 10 11 \n", "ProblemId": 80, "isHidden": false, "Order": 2 },
+      { "Id": 320, "Input": "1\n100", "ExpectedOutput": "100 \n", "ProblemId": 80, "isHidden": true, "Order": 3 },
+      { "Id": 321, "Input": "2\n1 2\n3 4", "ExpectedOutput": "3 1 \n4 2 \n", "ProblemId": 80, "isHidden": true, "Order": 4 }
+    ]
+  }
+]

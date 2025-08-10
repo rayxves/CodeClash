@@ -1,0 +1,80 @@
+using Data;
+using Dtos;
+using Interfaces;
+using Mappers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Models;
+
+namespace Services
+{
+    public class UserServices : IUserInterface
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly TokenServices _tokenServices;
+
+        public UserServices(ApplicationDbContext context, UserManager<User> userManager, TokenServices tokenServices)
+        {
+            _userManager = userManager;
+            _context = context;
+            _tokenServices = tokenServices;
+        }
+
+        public async Task<UserDto> GetUserByUsernameAsync(string username)
+        {
+            var user = await _context.Users.Where(u => u.UserName == username)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new InvalidOperationException($"User with username '{username}' not found.");
+            }
+
+            return user.ToUserDto();
+        }
+
+        public async Task<UserDto> LoginUserAsync(UserLoginDto loginDto)
+        {
+            var user = await _userManager.Users
+                 .FirstOrDefaultAsync(x => x.UserName == loginDto.UserName);
+
+            if (user == null)
+                throw new InvalidOperationException("Usuário não encontrado.");
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            if (!passwordValid)
+                throw new InvalidOperationException("Senha inválida.");
+
+            var token = _tokenServices.GenerateToken(user);
+
+            return user.ToUserDto();
+        }
+
+        public async Task<UserDto> RegisterUserAsync(UserRegisterDto registerDto)
+        {
+            var userExists = await _userManager.FindByNameAsync(registerDto.UserName);
+            if (userExists != null)
+                throw new InvalidOperationException("Nome de usuário já existe.");
+
+            var user = new User
+            {
+                UserName = registerDto.UserName,
+                Email = registerDto.Email,
+                TotalPoints = 0
+            };
+
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            if (!result.Succeeded)
+                throw new InvalidOperationException("Erro ao tentar criar o usuário.");
+
+            await _context.SaveChangesAsync();
+            var token = _tokenServices.GenerateToken(user);
+            user.Token = token;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return user.ToUserDto();
+        }
+    }
+}

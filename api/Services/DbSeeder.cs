@@ -20,8 +20,6 @@ public static class DbSeeder
 
     public static async Task SeedDatabaseAsync(ApplicationDbContext context)
     {
-       
-
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var filePath = Path.Combine(baseDir, "code.json");
         var jsonData = await File.ReadAllTextAsync(filePath);
@@ -30,24 +28,40 @@ public static class DbSeeder
         var seedData = JsonSerializer.Deserialize<List<CodeReferenceSeedDto>>(jsonData, options);
 
         if (seedData == null || !seedData.Any())
-        {
             return;
-        }
 
         await using var transaction = await context.Database.BeginTransactionAsync();
+
         try
         {
-            var categories = seedData.GroupBy(s => s.Category);
+            // Agrupa por categoria + linguagem
+            var categories = seedData.GroupBy(s => new { s.Category, s.Language });
 
             foreach (var group in categories)
             {
+                var parents = group.Where(item => item.ParentId == null).ToList();
 
-                var parentDto = group.Single(item => item.ParentId == null);
-                if (await context.CodeReferences.AnyAsync(c => c.Category == parentDto.Category && c.Language == parentDto.Language))
+                if (parents.Count == 0)
                 {
-                    return;
+                    Console.WriteLine($"Nenhum pai encontrado para Categoria='{group.Key.Category}', Linguagem='{group.Key.Language}'");
+                    continue;
                 }
 
+                if (parents.Count > 1)
+                {
+                    Console.WriteLine($"⚠ Mais de um pai encontrado para Categoria='{group.Key.Category}', Linguagem='{group.Key.Language}'");
+                }
+
+                var parentDto = parents.First();
+
+                // Se já existe um pai igual no banco, pula
+                if (await context.CodeReferences
+                    .AnyAsync(c => c.Category == parentDto.Category && c.Language == parentDto.Language))
+                {
+                    continue;
+                }
+
+                // Salva o pai primeiro para obter o Id
                 var parentEntity = new CodeReferenceEntity
                 {
                     Name = parentDto.Name,
@@ -59,9 +73,9 @@ public static class DbSeeder
                 };
 
                 context.CodeReferences.Add(parentEntity);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync(); // Agora parentEntity.Id está preenchido
 
-
+                // Cria e salva filhos com ParentId correto
                 var childrenEntities = group
                     .Where(item => item.ParentId != null)
                     .Select(childDto => new CodeReferenceEntity
@@ -72,12 +86,15 @@ public static class DbSeeder
                         Code = childDto.Code,
                         Description = childDto.Description,
                         ParentId = parentEntity.Id
-                    }).ToList();
+                    })
+                    .ToList();
 
-                await context.CodeReferences.AddRangeAsync(childrenEntities);
+                if (childrenEntities.Any())
+                {
+                    await context.CodeReferences.AddRangeAsync(childrenEntities);
+                    await context.SaveChangesAsync();
+                }
             }
-
-            await context.SaveChangesAsync();
 
             await transaction.CommitAsync();
         }
@@ -88,4 +105,37 @@ public static class DbSeeder
             throw;
         }
     }
+
+
+    public static async Task SeedProblemsAsync(ApplicationDbContext context)
+    {
+
+
+        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        var filePath = Path.Combine(baseDir, "problems.json");
+        var jsonData = await File.ReadAllTextAsync(filePath);
+
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var seedData = JsonSerializer.Deserialize<List<Problem>>(jsonData, options);
+
+        if (seedData == null || !seedData.Any())
+        {
+            return;
+        }
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            await context.Problems.AddRangeAsync(seedData);
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            Console.WriteLine($"An error occurred during problems seeding: {ex.Message}");
+            throw;
+        }
+    }
+
 }
