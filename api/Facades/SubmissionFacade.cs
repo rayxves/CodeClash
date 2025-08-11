@@ -12,9 +12,10 @@ public class SubmissionFacade
     private readonly ISubmissionHandler _submissionChain;
     private readonly IProblemServices _problemRepository;
     private readonly SubmissionDirector _submissionDirector;
-
-    public SubmissionFacade(IJudge0Services judge0Service, IProblemServices problemRepository, ISubmissionBuilder submissionBuilder)
+    private readonly ICodeFormatterServices _codeFormatterService;
+    public SubmissionFacade(IJudge0Services judge0Service, IProblemServices problemRepository, ISubmissionBuilder submissionBuilder, ICodeFormatterServices codeFormatterService)
     {
+        _codeFormatterService = codeFormatterService;
         _problemRepository = problemRepository;
         _submissionChain = SubmissionChainFactory.Create(judge0Service);
         _submissionDirector = new SubmissionDirector(submissionBuilder);
@@ -28,14 +29,15 @@ public class SubmissionFacade
         {
             throw new InvalidOperationException("Linguagem de programação inválida ou não suportada.");
         }
+        var codeFormatted = _codeFormatterService.Format(sourceCode);
 
         if (problemId.HasValue)
         {
-            return await HandleProblemSubmissionAsync(sourceCode, language, problemId.Value);
+            return await HandleProblemSubmissionAsync(codeFormatted, language, problemId.Value);
         }
         else
         {
-            return await HandleSimpleExecutionAsync(sourceCode, language);
+            return await HandleSimpleExecutionAsync(codeFormatted, language);
         }
     }
 

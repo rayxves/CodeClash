@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Interfaces;
 
 namespace Services.Extensions
@@ -6,8 +7,14 @@ namespace Services.Extensions
     {
         public string Format(string sourceCode)
         {
-           
-            return sourceCode.Trim();
+            if (string.IsNullOrEmpty(sourceCode))
+            {
+                return string.Empty;
+            }
+            string normalizedCode = Regex.Replace(sourceCode, @"\r\n", "\n");
+            string trimmedCode = normalizedCode.Trim();
+
+            return trimmedCode;
         }
     }
 }
