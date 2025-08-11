@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace Services;
 
-public class Judge0Client : IJudge0Interface
+public class Judge0Client : IJudge0Services
 {
     private readonly HttpClient _httpClient;
     private readonly Judge0Settings _settings;
@@ -40,6 +40,7 @@ public class Judge0Client : IJudge0Interface
                 source_code = Base64Encode(request.Code),
                 language_id = request.LanguageId,
                 stdin = Base64Encode(request.Input ?? string.Empty),
+                expected_output = Base64Encode(request.ExpectedOutput ?? string.Empty),
                 base64_encoded = true
             };
 

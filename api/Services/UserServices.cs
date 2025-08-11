@@ -8,7 +8,7 @@ using Models;
 
 namespace Services
 {
-    public class UserServices : IUserInterface
+    public class UserServices : IUserServices
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;

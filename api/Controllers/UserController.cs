@@ -10,9 +10,9 @@ namespace Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserInterface _userInterface;
+        private readonly IUserServices _userInterface;
 
-        public UserController(IUserInterface userInterface)
+        public UserController(IUserServices userInterface)
         {
             _userInterface = userInterface;
         }

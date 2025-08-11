@@ -1,7 +1,8 @@
 using System.Text;
-using Composites;
+using Builders;
 using Data;
 using Dtos;
+using Facades;
 using Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -99,13 +100,14 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddHttpClient();
 
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
-builder.Services.AddScoped<IJudge0Interface, Judge0Client>();
-builder.Services.AddScoped<CodeSubmissionFacade>();
-builder.Services.AddScoped<ICodeReferenceInterface, CodeReferenceService>();
-builder.Services.AddScoped<IProblemInterface, ProblemServices>();
-builder.Services.AddScoped<IUserInterface, UserServices>();
+builder.Services.AddScoped<IJudge0Services, Judge0Client>();
+builder.Services.AddScoped<SubmissionFacade>();
+builder.Services.AddScoped<ICodeReferenceServices, CodeReferenceService>();
+builder.Services.AddScoped<IProblemServices, ProblemServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<TokenServices>();
-builder.Services.AddScoped<IUserProblemSolutionInterface, UserProblemSolutionServices>();
+builder.Services.AddScoped<IUserProblemSolutionServices, UserProblemSolutionServices>();
+builder.Services.AddScoped<ISubmissionBuilder, SubmissionBuilder>();
 
 
 var app = builder.Build();

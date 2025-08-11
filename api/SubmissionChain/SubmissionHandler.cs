@@ -1,10 +1,10 @@
-using Models;
+using Dtos;
 
-namespace Validators;
+namespace SubmissionChain;
 
-public abstract class SubmissionHandlerBase : ISubmissionHandler
+public abstract class SubmissionHandler : ISubmissionHandler
 {
-    private ISubmissionHandler _next;
+    private ISubmissionHandler? _next;
 
     public ISubmissionHandler SetNext(ISubmissionHandler next)
     {

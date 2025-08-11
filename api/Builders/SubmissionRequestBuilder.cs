@@ -1,43 +1,56 @@
-using Models;
 namespace Builders;
-public class SubmissionRequestBuilder : ISubmissionRequestBuilder
+
+public class SubmissionBuilder : ISubmissionBuilder
 {
-    private readonly SubmissionRequest _request = new();
+    private string _code = string.Empty;
+    private string _languageName = string.Empty;
+    private int _languageId;
+    private string? _input;
+    private string? _expectedOutput;
 
-    public ISubmissionRequestBuilder WithCode(string code)
+    public SubmissionBuilder()
     {
-        _request.Code = code ?? throw new ArgumentNullException(nameof(code));
+        Reset();
+    }
+
+    public void Reset()
+    {
+        _code = string.Empty;
+        _languageName = string.Empty;
+        _languageId = 0;
+        _input = null;
+        _expectedOutput = null;
+    }
+
+    public ISubmissionBuilder WithCode(string code)
+    {
+        _code = code;
         return this;
     }
 
-    public ISubmissionRequestBuilder WithInput(string input)
+    public ISubmissionBuilder WithLanguage(string name, int id)
     {
-        _request.Input = input ?? string.Empty;
+        _languageName = name;
+        _languageId = id;
         return this;
     }
 
-    public ISubmissionRequestBuilder WithLanguage(string language)
+    public ISubmissionBuilder WithInput(string? input)
     {
-        _request.Language = language ?? throw new ArgumentNullException(nameof(language));
+        _input = input;
         return this;
     }
 
-    public ISubmissionRequestBuilder WithLanguageId(int languageId)
+    public ISubmissionBuilder WithExpectedOutput(string? expectedOutput)
     {
-        if (languageId <= 0)
-            throw new ArgumentOutOfRangeException(nameof(languageId));
-        _request.LanguageId = languageId;
+        _expectedOutput = expectedOutput;
         return this;
     }
 
     public SubmissionRequest Build()
     {
-        return new SubmissionRequest
-        {
-            Code = _request.Code,
-            Input = _request.Input,
-            Language = _request.Language,
-            LanguageId = _request.LanguageId
-        };
+        var request = new SubmissionRequest(_code, _languageName, _languageId, _input, _expectedOutput);
+        Reset();
+        return request;
     }
 }

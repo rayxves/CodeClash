@@ -2,7 +2,7 @@ using Models;
 
 namespace Interfaces
 {
-    public interface IProblemInterface
+    public interface IProblemServices
     {
         Task<List<Problem>> GetAllProblemsAsync();
         Task<List<Problem>> GetAllProblemsByFilterAsync(string? category, string? difficulty, string? description);

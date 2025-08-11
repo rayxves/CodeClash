@@ -1,9 +1,10 @@
+using Builders;
 using Dtos;
-using Models;
+
 
 namespace Interfaces;
 
-public interface IJudge0Interface
+public interface IJudge0Services
 {
      Task<Judge0Response> SubmitAsync(SubmissionRequest request);
 }

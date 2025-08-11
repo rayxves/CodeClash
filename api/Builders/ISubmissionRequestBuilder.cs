@@ -1,12 +1,11 @@
-using Models;
-
 namespace Builders;
 
-public interface ISubmissionRequestBuilder
+public interface ISubmissionBuilder
 {
-    ISubmissionRequestBuilder WithCode(string code);
-    ISubmissionRequestBuilder WithInput(string input);
-    ISubmissionRequestBuilder WithLanguage(string language);
-    ISubmissionRequestBuilder WithLanguageId(int languageId);
+    ISubmissionBuilder WithCode(string code);
+    ISubmissionBuilder WithLanguage(string name, int id);
+    ISubmissionBuilder WithInput(string? input);
+    ISubmissionBuilder WithExpectedOutput(string? expectedOutput);
     SubmissionRequest Build();
+    void Reset();
 }

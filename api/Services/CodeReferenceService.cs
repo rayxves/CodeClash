@@ -1,14 +1,13 @@
 using Composites;
-using Models;
-using Microsoft.EntityFrameworkCore;
-using Interfaces;
-using Services.Extensions;
 using Data;
-using System.Text.RegularExpressions;
+using Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Models;
+using Services.Extensions;
 
 namespace Services;
 
-public class CodeReferenceService : ICodeReferenceInterface
+public class CodeReferenceService : ICodeReferenceServices
 {
     private readonly ApplicationDbContext _context;
 
@@ -17,209 +16,106 @@ public class CodeReferenceService : ICodeReferenceInterface
         _context = context;
     }
 
-    private async Task<CodeReference> BuildNodeAsync(CodeReferenceEntity entity, List<CodeReferenceEntity> allEntities, bool useComposite = false)
+    public async Task<CodeReferenceEntity> AddReferenceAsync(string name, string category, string language, string code, string description, int? parentId)
     {
-        if (!useComposite)
+        var newEntity = new CodeReferenceEntity
         {
-            return new CodeReference
-            {
-                Name = entity.Name,
-                Category = entity.Category,
-                Language = entity.Language,
-                Code = entity.Code,
-                Description = entity.Description
-            };
-        }
-
-        var composite = new CodeReferenceComposite
-        {
-            Name = entity.Name,
-            Category = entity.Category,
-            Language = entity.Language,
-            Code = entity.Code,
-            Description = entity.Description
+            Name = name,
+            Category = category,
+            Language = language,
+            Code = code,
+            Description = description,
+            ParentId = parentId
         };
 
-        var children = allEntities.Where(e => e.ParentId == entity.Id).ToList();
-        foreach (var child in children)
+        _context.CodeReferences.Add(newEntity);
+        await _context.SaveChangesAsync();
+
+        return newEntity;
+    }
+
+    public async Task<IEnumerable<object>> SearchAsync(string? language = null, string? category = null, string? name = null)
+    {
+        var query = _context.CodeReferences.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(language))
         {
-            composite.AddChild(await BuildNodeAsync(child, allEntities, useComposite: true)); // Recursão com composite
+            query = query.Where(e => e.Language.Equals(language, StringComparison.OrdinalIgnoreCase));
+        }
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            query = query.Where(e => e.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
+        }
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            var lowerName = name.ToLower().Trim();
+            query = query.Where(e => e.Name.ToLower().Contains(lowerName));
         }
 
-        return composite.Children.Any() ? composite : new CodeReference
-        {
-            Name = entity.Name,
-            Category = entity.Category,
-            Language = entity.Language,
-            Code = entity.Code,
-            Description = entity.Description
-        };
+        return await query
+            .Select(e => new { e.Name, e.Category, e.Language, e.Code, e.Description })
+            .ToListAsync();
     }
 
-    public async Task<CodeReference> BuildCompositeTreeAsync(int? rootId = null)
+    public async Task<IEnumerable<object>> RecommendSimilarAsync(string userCodeAttempt, int take = 5)
     {
-        var allEntities = await _context.CodeReferences.ToListAsync();
-        var rootEntity = rootId == null
-            ? allEntities.FirstOrDefault(e => e.ParentId == null)
-            : allEntities.FirstOrDefault(e => e.Id == rootId);
+        var userConcepts = userCodeAttempt.ExtractCodeConcepts();
 
-        if (rootEntity == null) return null;
-
-        return await BuildNodeAsync(rootEntity, allEntities, useComposite: true); // Usando composite
-    }
-
-    public async Task<List<CodeReference>> BuildCompositeForestAsync()
-    {
-        var allEntities = await _context.CodeReferences.ToListAsync();
-        var rootEntities = allEntities.Where(e => e.ParentId == null).ToList();
-
-        var forest = new List<CodeReference>();
-        foreach (var rootEntity in rootEntities)
+        if (!userConcepts.Any())
         {
-            forest.Add(await BuildNodeAsync(rootEntity, allEntities, useComposite: true)); // Usando composite
+            return Enumerable.Empty<object>();
         }
 
-        return forest;
-    }
-
-    public async Task<IEnumerable<object>> GetByLanguageAsync(string language)
-    {
-        if (string.IsNullOrWhiteSpace(language)) return Enumerable.Empty<object>();
-
-        var normalizedQuery = CodeAnalysisService.NormalizeCategory(language);
-        var roots = await BuildCompositeForestAsync();
-        var allMatches = new List<CodeReference>();
-
-        foreach (var root in roots)
-        {
-            allMatches.AddRange(root.Flatten().Where(reference =>
-                CodeAnalysisService.NormalizeCategory(reference.Language).Contains(normalizedQuery)
-            ));
-        }
-
-        return allMatches.Select(match =>
-            match is CodeReferenceComposite composite
-                ? composite.ToCardWithChildren()
-                : match.ToCardModel()
-        );
-    }
-
-    public async Task<IEnumerable<object>> GetByCategoryAsync(string category)
-    {
-        if (string.IsNullOrWhiteSpace(category)) return Enumerable.Empty<object>();
-
-        var normalizedQuery = CodeAnalysisService.NormalizeCategory(category);
-        var roots = await BuildCompositeForestAsync();
-        var allMatches = new List<CodeReference>();
-
-        foreach (var root in roots)
-        {
-            allMatches.AddRange(root.Flatten().Where(reference =>
-                CodeAnalysisService.NormalizeCategory(reference.Category).Contains(normalizedQuery)
-            ));
-        }
-
-        return allMatches.Select(match =>
-            match is CodeReferenceComposite composite
-                ? composite.ToCardWithChildren()
-                : match.ToCardModel()
-        );
-    }
-
-    public async Task<IEnumerable<object>> SearchByNameAsync(string name)
-    {
-        var searchTerm = name.ToLower();
-
-        var normalizedSearchTerm = Regex.Replace(searchTerm, @"[^a-zA-Z0-9]", "");
-
-        var query = _context.CodeReferences
-            .Where(e =>
-                EF.Functions.Like(e.Name.ToLower(), $"%{searchTerm}%") ||
-                EF.Functions.Like(e.Name.ToLower(), $"%_{searchTerm}%") ||
-                EF.Functions.Like(e.Name.ToLower(), $"%{searchTerm}_%"));
-
-            var results = await query.ToListAsync();
-
-            return results
-                .Where(e => Regex.Replace(e.Name, @"[^a-zA-Z0-9]", "").Contains(normalizedSearchTerm, StringComparison.OrdinalIgnoreCase))
-                .Select(e => e.ToCardModel())
-                .ToList();
-    }
-
-    public async Task<IEnumerable<object>> GetByLanguageAndCategoryAsync(string language, string category)
-    {
-        if (string.IsNullOrWhiteSpace(language) || string.IsNullOrWhiteSpace(category)) return Enumerable.Empty<object>();
-
-        var normalizedLang = CodeAnalysisService.NormalizeCategory(language);
-        var normalizedCategory = CodeAnalysisService.NormalizeCategory(category);
-
-        var roots = await BuildCompositeForestAsync();
-        var allMatches = new List<CodeReference>();
-
-        foreach (var root in roots)
-        {
-            allMatches.AddRange(root.Flatten().Where(reference =>
-                CodeAnalysisService.NormalizeCategory(reference.Language).Contains(normalizedLang) &&
-                CodeAnalysisService.NormalizeCategory(reference.Category).Contains(normalizedCategory)
-            ));
-        }
-
-        return allMatches.Select(match =>
-            match is CodeReferenceComposite composite
-                ? composite.ToCardWithChildren()
-                : match.ToCardModel()
-        );
-    }
-
-    public async Task<IEnumerable<object>> GetByLanguageAndNameAsync(string language, string name)
-    {
-        var lowerName = name.ToLower();
-        var lowerLanguage = language.ToLower();
-
-        var matchingEntities = await _context.CodeReferences
-            .Where(e => e.Language.ToLower() == lowerLanguage &&
-                        lowerName.Contains(e.Name.ToLower()))
+        var potentialMatches = await _context.CodeReferences
+            .Where(e => !string.IsNullOrEmpty(e.Code) && userConcepts.Any(kw => e.Name.Contains(kw) || e.Code.Contains(kw)))
+            .Take(50)
             .ToListAsync();
 
-        return matchingEntities.Select(e => e.ToCardModel());
+        var topMatches = potentialMatches.GetTopMatches(userConcepts, take);
+
+        return topMatches.Select(e => new { e.Name, e.Category, e.Language, e.Code, e.Description });
     }
 
-
-    public async Task<IEnumerable<object>> RecommendSimilarAsync(string userCodeAttempt)
+    public async Task<CodeComponent?> BuildTreeForLanguageAsync(string language)
     {
-        var userKeywords = userCodeAttempt.ExtractCodeConcepts();
-        if (!userKeywords.Any()) return Enumerable.Empty<object>();
+        var allLanguageEntities = await _context.CodeReferences
+            .Where(e => e.Language.Equals(language, StringComparison.OrdinalIgnoreCase))
+            .ToListAsync();
 
-        var allEntities = await _context.CodeReferences.ToListAsync();
-        var topMatches = allEntities.GetTopMatches(userKeywords);
+        if (!allLanguageEntities.Any()) return null;
 
-        var results = new List<object>();
-        foreach (var entity in topMatches)
+        var rootEntity = allLanguageEntities.FirstOrDefault(e => e.ParentId == null);
+        if (rootEntity == null) return null;
+
+        var componentMap = allLanguageEntities.ToDictionary(
+            e => e.Id,
+            e => string.IsNullOrEmpty(e.Code) ? (CodeComponent)new CodeCategory(e) : new CodeAlgorithm(e)
+        );
+
+        foreach (var entity in allLanguageEntities)
         {
-            var node = await BuildNodeAsync(entity, allEntities, useComposite: true); // Usando composite
-            results.Add(node is CodeReferenceComposite composite
-                ? composite.ToCardWithChildren()
-                : node.ToCardModel());
+            if (entity.ParentId.HasValue && componentMap.TryGetValue(entity.ParentId.Value, out var parent))
+            {
+                parent.Add(componentMap[entity.Id]);
+            }
         }
 
-        return results;
+        return componentMap[rootEntity.Id];
     }
 
-    public async Task<IEnumerable<object>> GetFlattenedReferencesAsync(string? language = null, string? category = null, string? name = null, int? maxDepth = null)
+    public async Task<object> GetByIdAsync(int id)
     {
-        var roots = await BuildCompositeForestAsync();
-        var flattened = roots.SelectMany(root => root.Flatten(category: category, name: name, maxDepth: maxDepth));
+        var entity = await _context.CodeReferences
+            .Where(e => e.Id == id)
+            .Select(e => new { e.Name, e.Category, e.Language, e.Code, e.Description })
+            .FirstOrDefaultAsync();
 
-        return flattened.Select(reference =>
-            reference is CodeReferenceComposite composite
-                ? composite.ToCardWithChildren()
-                : reference.ToCardModel()
-        );
+        if (entity == null)
+        {
+            throw new KeyNotFoundException($"Code reference with ID '{id}' not found.");
+        }
+
+        return entity;
     }
 
-    public async Task<int> GetReferencesDepthAsync(string? category = null, string? name = null)
-    {
-        var roots = await BuildCompositeForestAsync();
-        return roots.Max(root => root.GetDepth(category, name));
-    }
 }

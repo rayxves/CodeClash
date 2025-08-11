@@ -6,7 +6,7 @@ using Models;
 
 namespace Services
 {
-    public class UserProblemSolutionServices : IUserProblemSolutionInterface
+    public class UserProblemSolutionServices : IUserProblemSolutionServices
     {
         private readonly ApplicationDbContext _context;
 
@@ -53,7 +53,7 @@ namespace Services
                 throw new InvalidOperationException($"UserProblemSolution with ID '{id}' not found.");
             }
             _context.UserProblemSolutions.Remove(solution);
-            return await _context.SaveChangesAsync().ContinueWith(t => t.Result > 0); 
+            return await _context.SaveChangesAsync().ContinueWith(t => t.Result > 0);
         }
 
         public async Task<List<UserProblemSolution>> GetAllUserProblemSolutionsAsync(string userId)

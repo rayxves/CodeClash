@@ -2,12 +2,13 @@ using System.Text.Json;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Composites; 
 
 namespace Services;
 
 public static class DbSeeder
 {
-    private class CodeReferenceSeedDto
+    public class CodeReferenceSeedDto
     {
         public int Id { get; set; }
         public int? ParentId { get; set; }
@@ -20,108 +21,110 @@ public static class DbSeeder
 
     public static async Task SeedDatabaseAsync(ApplicationDbContext context)
     {
+        if (await context.CodeReferences.AnyAsync())
+        {
+            Console.WriteLine("O banco de dados já contém dados. Seeding ignorado.");
+            return;
+        }
+
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var filePath = Path.Combine(baseDir, "code.json");
         var jsonData = await File.ReadAllTextAsync(filePath);
-
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var seedData = JsonSerializer.Deserialize<List<CodeReferenceSeedDto>>(jsonData, options);
 
-        if (seedData == null || !seedData.Any())
-            return;
+        if (seedData == null || !seedData.Any()) return;
 
-        await using var transaction = await context.Database.BeginTransactionAsync();
 
-        try
+        var componentMap = new Dictionary<int, (CodeComponent component, int? parentId)>();
+        var rootComponents = new List<CodeComponent>();
+
+        foreach (var dto in seedData)
         {
-            // Agrupa por categoria + linguagem
-            var categories = seedData.GroupBy(s => new { s.Category, s.Language });
+            CodeComponent component = string.IsNullOrEmpty(dto.Code)
+                ? new CodeCategory(dto) 
+                : new CodeAlgorithm(dto); 
 
-            foreach (var group in categories)
+            componentMap.Add(dto.Id, (component, dto.ParentId));
+        }
+
+        foreach (var (id, (component, parentId)) in componentMap)
+        {
+            if (parentId.HasValue)
             {
-                var parents = group.Where(item => item.ParentId == null).ToList();
-
-                if (parents.Count == 0)
+                if (componentMap.TryGetValue(parentId.Value, out var parentTuple))
                 {
-                    Console.WriteLine($"Nenhum pai encontrado para Categoria='{group.Key.Category}', Linguagem='{group.Key.Language}'");
-                    continue;
-                }
-
-                if (parents.Count > 1)
-                {
-                    Console.WriteLine($"⚠ Mais de um pai encontrado para Categoria='{group.Key.Category}', Linguagem='{group.Key.Language}'");
-                }
-
-                var parentDto = parents.First();
-
-                // Se já existe um pai igual no banco, pula
-                if (await context.CodeReferences
-                    .AnyAsync(c => c.Category == parentDto.Category && c.Language == parentDto.Language))
-                {
-                    continue;
-                }
-
-                // Salva o pai primeiro para obter o Id
-                var parentEntity = new CodeReferenceEntity
-                {
-                    Name = parentDto.Name,
-                    Category = parentDto.Category,
-                    Language = parentDto.Language,
-                    Code = parentDto.Code,
-                    Description = parentDto.Description,
-                    ParentId = null
-                };
-
-                context.CodeReferences.Add(parentEntity);
-                await context.SaveChangesAsync(); // Agora parentEntity.Id está preenchido
-
-                // Cria e salva filhos com ParentId correto
-                var childrenEntities = group
-                    .Where(item => item.ParentId != null)
-                    .Select(childDto => new CodeReferenceEntity
-                    {
-                        Name = childDto.Name,
-                        Category = childDto.Category,
-                        Language = childDto.Language,
-                        Code = childDto.Code,
-                        Description = childDto.Description,
-                        ParentId = parentEntity.Id
-                    })
-                    .ToList();
-
-                if (childrenEntities.Any())
-                {
-                    await context.CodeReferences.AddRangeAsync(childrenEntities);
-                    await context.SaveChangesAsync();
+                    parentTuple.component.Add(component);
                 }
             }
+            else
+            {
+                rootComponents.Add(component);
+            }
+        }
 
+        var topLevelEntities = rootComponents.Select(ConvertToEntity).ToList();
+
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            await context.CodeReferences.AddRangeAsync(topLevelEntities);
+            await context.SaveChangesAsync();
             await transaction.CommitAsync();
+            Console.WriteLine("✅ Seeding concluído com sucesso.");
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            Console.WriteLine($"An error occurred during database seeding: {ex.Message}");
+            Console.WriteLine($"❌ Ocorreu um erro durante o seeding: {ex.Message}");
             throw;
         }
     }
 
+    private static CodeReferenceEntity ConvertToEntity(CodeComponent component)
+    {
+        var entity = new CodeReferenceEntity
+        {
+            Name = component.Name,
+            Category = component.Category,
+            Language = component.Language,
+            Description = component.Description,
+        };
+
+        if (component is CodeAlgorithm algorithm)
+        {
+            entity.Code = algorithm.Code;
+        }
+        else if (component is CodeCategory)
+        {
+            entity.Children = component.GetChildren().Select(ConvertToEntity).ToList();
+        }
+
+        return entity;
+    }
 
     public static async Task SeedProblemsAsync(ApplicationDbContext context)
     {
-
+        if (await context.Problems.AnyAsync())
+        {
+            Console.WriteLine("O banco de dados já contém problemas. O seeding foi ignorado.");
+            return;
+        }
 
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var filePath = Path.Combine(baseDir, "problems.json");
-        var jsonData = await File.ReadAllTextAsync(filePath);
 
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"Arquivo de seed não encontrado em: {filePath}");
+            return;
+        }
+
+        var jsonData = await File.ReadAllTextAsync(filePath);
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var seedData = JsonSerializer.Deserialize<List<Problem>>(jsonData, options);
 
-        if (seedData == null || !seedData.Any())
-        {
-            return;
-        }
+        if (seedData == null || !seedData.Any()) return;
 
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -129,13 +132,13 @@ public static class DbSeeder
             await context.Problems.AddRangeAsync(seedData);
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+            Console.WriteLine("✅ Seeding de problemas concluído com sucesso.");
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            Console.WriteLine($"An error occurred during problems seeding: {ex.Message}");
+            Console.WriteLine($"❌ Ocorreu um erro durante o seeding de problemas: {ex.Message}");
             throw;
         }
     }
-
 }

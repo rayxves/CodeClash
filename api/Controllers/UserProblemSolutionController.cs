@@ -10,10 +10,10 @@ namespace Controllers
     [ApiController]
     public class UserProblemSolutionController : ControllerBase
     {
-        private readonly IUserProblemSolutionInterface _userProblemSolutionInterface;
+        private readonly IUserProblemSolutionServices _userProblemSolutionInterface;
         private readonly UserManager<User> _userManager;
 
-        public UserProblemSolutionController(IUserProblemSolutionInterface userProblemSolutionInterface,
+        public UserProblemSolutionController(IUserProblemSolutionServices userProblemSolutionInterface,
             UserManager<User> userManager)
         {
             _userManager = userManager;

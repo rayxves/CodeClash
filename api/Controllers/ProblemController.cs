@@ -5,15 +5,13 @@ using Models;
 
 namespace Controllers
 {
-
-
     [Route("api/problems")]
     [ApiController]
     public class ProblemController : ControllerBase
     {
-        private readonly IProblemInterface _problemInterface;
+        private readonly IProblemServices _problemInterface;
 
-        public ProblemController(IProblemInterface problemInterface)
+        public ProblemController(IProblemServices problemInterface)
         {
             _problemInterface = problemInterface;
         }
@@ -71,7 +69,7 @@ namespace Controllers
             }
         }
 
-    
+
 
     }
 }

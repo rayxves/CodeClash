@@ -2,7 +2,7 @@ using Models;
 
 namespace Interfaces
 {
-    public interface IUserProblemSolutionInterface
+    public interface IUserProblemSolutionServices
     {
         Task<UserProblemSolution> GetUserProblemSolutionAsync(string userId, int problemId);
         Task<List<UserProblemSolution>> GetAllUserProblemSolutionsAsync(string userId);

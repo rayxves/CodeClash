@@ -2,7 +2,7 @@ using Dtos;
 
 namespace Interfaces
 {
-    public interface IUserInterface
+    public interface IUserServices
     {
         Task<UserDto> RegisterUserAsync(UserRegisterDto registerDto);
         Task<UserDto> LoginUserAsync(UserLoginDto loginDto);

@@ -5,7 +5,7 @@ using Models;
 
 namespace Services
 {
-    public class ProblemServices : IProblemInterface
+    public class ProblemServices : IProblemServices
     {
         private readonly ApplicationDbContext _context;
         public ProblemServices(ApplicationDbContext context)

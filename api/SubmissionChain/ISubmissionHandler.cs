@@ -1,6 +1,7 @@
+using Dtos;
 using Models;
 
-namespace Validators;
+namespace SubmissionChain;
 
 public interface ISubmissionHandler
 {
