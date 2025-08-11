@@ -4,6 +4,10 @@ using Dtos;
 using Composites;
 using Services;
 using Facades;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Models;
 
 namespace Controllers;
 
@@ -13,19 +17,27 @@ public class CodeController : ControllerBase
 {
     private readonly ICodeReferenceServices _codeService;
     private readonly SubmissionFacade _submissionFacade;
+    private readonly UserManager<User> _userManager;
 
-    public CodeController(ICodeReferenceServices codeService, SubmissionFacade submissionFacade)
+    public CodeController(ICodeReferenceServices codeService, SubmissionFacade submissionFacade, UserManager<User> userManager)
     {
         _codeService = codeService;
         _submissionFacade = submissionFacade;
+        _userManager = userManager;
     }
 
+    [Authorize]
     [HttpPost("submit")]
     public async Task<ActionResult<Judge0Response>> SubmitDirect([FromBody] SubmissionRequestDto dto, int? problemId)
     {
         try
         {
-            var response = await _submissionFacade.SubmitCodeAsync(dto.Code, dto.Language, problemId.HasValue ? problemId : null);
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Usuário não autenticado.");
+            }
+            var response = await _submissionFacade.SubmitCodeAsync(dto.Code, dto.Language, problemId.HasValue ? problemId : null, userId);
             return Ok(response);
         }
         catch (Exception ex)
@@ -60,14 +72,30 @@ public class CodeController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string? language, [FromQuery] string? category, [FromQuery] string? name)
     {
-        var references = await _codeService.SearchAsync(language, category, name);
-        return Ok(references);
+        try
+        {
+            var references = await _codeService.SearchAsync(language, category, name);
+            return Ok(references);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+
     }
 
     [HttpPost("recommend-similar")]
     public async Task<IActionResult> RecommendSimilar([FromBody] RecommendSimilarDto dto)
     {
-        var recommendations = await _codeService.RecommendSimilarAsync(dto.UserCodeAttempt);
-        return Ok(recommendations);
+        try
+        {
+            var recommendations = await _codeService.RecommendSimilarAsync(dto.UserCodeAttempt);
+            return Ok(recommendations);
+        }
+        catch (Exception ex)
+        {
+
+            return BadRequest(new { error = ex.Message });
+        }
     }
 }

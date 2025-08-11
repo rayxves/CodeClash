@@ -1,8 +1,11 @@
 
 using Builders;
+using Data;
 using Dtos;
 using Interfaces;
+using Mappers;
 using Models;
+using Observers;
 using SubmissionChain;
 
 namespace Facades;
@@ -13,15 +16,21 @@ public class SubmissionFacade
     private readonly IProblemServices _problemRepository;
     private readonly SubmissionDirector _submissionDirector;
     private readonly ICodeFormatterServices _codeFormatterService;
-    public SubmissionFacade(IJudge0Services judge0Service, IProblemServices problemRepository, ISubmissionBuilder submissionBuilder, ICodeFormatterServices codeFormatterService)
+    private readonly ISubject _submissionPublisher;
+    private readonly IUserProblemSolutionServices _solutionService;
+    private readonly ApplicationDbContext _context;
+    public SubmissionFacade(IJudge0Services judge0Service, IProblemServices problemRepository, ISubmissionBuilder submissionBuilder, ICodeFormatterServices codeFormatterService, ISubject submissionPublisher, IUserProblemSolutionServices solutionService, ApplicationDbContext context)
     {
         _codeFormatterService = codeFormatterService;
         _problemRepository = problemRepository;
         _submissionChain = SubmissionChainFactory.Create(judge0Service);
         _submissionDirector = new SubmissionDirector(submissionBuilder);
+        _submissionPublisher = submissionPublisher;
+        _solutionService = solutionService;
+        _context = context;
     }
 
-    public async Task<Dtos.SubmissionResultDto> SubmitCodeAsync(string sourceCode, string languageName, int? problemId)
+    public async Task<Dtos.SubmissionResultDto> SubmitCodeAsync(string sourceCode, string languageName, int? problemId, string userId)
     {
         var language = Language.GetAll().FirstOrDefault(l => l.Name.Equals(languageName, StringComparison.OrdinalIgnoreCase) || l.Judge0Alias.Equals(languageName, StringComparison.OrdinalIgnoreCase));
 
@@ -33,7 +42,7 @@ public class SubmissionFacade
 
         if (problemId.HasValue)
         {
-            return await HandleProblemSubmissionAsync(codeFormatted, language, problemId.Value);
+            return await HandleProblemSubmissionAsync(codeFormatted, language, problemId.Value, userId);
         }
         else
         {
@@ -41,7 +50,7 @@ public class SubmissionFacade
         }
     }
 
-    private async Task<SubmissionResultDto> HandleProblemSubmissionAsync(string sourceCode, Language language, int problemId)
+    private async Task<SubmissionResultDto> HandleProblemSubmissionAsync(string sourceCode, Language language, int problemId, string userId)
     {
         var problem = await _problemRepository.GetProblemByIdAsync(problemId);
         if (problem?.TestCases == null || !problem.TestCases.Any())
@@ -49,7 +58,10 @@ public class SubmissionFacade
             throw new InvalidOperationException("Problema não encontrado ou não possui casos de teste.");
         }
 
+        var initialSolution = await _solutionService.CreateInitialSubmissionAsync(userId, problemId, language.Name, sourceCode);
+
         var results = new List<TestCaseResultDto>();
+        var finalResultDto = new SubmissionResultDto();
 
         foreach (var testCase in problem.TestCases)
         {
@@ -59,35 +71,52 @@ public class SubmissionFacade
 
             if (context.Response?.Status?.Description == "Compilation Error")
             {
-                return new SubmissionResultDto
-                {
-                    OverallStatus = "Compilation Error",
-                    CompilationError = context.Response.CompileOutput ?? context.Response.Stderr
-                };
+                initialSolution.MessageOutput = context.Response.CompileOutput ?? "Erro de compilação";
+                await _solutionService.UpdateUserProblemSolutionAsync(initialSolution.ToDto());
+
+                finalResultDto.OverallStatus = "Compilation Error";
+                finalResultDto.CompilationError = initialSolution.MessageOutput;
+                return finalResultDto;
             }
 
-            results.Add(new TestCaseResultDto
+            var testResult = new TestCaseResultDto
             {
                 TestCaseId = testCase.Id,
                 Status = context.Response?.Status?.Description ?? "Error",
                 Output = context.Response?.Stdout ?? context.Response?.Stderr ?? context.ErrorMessage ?? "",
                 Passed = context.Response?.Status?.Description == "Accepted"
-            });
+            };
+            results.Add(testResult);
         }
 
-        return new SubmissionResultDto
+        finalResultDto.TestResults = results;
+        finalResultDto.OverallStatus = results.All(r => r.Passed) ? "Accepted" : "Wrong Answer";
+
+        if (finalResultDto.OverallStatus == "Accepted")
         {
-            TestResults = results,
-            OverallStatus = results.All(r => r.Passed) ? "Accepted" : "Wrong Answer"
-        };
+            var successContext = new SubmissionSuccessContext
+            {
+                UserId = userId,
+                Problem = problem,
+                Solution = initialSolution,
+                ResultDto = finalResultDto
+            };
+            await _submissionPublisher.NotifyAsync(successContext);
+        }
+        else
+        {
+            initialSolution.MessageOutput = "Um ou mais testes falharam.";
+            await _solutionService.UpdateUserProblemSolutionAsync(initialSolution.ToDto());
+        }
+
+        await _context.SaveChangesAsync();
+
+        return finalResultDto;
     }
 
     private async Task<SubmissionResultDto> HandleSimpleExecutionAsync(string sourceCode, Language language)
     {
         var request = _submissionDirector.ConstructSimpleExecutionRequest(sourceCode, language);
-        Console.WriteLine($"Submitting code for execution: {request.Code}");
-        Console.WriteLine($"Submitting code for execution: {request.Input}");
-        Console.WriteLine($"Submitting code for execution: {request.ExpectedOutput}");
         var context = new SubmissionContext(request);
         await _submissionChain.HandleAsync(context);
 

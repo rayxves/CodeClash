@@ -15,6 +15,40 @@ namespace Services
             _context = context;
         }
 
+        public async Task<UserProblemSolution> CreateInitialSubmissionAsync(string userId, int problemId, string language, string code)
+        {
+            var existingSolution = await _context.UserProblemSolutions
+        .FirstOrDefaultAsync(s => s.UserId == userId && s.ProblemId == problemId);
+
+            if (existingSolution != null)
+            {
+                existingSolution.Code = code;
+                existingSolution.Language = language;
+                existingSolution.SolvedAt = DateTime.UtcNow;
+                existingSolution.IsApproved = false;
+                existingSolution.PointsEarned = 0;
+                _context.UserProblemSolutions.Update(existingSolution);
+                await _context.SaveChangesAsync();
+                return existingSolution;
+            }
+
+            var solution = new UserProblemSolution
+            {
+                UserId = userId,
+                ProblemId = problemId,
+                Language = language,
+                Code = code,
+                SolvedAt = DateTime.UtcNow,
+                IsApproved = false,
+                PointsEarned = 0,
+                MessageOutput = "Em processamento..."
+            };
+
+            _context.UserProblemSolutions.Add(solution);
+            await _context.SaveChangesAsync();
+            return solution;
+        }
+
         public async Task<UserProblemSolution> CreateUserProblemSolutionAsync(UserProblemSolutionDto userProblemSolution, string userId)
         {
             var user = await _context.Users.FindAsync(userId);

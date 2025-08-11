@@ -11,7 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Models;
 using Newtonsoft.Json;
+using Observers;
 using Services;
+using Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +110,11 @@ builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<IUserProblemSolutionServices, UserProblemSolutionServices>();
 builder.Services.AddScoped<ISubmissionBuilder, SubmissionBuilder>();
+builder.Services.AddScoped<ICodeFormatterServices, CodeFormatterServices>();
+builder.Services.AddScoped<ISubject, SubmissionPublisher>();
+builder.Services.AddScoped<IObserver, PointsObserver>();
+builder.Services.AddScoped<IObserver, SolutionPersistenceObserver>();
+builder.Services.AddScoped<IObserver, FrontendNotifierObserver>();
 
 
 var app = builder.Build();
@@ -127,6 +134,16 @@ var app = builder.Build();
 //     }
 // }
 
+using (var scope = app.Services.CreateScope())
+{
+    var publisher = scope.ServiceProvider.GetRequiredService<ISubject>();
+    var observers = scope.ServiceProvider.GetServices<IObserver>();
+
+    foreach (var observer in observers)
+    {
+        publisher.Attach(observer);
+    }
+}
 
 
 app.UseCors("AllowAll");

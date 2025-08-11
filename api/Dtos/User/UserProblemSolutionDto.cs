@@ -5,6 +5,8 @@ namespace Models
 {
     public class UserProblemSolutionDto
     {
+        public int Id { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public int ProblemId { get; set; }
         public int PointsEarned { get; set; }
         public DateTime SolvedAt { get; set; }

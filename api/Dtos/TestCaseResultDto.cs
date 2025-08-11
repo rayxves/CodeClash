@@ -6,4 +6,5 @@ public class TestCaseResultDto
     public bool Passed { get; set; }
     public string Status { get; set; }
     public string Output { get; set; }
+    public string Time { get; set; }
 }
