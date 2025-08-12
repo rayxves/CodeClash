@@ -10,7 +10,7 @@ using SubmissionChain;
 
 namespace Facades;
 
-public class SubmissionFacade
+public class SubmissionFacade : ISubmissionFacade
 {
     private readonly ISubmissionHandler _submissionChain;
     private readonly IProblemServices _problemRepository;
@@ -18,8 +18,7 @@ public class SubmissionFacade
     private readonly ICodeFormatterServices _codeFormatterService;
     private readonly ISubject _submissionPublisher;
     private readonly IUserProblemSolutionServices _solutionService;
-    private readonly ApplicationDbContext _context;
-    public SubmissionFacade(IJudge0Services judge0Service, IProblemServices problemRepository, ISubmissionBuilder submissionBuilder, ICodeFormatterServices codeFormatterService, ISubject submissionPublisher, IUserProblemSolutionServices solutionService, ApplicationDbContext context)
+    public SubmissionFacade(IJudge0Services judge0Service, IProblemServices problemRepository, ISubmissionBuilder submissionBuilder, ICodeFormatterServices codeFormatterService, ISubject submissionPublisher, IUserProblemSolutionServices solutionService)
     {
         _codeFormatterService = codeFormatterService;
         _problemRepository = problemRepository;
@@ -27,7 +26,6 @@ public class SubmissionFacade
         _submissionDirector = new SubmissionDirector(submissionBuilder);
         _submissionPublisher = submissionPublisher;
         _solutionService = solutionService;
-        _context = context;
     }
 
     public async Task<Dtos.SubmissionResultDto> SubmitCodeAsync(string sourceCode, string languageName, int? problemId, string userId)
@@ -84,7 +82,8 @@ public class SubmissionFacade
                 TestCaseId = testCase.Id,
                 Status = context.Response?.Status?.Description ?? "Error",
                 Output = context.Response?.Stdout ?? context.Response?.Stderr ?? context.ErrorMessage ?? "",
-                Passed = context.Response?.Status?.Description == "Accepted"
+                Passed = context.Response?.Status?.Description == "Accepted",
+                Time = context.Response?.Time ?? "0"
             };
             results.Add(testResult);
         }
@@ -108,8 +107,6 @@ public class SubmissionFacade
             initialSolution.MessageOutput = "Um ou mais testes falharam.";
             await _solutionService.UpdateUserProblemSolutionAsync(initialSolution.ToDto());
         }
-
-        await _context.SaveChangesAsync();
 
         return finalResultDto;
     }

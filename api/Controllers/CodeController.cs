@@ -16,9 +16,9 @@ namespace Controllers;
 public class CodeController : ControllerBase
 {
     private readonly ICodeReferenceServices _codeService;
-    private readonly SubmissionFacade _submissionFacade;
+    private readonly ISubmissionFacade _submissionFacade;
 
-    public CodeController(ICodeReferenceServices codeService, SubmissionFacade submissionFacade)
+    public CodeController(ICodeReferenceServices codeService, ISubmissionFacade submissionFacade)
     {
         _codeService = codeService;
         _submissionFacade = submissionFacade;

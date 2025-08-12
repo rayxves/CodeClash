@@ -1,29 +1,29 @@
 using Dtos;
 using Interfaces;
+using Microsoft.Extensions.DependencyInjection; // 👈 Adicione este using
 
 namespace Observers;
 
 public class SubmissionPublisher : ISubject
 {
-    private readonly List<IObserver> _observers = new();
+    private readonly IServiceProvider _serviceProvider;
 
-    public void Attach(IObserver observer)
+    public SubmissionPublisher(IServiceProvider serviceProvider)
     {
-        _observers.Add(observer);
+        _serviceProvider = serviceProvider;
     }
 
-    public void Detach(IObserver observer)
-    {
-        _observers.Remove(observer);
-    }
-
+    
     public async Task NotifyAsync(SubmissionSuccessContext context)
     {
-        foreach (var observer in _observers)
+        using (var scope = _serviceProvider.CreateScope())
         {
-            await observer.UpdateAsync(context);
+            var observers = scope.ServiceProvider.GetServices<IObserver>();
+            
+            foreach (var observer in observers)
+            {
+                await observer.UpdateAsync(context);
+            }
         }
     }
-
-   
 }

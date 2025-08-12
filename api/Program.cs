@@ -103,7 +103,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
 builder.Services.AddScoped<IJudge0Services, Judge0Client>();
-builder.Services.AddScoped<SubmissionFacade>();
+builder.Services.AddScoped<ISubmissionFacade, SubmissionFacade>();
 builder.Services.AddScoped<ICodeReferenceServices, CodeReferenceService>();
 builder.Services.AddScoped<IProblemServices, ProblemServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
@@ -134,16 +134,7 @@ var app = builder.Build();
 //     }
 // }
 
-using (var scope = app.Services.CreateScope())
-{
-    var publisher = scope.ServiceProvider.GetRequiredService<ISubject>();
-    var observers = scope.ServiceProvider.GetServices<IObserver>();
 
-    foreach (var observer in observers)
-    {
-        publisher.Attach(observer);
-    }
-}
 
 
 app.UseCors("AllowAll");

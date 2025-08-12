@@ -115,9 +115,9 @@ namespace Services
             return solution;
         }
 
-        public Task<UserProblemSolution> UpdateUserProblemSolutionAsync(UserProblemSolutionDto userProblemSolution)
+        public async Task<UserProblemSolution> UpdateUserProblemSolutionAsync(UserProblemSolutionDto userProblemSolution)
         {
-            var existingSolution = _context.UserProblemSolutions.Find(userProblemSolution.ProblemId);
+            var existingSolution = await _context.UserProblemSolutions.FindAsync(userProblemSolution.ProblemId);
             if (existingSolution == null)
             {
                 throw new InvalidOperationException($"UserProblemSolution with ID '{userProblemSolution.ProblemId}' not found.");
@@ -131,9 +131,9 @@ namespace Services
             existingSolution.IsApproved = userProblemSolution.IsApproved;
 
             _context.UserProblemSolutions.Update(existingSolution);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
 
-            return Task.FromResult(existingSolution);
+            return existingSolution;
         }
     }
 }

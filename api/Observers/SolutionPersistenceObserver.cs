@@ -1,5 +1,6 @@
 using Data;
 using Dtos;
+using Microsoft.EntityFrameworkCore;
 using Services.Extensions;
 
 namespace Observers;
@@ -15,16 +16,21 @@ public class SolutionPersistenceObserver : IObserver
       
     }
 
-    public Task UpdateAsync(SubmissionSuccessContext context)
+    public async Task UpdateAsync(SubmissionSuccessContext context)
     {
+         var solution = await _context.UserProblemSolutions
+            .FirstOrDefaultAsync(s => s.Id == context.Solution.Id);
+
+        if (solution == null) return; 
+
         int points = ProblemHelperServices.GetPointsForDifficulty(context.Problem.Difficulty);
 
-        context.Solution.IsApproved = true;
-        context.Solution.PointsEarned = points;
-        context.Solution.MessageOutput = "Todos os testes passaram.";
+        solution.IsApproved = true;
+        solution.PointsEarned = points;
+        solution.MessageOutput = "Todos os testes passaram.";
 
-        _context.UserProblemSolutions.Update(context.Solution);
-        return Task.CompletedTask;
+        _context.UserProblemSolutions.Update(solution);
+        await _context.SaveChangesAsync();
     }
 
 

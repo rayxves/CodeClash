@@ -10,11 +10,11 @@ public class PointsObserver : IObserver
 {
     private readonly ApplicationDbContext _context;
 
-    public PointsObserver(ApplicationDbContext context, ISubject submissionPublisher)
+    public PointsObserver(ApplicationDbContext context)
     {
         _context = context;
     }
-   
+
 
     public async Task UpdateAsync(SubmissionSuccessContext context)
     {
@@ -25,6 +25,8 @@ public class PointsObserver : IObserver
         user.TotalPoints += points;
 
         _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
     }
 
 }
