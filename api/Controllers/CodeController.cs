@@ -17,13 +17,11 @@ public class CodeController : ControllerBase
 {
     private readonly ICodeReferenceServices _codeService;
     private readonly SubmissionFacade _submissionFacade;
-    private readonly UserManager<User> _userManager;
 
-    public CodeController(ICodeReferenceServices codeService, SubmissionFacade submissionFacade, UserManager<User> userManager)
+    public CodeController(ICodeReferenceServices codeService, SubmissionFacade submissionFacade)
     {
         _codeService = codeService;
         _submissionFacade = submissionFacade;
-        _userManager = userManager;
     }
 
     [Authorize]
@@ -32,12 +30,12 @@ public class CodeController : ControllerBase
     {
         try
         {
-            var userId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(userId))
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId?.Value))
             {
                 return Unauthorized("Usuário não autenticado.");
             }
-            var response = await _submissionFacade.SubmitCodeAsync(dto.Code, dto.Language, problemId.HasValue ? problemId : null, userId);
+            var response = await _submissionFacade.SubmitCodeAsync(dto.Code, dto.Language, problemId.HasValue ? problemId : null, userId.Value);
             return Ok(response);
         }
         catch (Exception ex)

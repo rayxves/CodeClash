@@ -149,6 +149,7 @@ using (var scope = app.Services.CreateScope())
 app.UseCors("AllowAll");
 
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

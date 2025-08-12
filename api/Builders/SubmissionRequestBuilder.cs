@@ -5,8 +5,8 @@ public class SubmissionBuilder : ISubmissionBuilder
     private string _code = string.Empty;
     private string _languageName = string.Empty;
     private int _languageId;
-    private string? _input;
-    private string? _expectedOutput;
+    private string? _input = null;
+    private string? _expectedOutput = null;
 
     public SubmissionBuilder()
     {

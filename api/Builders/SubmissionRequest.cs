@@ -15,14 +15,14 @@ public class SubmissionRequest
 
         if (string.IsNullOrWhiteSpace(language))
             throw new ArgumentException("A linguagem não pode ser nula ou vazia.", nameof(language));
-            
+
         if (languageId <= 0)
             throw new ArgumentOutOfRangeException(nameof(languageId), "O ID da linguagem deve ser positivo.");
 
         Code = code;
         Language = language;
         LanguageId = languageId;
-        Input = input;
-        ExpectedOutput = expectedOutput;
+        Input = input != null ? input : null;
+        ExpectedOutput = expectedOutput != null ? expectedOutput : null;
     }
 }

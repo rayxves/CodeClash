@@ -32,6 +32,7 @@ public class Judge0Client : IJudge0Services
     {
         try
         {
+           
             if (request == null) throw new ArgumentNullException(nameof(request));
             if (string.IsNullOrWhiteSpace(request.Code)) throw new ArgumentException("Código fonte vazio");
 

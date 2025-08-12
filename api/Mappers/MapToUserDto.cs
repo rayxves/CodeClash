@@ -5,14 +5,14 @@ namespace Mappers
 {
     public static class MapToUserDto
     {
-        public static UserDto ToUserDto(this User user)
+        public static UserDto ToUserDto(this User user, string token)
         {
             return new UserDto
             {
                 Id = user.Id,
                 Username = user.UserName,
                 Email = user.Email,
-                Token = user.Token,
+                Token = token,
                 TotalPoints = user.TotalPoints
             };
         }

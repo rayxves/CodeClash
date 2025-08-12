@@ -30,8 +30,8 @@ namespace Services
             {
                 throw new InvalidOperationException($"User with username '{username}' not found.");
             }
-
-            return user.ToUserDto();
+            var token = _tokenServices.GenerateToken(user);
+            return user.ToUserDto(token);
         }
 
         public async Task<UserDto> LoginUserAsync(UserLoginDto loginDto)
@@ -48,7 +48,7 @@ namespace Services
 
             var token = _tokenServices.GenerateToken(user);
 
-            return user.ToUserDto();
+            return user.ToUserDto(token);
         }
 
         public async Task<UserDto> RegisterUserAsync(UserRegisterDto registerDto)
@@ -70,11 +70,11 @@ namespace Services
 
             await _context.SaveChangesAsync();
             var token = _tokenServices.GenerateToken(user);
-            user.Token = token;
+
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            return user.ToUserDto();
+            return user.ToUserDto(token);
         }
     }
 }
