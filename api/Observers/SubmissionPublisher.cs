@@ -1,6 +1,4 @@
 using Dtos;
-using Interfaces;
-using Microsoft.Extensions.DependencyInjection; // 👈 Adicione este using
 
 namespace Observers;
 

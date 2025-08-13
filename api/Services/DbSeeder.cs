@@ -19,7 +19,7 @@ public static class DbSeeder
         public string Description { get; set; } = string.Empty;
     }
 
-    public static async Task SeedDatabaseAsync(ApplicationDbContext context)
+    public static async Task SeedCodeReferenceAsync(ApplicationDbContext context)
     {
         if (await context.CodeReferences.AnyAsync())
         {

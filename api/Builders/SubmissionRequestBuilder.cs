@@ -1,6 +1,6 @@
 namespace Builders;
 
-public class SubmissionBuilder : ISubmissionBuilder
+public class SubmissionBuilder : ISubmissionRequestBuilder
 {
     private string _code = string.Empty;
     private string _languageName = string.Empty;
@@ -22,26 +22,26 @@ public class SubmissionBuilder : ISubmissionBuilder
         _expectedOutput = null;
     }
 
-    public ISubmissionBuilder WithCode(string code)
+    public ISubmissionRequestBuilder WithCode(string code)
     {
         _code = code;
         return this;
     }
 
-    public ISubmissionBuilder WithLanguage(string name, int id)
+    public ISubmissionRequestBuilder WithLanguage(string name, int id)
     {
         _languageName = name;
         _languageId = id;
         return this;
     }
 
-    public ISubmissionBuilder WithInput(string? input)
+    public ISubmissionRequestBuilder WithInput(string? input)
     {
         _input = input;
         return this;
     }
 
-    public ISubmissionBuilder WithExpectedOutput(string? expectedOutput)
+    public ISubmissionRequestBuilder WithExpectedOutput(string? expectedOutput)
     {
         _expectedOutput = expectedOutput;
         return this;

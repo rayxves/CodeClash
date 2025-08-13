@@ -1,11 +1,11 @@
 namespace Builders;
 
-public interface ISubmissionBuilder
+public interface ISubmissionRequestBuilder
 {
-    ISubmissionBuilder WithCode(string code);
-    ISubmissionBuilder WithLanguage(string name, int id);
-    ISubmissionBuilder WithInput(string? input);
-    ISubmissionBuilder WithExpectedOutput(string? expectedOutput);
+    ISubmissionRequestBuilder WithCode(string code);
+    ISubmissionRequestBuilder WithLanguage(string name, int id);
+    ISubmissionRequestBuilder WithInput(string? input);
+    ISubmissionRequestBuilder WithExpectedOutput(string? expectedOutput);
     SubmissionRequest Build();
     void Reset();
 }

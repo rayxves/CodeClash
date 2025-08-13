@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Observers;
 using Services;
 using Services.Extensions;
+using Strategies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,20 +103,20 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddHttpClient();
 
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
-builder.Services.AddScoped<IJudge0Services, Judge0Client>();
+builder.Services.AddScoped<IJudge0Services, Judge0Services>();
 builder.Services.AddScoped<ISubmissionFacade, SubmissionFacade>();
 builder.Services.AddScoped<ICodeReferenceServices, CodeReferenceService>();
 builder.Services.AddScoped<IProblemServices, ProblemServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<IUserProblemSolutionServices, UserProblemSolutionServices>();
-builder.Services.AddScoped<ISubmissionBuilder, SubmissionBuilder>();
+builder.Services.AddScoped<ISubmissionRequestBuilder, SubmissionBuilder>();
 builder.Services.AddScoped<ICodeFormatterServices, CodeFormatterServices>();
 builder.Services.AddScoped<ISubject, SubmissionPublisher>();
 builder.Services.AddScoped<IObserver, PointsObserver>();
 builder.Services.AddScoped<IObserver, SolutionPersistenceObserver>();
 builder.Services.AddScoped<IObserver, FrontendNotifierObserver>();
-
+builder.Services.AddScoped<ISubmissionStrategySelector, SubmissionStrategySelector>();
 
 var app = builder.Build();
 

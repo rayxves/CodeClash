@@ -5,9 +5,9 @@ namespace Builders;
 
 public class SubmissionDirector
 {
-    private readonly ISubmissionBuilder _builder;
+    private readonly ISubmissionRequestBuilder _builder;
 
-    public SubmissionDirector(ISubmissionBuilder builder)
+    public SubmissionDirector(ISubmissionRequestBuilder builder)
     {
         _builder = builder;
     }

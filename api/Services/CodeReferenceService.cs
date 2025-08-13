@@ -79,7 +79,7 @@ public class CodeReferenceService : ICodeReferenceServices
     public async Task<CodeComponent?> BuildTreeForLanguageAsync(string language)
     {
         var allLanguageEntities = await _context.CodeReferences
-            .Where(e => e.Language.Equals(language, StringComparison.OrdinalIgnoreCase))
+            .Where(e => e.Language.ToLower() == language.ToLower())
             .ToListAsync();
 
         if (!allLanguageEntities.Any()) return null;

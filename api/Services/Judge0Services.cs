@@ -6,15 +6,16 @@ using Models;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Services;
 
-public class Judge0Client : IJudge0Services
+public class Judge0Services : IJudge0Services
 {
     private readonly HttpClient _httpClient;
     private readonly Judge0Settings _settings;
 
-    public Judge0Client(HttpClient httpClient, IOptions<Judge0Settings> settings)
+    public Judge0Services(HttpClient httpClient, IOptions<Judge0Settings> settings)
     {
         _httpClient = httpClient;
         _settings = settings.Value;
@@ -32,7 +33,7 @@ public class Judge0Client : IJudge0Services
     {
         try
         {
-           
+
             if (request == null) throw new ArgumentNullException(nameof(request));
             if (string.IsNullOrWhiteSpace(request.Code)) throw new ArgumentException("Código fonte vazio");
 
@@ -44,10 +45,19 @@ public class Judge0Client : IJudge0Services
                 expected_output = Base64Encode(request.ExpectedOutput ?? string.Empty),
                 base64_encoded = true
             };
+            var serializerOptions = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                WriteIndented = true 
+            };
+
+            var jsonPayload = JsonSerializer.Serialize(payload, serializerOptions);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
 
             var response = await _httpClient.PostAsJsonAsync(
                 "submissions?wait=true&base64_encoded=true",
-                payload);
+                content);
 
             if (!response.IsSuccessStatusCode)
             {
