@@ -6,21 +6,15 @@ import type { CodeReference } from "../../../types/code";
 import CodeHeader from "./CodeHeader";
 import CodeFooter from "./CodeFooter";
 import {
-  getByLanguageAndCategory,
-  getByLanguageAndName,
-  searchByName,
+  getCodeReferenceByFilters,
+  getCodeReferenceById,
 } from "../../../../api";
 import type { CodeModalParams } from "../../../types/routes";
 import RecommendationsList from "../Recomendation/RecomendationList";
 import { ClipboardCopy, Code2 } from "lucide-react";
 
 export default function CodeModal() {
-  const {
-    language = "",
-    category = "",
-    name = "",
-  } = useParams<CodeModalParams>();
-  const navigate = useNavigate();
+  const { id, name } = useParams<CodeModalParams>();
   const [copySuccess, setCopySuccess] = useState("");
   const [code, setCode] = useState<CodeReference | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,61 +22,22 @@ export default function CodeModal() {
   const [nameSearchResults, setNameSearchResults] = useState<CodeReference[]>(
     []
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCode = async () => {
       try {
         setError(null);
-        setNameSearchResults([]);
+        const codeResult = await getCodeReferenceById(Number(id));
+        setCode(codeResult);
 
-        const decodedLanguage = decodeURIComponent(language);
-        const decodedCategory = decodeURIComponent(category);
-        const decodedCodeName = decodeURIComponent(name);
+        const nameResult = await getCodeReferenceByFilters(
+          undefined,
+          undefined,
+          name
+        );
 
-        if (decodedCodeName) {
-          const languageSpecificResults = await getByLanguageAndName(
-            decodedLanguage,
-            decodedCodeName
-          );
-
-          if (languageSpecificResults.length > 0) {
-            setCode(languageSpecificResults[0]);
-          } else {
-            const nameSearchResults = await searchByName(decodedCodeName);
-            const nameSearchResultsByLanguage = nameSearchResults.filter(
-              (code) => code.language.toLowerCase() === decodedLanguage
-            );
-            if (nameSearchResultsByLanguage.length > 0) {
-              setNameSearchResults(nameSearchResultsByLanguage);
-              throw new Error(
-                `Algoritmo "${decodedCodeName}" não encontrado. ` +
-                  `Mostrando ${
-                    nameSearchResultsByLanguage.length
-                  } resultados com nomes similares em ${decodedLanguage.toLowerCase()}.`
-              );
-            } else {
-              setNameSearchResults(nameSearchResults);
-              throw new Error(
-                `Algoritmo "${decodedCodeName}" não encontrado. ` +
-                  `Mostrando ${nameSearchResults.length} resultados com nomes similares.`
-              );
-            }
-          }
-        } else {
-          const categoryResults = await getByLanguageAndCategory(
-            decodedLanguage,
-            decodedCategory
-          );
-          const firstValidCode = findFirstValidCode(categoryResults);
-
-          if (firstValidCode) {
-            setCode(firstValidCode);
-          } else {
-            throw new Error(
-              `Nenhum código encontrado para ${decodedCategory} em ${decodedLanguage}`
-            );
-          }
-        }
+        setNameSearchResults(nameResult);
       } catch (error) {
         console.error("Error fetching code:", error);
         setError(error instanceof Error ? error.message : "Erro desconhecido");
@@ -94,23 +49,7 @@ export default function CodeModal() {
 
     setLoading(true);
     fetchCode();
-  }, [language, category, name]);
-
-  const findFirstValidCode = (data: CodeReference[]): CodeReference | null => {
-    for (const item of data) {
-      if (item.code) {
-        return item;
-      }
-
-      if (item.children) {
-        const validChild = item.children.find((child) => child.code);
-        if (validChild) {
-          return validChild;
-        }
-      }
-    }
-    return null;
-  };
+  }, [id]);
 
   const handleCopyClick = async (text: string) => {
     try {
@@ -125,9 +64,9 @@ export default function CodeModal() {
 
   const handleSelectRecommendedCode = (code: CodeReference) => {
     navigate(
-      `/code-model/${encodeURIComponent(code.language)}/${encodeURIComponent(
-        code.category || ""
-      )}/${encodeURIComponent(code.name)}`
+      `/code-modal/${encodeURIComponent(code.id)}/${encodeURIComponent(
+        code.name
+      )}`
     );
   };
 
@@ -204,7 +143,11 @@ export default function CodeModal() {
       )}
 
       <div className="w-full max-w-6xl mt-8">
-        <CodeHeader language={language} category={category} name={name} />
+        <CodeHeader
+          language={code.language}
+          category={code.category}
+          name={name}
+        />
 
         <div className="w-full bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 mb-8">
           <div className="bg-gray-800 px-4 sm:px-5 py-2 flex justify-between items-center">

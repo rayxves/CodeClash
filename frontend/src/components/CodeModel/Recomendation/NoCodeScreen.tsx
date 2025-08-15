@@ -21,7 +21,7 @@ export default function NoCodeScreen({ language, name, navigate }: NoCodeScreenP
             : "Envie um código ou acesse um código modelo para receber recomendações."}
         </p>
         <button
-          onClick={() => navigate(language && name ? `/code-model/${language}` : "/submission")}
+          onClick={() => navigate(language && name ? `/code-model` : "/submission")}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           {language && name ? "Voltar" : "Ir para Submissão"}

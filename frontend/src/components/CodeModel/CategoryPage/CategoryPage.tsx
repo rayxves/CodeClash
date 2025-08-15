@@ -1,137 +1,113 @@
-import { useParams, Link } from "react-router-dom";
-import { useState, useEffect, Suspense, lazy } from "react";
-import { getByLanguageAndCategory } from "../../../../api";
-import type { CodeReference } from "../../../types/code";
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, Suspense, lazy, useMemo } from "react";
+import { getCategoryView } from "../../../../api";
 import EmptyState from "./EmptyState";
 import SearchBar from "./SearchBar";
 import type { CategoryPageParams } from "../../../types/routes";
+import type { CategoryViewData } from "../../../types/code";
 
 const CodeList = lazy(() => import("../CodeModal/CodeList"));
 
 export default function CategoryPage() {
   const { language = "", category = "" } = useParams<CategoryPageParams>();
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [codes, setCodes] = useState<CodeReference[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [filteredCodes, setFilteredCodes] = useState<CodeReference[]>([]);
+  const navigate = useNavigate();
+
+  const [categoryData, setCategoryData] = useState<CategoryViewData | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    const fetchCodes = async () => {
+    const fetchCategoryData = async () => {
       setLoading(true);
       try {
-        const data = await getByLanguageAndCategory(language, category, {
-          signal: controller.signal,
-        });
-        if (isMounted) {
-          setCodes(data);
-          setFilteredCodes(data);
-        }
-      } catch (error: any) {
-        if (error.name !== "AbortError") {
-          console.error("Error fetching codes:", error);
-        }
+        const data = await getCategoryView(language, category);
+        setCategoryData(data);
+      } catch (error) {
+        console.error("Error fetching category data:", error);
+        setCategoryData(null);
       } finally {
-        if (isMounted) setLoading(false);
+        setLoading(false);
       }
     };
 
-    const debounceTimer = setTimeout(fetchCodes, 300);
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-      clearTimeout(debounceTimer);
-    };
+    fetchCategoryData();
   }, [language, category]);
 
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredCodes(codes);
-    } else {
-      const filtered = codes.filter((code) =>
-        code.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredCodes(filtered);
-    }
-  }, [searchTerm, codes]);
+  const handleBack = () => {
+    navigate(`/code-model`);
+  };
 
-  useEffect(() => {
-    document.title = `${category} em ${language} | Algoritmos de Programação`;
-
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        "content",
-        `Coleção de algoritmos de ${category} implementados em ${language}. Inclui exemplos práticos e explicações.`
-      );
-    } else {
-      const newMeta = document.createElement("meta");
-      newMeta.name = "description";
-      newMeta.content = `Coleção de algoritmos de ${category} implementados em ${language}. Inclui exemplos práticos e explicações.`;
-      document.head.appendChild(newMeta);
-    }
-  }, [category, language]);
+  const filteredChildren = useMemo(() => {
+    if (!categoryData?.children) return [];
+    if (!searchTerm.trim()) return categoryData.children;
+    return categoryData.children.filter((child) =>
+      child.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, categoryData]);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 overflow-x-hidden">
-      <div className="max-w-6xl mx-auto mt-12">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <Link
-            to="/code-model"
-            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base group"
+    <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 mt-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8 gap-3 flex flex-col">
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 sm:h-5 sm:w-5 mr-1 group-hover:-translate-x-0.5 transition-transform flex-shrink-0"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
               <path
-                fillRule="evenodd"
-                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                clipRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            <span className="whitespace-nowrap">Voltar</span>
-          </Link>
+            Voltar
+          </button>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 capitalize">
-            <span className="text-blue-600">{category}</span> em{" "}
-            <span className="text-green-600">{language}</span>
-          </h1>
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
 
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-
         {loading ? (
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-            aria-busy="true"
-          >
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="h-40 bg-gray-200 animate-pulse rounded-lg"
-              />
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-20 bg-gray-200 rounded animate-pulse" />
             ))}
           </div>
-        ) : filteredCodes.length > 0 ? (
-          <Suspense
-            fallback={
-              <div className="h-20 bg-gray-200 animate-pulse rounded-lg" />
-            }
-          >
-            <CodeList
-              codes={filteredCodes}
-              language={language}
-              category={category}
-            />
-          </Suspense>
+        ) : categoryData ? (
+          <div className="space-y-4">
+            {filteredChildren.length > 0 ? (
+              <div className="bg-white rounded-lg shadow p-4">
+                <Suspense
+                  fallback={
+                    <div className="p-4 text-center">
+                      Carregando conteúdo...
+                    </div>
+                  }
+                >
+                  <CodeList
+                    codes={filteredChildren}
+                    language={language}
+                    isSearching={searchTerm.trim().length > 0}
+                  />
+                </Suspense>
+              </div>
+            ) : (
+              <EmptyState searchTerm={searchTerm} />
+            )}
+          </div>
         ) : (
-          <EmptyState searchTerm={searchTerm} />
+          <div className="text-center py-12">
+            <p className="text-gray-600">
+              Nenhum dado encontrado para esta categoria
+            </p>
+          </div>
         )}
       </div>
     </main>

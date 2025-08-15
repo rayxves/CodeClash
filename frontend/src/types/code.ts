@@ -14,9 +14,24 @@ export interface ApiResponse<T> {
     category: string;
     code: string;
     difficulty?: string;
+    parentId: number | null;
     children?: CodeReference[];
     recommendations?: CodeReference[]; 
   }
+
+  export interface CategoryViewData {
+  currentCategory: {
+    id: string;
+    name: string;
+  };
+  children: Array<{
+    id: string;
+    name: string;
+    description?: string;
+    code?: string;
+    children?: []; 
+  }>;
+}
 
 export interface Language {
   name: string;

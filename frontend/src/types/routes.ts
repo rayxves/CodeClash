@@ -8,7 +8,6 @@ export interface CategoryPageParams extends RouteParams {
 }
 
 export interface CodeModalParams extends RouteParams {
-  language: string;
-  category: string;
-  codeName: string;
+  id: string;
+  name: string;
 }

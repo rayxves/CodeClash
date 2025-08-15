@@ -4,7 +4,7 @@ import LoadingScreen from "./LoadingScreen";
 import NoCodeScreen from "./NoCodeScreen";
 import SourceCodeSection from "./SourceCodeSection";
 import CodeDetailModal from "./CodeDetailModal";
-import { getByLanguageAndName, recommendSimilar } from "../../../../api";
+import { getCodeReferenceByFilters, recommendSimilar } from "../../../../api";
 import type { CodeReference } from "../../../types/code";
 import { ChevronLeft } from "lucide-react";
 import HeaderSection from "./HeaderSection";
@@ -29,8 +29,9 @@ export default function RecommendationsPage() {
           const decodedLanguage = decodeURIComponent(language);
           const decodedName = decodeURIComponent(name);
 
-          const response = await getByLanguageAndName(
+          const response = await getCodeReferenceByFilters(
             decodedLanguage,
+            undefined,
             decodedName
           );
           if (response.length > 0) {
@@ -103,7 +104,7 @@ export default function RecommendationsPage() {
           </>
         ) : (
           <>
-            <HeaderSection onBack={() => navigate(-1)} />
+            <HeaderSection onBack={() => navigate(-2)} />
             <SourceCodeSection
               sourceCode={sourceCode}
               sourceType={sourceType}

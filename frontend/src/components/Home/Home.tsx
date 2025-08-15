@@ -16,7 +16,7 @@ export default function Home() {
             </p>
             <a
               href="about"
-              className="text-button font-medium flex items-center hover:underline"
+              className="text-blue-500 font-medium flex items-center hover:underline-offset-0 hover:text-blue-600"
             >
               Saiba mais
               <svg

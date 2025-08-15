@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       { path: "about", element: <AboutPage /> },
       { path: "code-model", element: <CodeModel /> },
       { path: "code-model/:language/:category", element: <CategoryPage /> },
-      { path: "code-model/:language/:category/:name", element: <CodeModal /> },
+      { path: "code-modal/:id/:name", element: <CodeModal /> },
       { path: "submission", element: <SubmissionPage /> },
       {
         path: "recommendations/:language/:name",
