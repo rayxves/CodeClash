@@ -11,21 +11,21 @@ namespace Facades
     {
         private readonly ISubmissionStrategySelector _strategySelector;
         private readonly ICodeFormatterServices _codeFormatterService;
+        private readonly ILanguageResolver _languageResolver;
 
-        public SubmissionFacade(ISubmissionStrategySelector strategyFactory, ICodeFormatterServices codeFormatterService)
+        public SubmissionFacade(
+            ISubmissionStrategySelector strategySelector,
+            ICodeFormatterServices codeFormatterService,
+            ILanguageResolver languageResolver)
         {
-            _strategySelector = strategyFactory;
+            _strategySelector = strategySelector;
             _codeFormatterService = codeFormatterService;
+            _languageResolver = languageResolver;
         }
 
         public async Task<SubmissionResultDto> SubmitCodeAsync(string sourceCode, string languageName, int? problemId, string userId)
         {
-            var language = Language.GetAll().FirstOrDefault(l => l.Name.Equals(languageName, StringComparison.OrdinalIgnoreCase) || l.Judge0Alias.Equals(languageName, StringComparison.OrdinalIgnoreCase));
-            if (language == null)
-            {
-                throw new InvalidOperationException("Linguagem de programação inválida ou não suportada.");
-            }
-
+            var language = _languageResolver.Resolve(languageName);
             var codeFormatted = _codeFormatterService.Format(sourceCode);
             var input = new SubmissionStrategyInput(codeFormatted, language, userId, problemId);
 

@@ -96,6 +96,7 @@ public class CodeController : ControllerBase
     [HttpGet("view/{language}/{categoryName?}")]
     public async Task<IActionResult> GetCategoryView(string language, string? categoryName = null)
     {
+        
         var result = await _codeService.GetCategoryViewAsync(language, categoryName);
 
         if (result == null)

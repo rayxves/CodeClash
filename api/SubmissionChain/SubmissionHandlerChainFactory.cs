@@ -7,10 +7,10 @@ public static class SubmissionChainFactory
 {
     public static ISubmissionHandler Create(IJudge0Services judge0Service)
     {
-        var chain = new LanguageValidationHandler();
+        var chain = new CodeNotEmptyValidationHandler();
 
         chain
-            .SetNext(new CodeNotEmptyValidationHandler())
+
             .SetNext(new SendToJudge0Handler(judge0Service))
             .SetNext(new CompilationErrorHandler())
             .SetNext(new TimeoutHandler())

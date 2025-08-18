@@ -2,23 +2,13 @@ using System.Text.Json;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using Composites; 
+using Composites;
+using Dtos;
 
 namespace Services;
 
 public static class DbSeeder
 {
-    public class CodeReferenceSeedDto
-    {
-        public int Id { get; set; }
-        public int? ParentId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
-        public string Language { get; set; } = string.Empty;
-        public string Code { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-    }
-
     public static async Task SeedCodeReferenceAsync(ApplicationDbContext context)
     {
         if (await context.CodeReferences.AnyAsync())
