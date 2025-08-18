@@ -9,8 +9,9 @@ import CodeModel from "./components/CodeModel/CodeModel/CodeModel.tsx";
 import Home from "./components/Home/Home.tsx";
 import CategoryPage from "./components/CodeModel/CategoryPage/CategoryPage.tsx";
 import CodeModal from "./components/CodeModel/CodeModal/CodeModal.tsx";
-import SubmissionPage from "./components/Submission/SubmissionPage.tsx";
+import EnhancedSubmissionPage from "./components/Submission/EnhancedSubmissionPage.tsx";
 import RecommendationsPage from "./components/CodeModel/Recomendation/RecomendationsPage.tsx";
+import ProblemsPage from "./components/Problems/ProblemsPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,10 +21,11 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "about", element: <AboutPage /> },
+      { path: "problems", element: <ProblemsPage /> },
       { path: "code-model", element: <CodeModel /> },
       { path: "code-model/:language/:category", element: <CategoryPage /> },
       { path: "code-modal/:id/:name", element: <CodeModal /> },
-      { path: "submission", element: <SubmissionPage /> },
+      { path: "submission", element: <EnhancedSubmissionPage /> },
       {
         path: "recommendations/:language/:name",
         element: <RecommendationsPage />,
