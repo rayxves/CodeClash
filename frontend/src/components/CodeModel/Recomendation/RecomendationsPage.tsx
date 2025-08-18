@@ -80,10 +80,10 @@ export default function RecommendationsPage() {
     return <NoCodeScreen language={language} name={name} navigate={navigate} />;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 ">
+    <div className="min-h-screen bg-gradient-surface py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto mt-12">
         {selectedCode ? (
-          <>
+          <div className="space-y-6">
             <CodeDetailModal
               code={selectedCode}
               onBackToCategory={() =>
@@ -96,14 +96,14 @@ export default function RecommendationsPage() {
             />
             <button
               onClick={() => setSelectedCode(null)}
-              className="mt-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-card hover:bg-muted/50 text-card-foreground rounded-xl border border-border transition-all hover:shadow-card font-medium hover-lift"
             >
-              <ChevronLeft className="w-4 h-4 inline mr-1" />
+              <ChevronLeft className="w-4 h-4" />
               Voltar para lista de recomendações
             </button>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="space-y-8">
             <HeaderSection onBack={() => navigate(-2)} />
             <SourceCodeSection
               sourceCode={sourceCode}
@@ -115,7 +115,7 @@ export default function RecommendationsPage() {
               onSelectCode={setSelectedCode}
               navigate={navigate}
             />
-          </>
+          </div>
         )}
       </div>
     </div>

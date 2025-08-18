@@ -1,9 +1,8 @@
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 import DesktopMenu from "./DesktopMenu";
-import { Lightbulb, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import SearchDropdown from "./SearchDropdown";
-import logo from "../../assets/logo.jpg";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,37 +15,26 @@ export default function Navbar() {
     });
   };
 
-  const toggleSearch = (type: string | null) => {
-    setSearchType((prev) => {
-      if (prev !== type) setMenuOpen(false);
-      return prev === type ? null : type;
-    });
-  };
-
   return (
-    <nav className="w-full shadow-sm bg-navbar fixed top-0 left-0 z-50 ">
-      <div className="container px-2 sm:px-4 py-4 flex items-center justify-between min-w-full">
-        <img src={logo} alt="CodeClash Logo" className="w-44" />
+    <nav className="w-full  bg-card/95 backdrop-blur-lg fixed top-0 left-0 z-50">
+      <div className="container px-4 sm:px-6 py-4 flex items-center justify-between min-w-full">
+        <div className="flex items-center gap-3">
+          <h1 className="font-[arial] font-bold text-xl sm:text-2xl gradient-navbar">
+            CodeClash
+          </h1>
+        </div>
 
         <div className="lg:hidden flex items-center gap-3">
           <button
-            onClick={() => toggleSearch("name")}
-            className="flex gap-1 text-sm font-medium  text-whitesmoke"
-          >
-            <Lightbulb className="w-4 h-4" />
-            <span>Busca rápida</span>
-          </button>
-
-          <button
             onClick={toggleMenu}
             aria-label="Abrir menu"
-            className=" text-whitesmoke flex items-center"
+            className="text-foreground hover:text-primary bg-secondary/50 hover:bg-secondary p-2 rounded-lg transition-all hover-lift"
           >
             <Menu className="w-6 h-6" />
           </button>
         </div>
 
-        <DesktopMenu toggleFilter={toggleSearch} />
+        <DesktopMenu />
       </div>
 
       {searchType && (
@@ -71,7 +59,7 @@ export default function Navbar() {
         </div>
       )}
       {menuOpen && (
-        <div className="lg:hidden relative">
+        <div className="lg:hidden relative ">
           <MobileMenu toggleMenu={toggleMenu} />
         </div>
       )}

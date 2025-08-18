@@ -2,94 +2,94 @@ import { Code, Send, Filter, LayoutDashboard, Rocket } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-indigo-50 px-4 sm:px-6 py-16 pt-24 text-gray-800">
+    <div className="min-h-screen bg-gradient-surface px-4 sm:px-6 py-16 pt-24">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center mb-4">
-            <Rocket className="w-10 h-10 text-blue-600 mr-3" />
-            <h1 className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          <div className="inline-flex items-center justify-center mb-6">
+            <Rocket className="w-12 h-12 text-primary mr-4" />
+            <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               Code Clash
             </h1>
           </div>
-          <p className="text-lg sm:text-xl max-w-3xl mx-auto text-gray-700">
+          <p className="text-lg sm:text-xl max-w-3xl mx-auto text-muted-foreground">
             Bem-vindo ao{" "}
-            <strong className="font-semibold text-blue-600">Code Clash</strong>{" "}
+            <strong className="font-semibold text-primary">Code Clash</strong>{" "}
             — seu campo de batalha para dominar algoritmos, superar desafios e
             acelerar seu aprendizado.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-12">
-          <section className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-blue-100">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-blue-100 rounded-xl">
-                <Send className="w-6 h-6 text-blue-600" />
+          <section className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl shadow-card hover:shadow-card-hover transition-all border border-border hover:border-primary/20 group">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-4 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                <Send className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+              <h2 className="text-xl sm:text-2xl font-bold text-card-foreground">
                 Submissão de Questões
               </h2>
             </div>
-            <p className="text-gray-600 sm:text-lg">
+            <p className="text-muted-foreground sm:text-lg leading-relaxed">
               Envie seus códigos para avaliação automática com feedback
               instantâneo. Identifique erros, aprenda com correções e melhore
               suas habilidades na prática.
             </p>
           </section>
 
-          <section className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-purple-100">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-purple-100 rounded-xl">
-                <Code className="w-6 h-6 text-purple-600" />
+          <section className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl shadow-card hover:shadow-card-hover transition-all border border-border hover:border-secondary/20 group">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-4 bg-secondary/10 rounded-xl group-hover:bg-secondary/20 transition-colors">
+                <Code className="w-6 h-6 text-secondary-foreground" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+              <h2 className="text-xl sm:text-2xl font-bold text-card-foreground">
                 Modelos de Código
               </h2>
             </div>
-            <p className="text-gray-600 sm:text-lg">
+            <p className="text-muted-foreground sm:text-lg leading-relaxed">
               Acesse{" "}
               <a
                 href="/code-model"
-                className="text-purple-600 hover:underline font-medium"
+                className="text-secondary-foreground hover:underline font-medium transition-colors"
               >
                 códigos modelo
               </a>{" "}
               de algoritmos clássicos - desde ordenação até programação dinâmica
               - disponíveis em
-              <strong className="text-purple-600"> Python</strong>,{" "}
-              <strong className="text-purple-600">Java</strong>,
-              <strong className="text-purple-600"> C++</strong> e{" "}
-              <strong className="text-purple-600">C#</strong>.
+              <strong className="text-secondary-foreground"> Python</strong>,{" "}
+              <strong className="text-secondary-foreground">Java</strong>,
+              <strong className="text-secondary-foreground"> C++</strong> e{" "}
+              <strong className="text-secondary-foreground">C#</strong>.
             </p>
           </section>
 
-          <section className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-green-100">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-green-100 rounded-xl">
-                <Filter className="w-6 h-6 text-green-600" />
+          <section className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl shadow-card hover:shadow-card-hover transition-all border border-border hover:border-accent/20 group">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-4 bg-accent/10 rounded-xl group-hover:bg-accent/20 transition-colors">
+                <Filter className="w-6 h-6 text-gray-100" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+              <h2 className="text-xl sm:text-2xl font-bold text-card-foreground">
                 Busca Inteligente
               </h2>
             </div>
-            <p className="text-gray-600 sm:text-lg">
+            <p className="text-muted-foreground sm:text-lg leading-relaxed">
               Encontre algoritmos facilmente buscando por{" "}
-              <em className="text-green-600">nome</em>,
-              <em className="text-green-600"> categoria</em> e{" "}
-              <em className="text-green-600">linguagem</em>. Navegação
+              <em className="text-accent font-medium">nome</em>,
+              <em className="text-accent font-medium"> categoria</em> e{" "}
+              <em className="text-accent font-medium">linguagem</em>. Navegação
               simplificada para seu aprendizado.
             </p>
           </section>
 
-          <section className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-yellow-100">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-yellow-100 rounded-xl">
-                <LayoutDashboard className="w-6 h-6 text-yellow-600" />
+          <section className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl shadow-card hover:shadow-card-hover transition-all border border-border hover:border-primary/20 group">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-4 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                <LayoutDashboard className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+              <h2 className="text-xl sm:text-2xl font-bold text-card-foreground">
                 Acesso Imediato
               </h2>
             </div>
-            <p className="text-gray-600 sm:text-lg">
+            <p className="text-muted-foreground sm:text-lg leading-relaxed">
               Comece a usar agora mesmo, sem cadastro. Nosso foco é 100% no seu
               aprendizado.
             </p>
@@ -97,19 +97,19 @@ export default function AboutPage() {
         </div>
 
         <div className="text-center mt-16">
-          <div className="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-md border border-gray-200">
-            <p className="text-gray-700 text-lg sm:text-xl mb-6">
+          <div className="max-w-2xl mx-auto bg-card/60 backdrop-blur-sm p-8 rounded-2xl shadow-card border border-border">
+            <p className="text-muted-foreground text-lg sm:text-xl mb-8 leading-relaxed">
               Esse projeto foi desenvolvido como parte de um trabalho da
               faculdade, mas também é um espaço pessoal onde aplico, pratico e
               evoluo meus conhecimentos.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="https://github.com/rayxves/CodeClash"
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all shadow hover:shadow-md"
+                className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-primary hover:shadow-glow text-primary-foreground font-medium rounded-xl transition-all hover-lift"
               >
                 <svg
-                  className="w-6 h-6 text-gray-800 dark:text-white"
+                  className="w-6 h-6"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -127,14 +127,14 @@ export default function AboutPage() {
               </a>
               <a
                 href="/code-model"
-                className="flex items-center justify-center gap-2 px-6 py-3 border border-blue-600 text-blue-600 hover:bg-blue-50 font-medium rounded-lg transition-all"
+                className="flex items-center justify-center gap-3 px-8 py-4 border border-primary text-primary hover:bg-primary/5 font-medium rounded-xl transition-all hover-lift"
               >
                 Começar agora
                 <Rocket className="w-5 h-5" />
               </a>
             </div>
-            <div className="mt-6">
-              <span className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-2 rounded-full shadow-inner">
+            <div className="mt-8">
+              <span className="inline-flex items-center bg-primary/10 text-primary text-sm font-semibold px-6 py-3 rounded-full shadow-inner">
                 Feito com 💙
               </span>
             </div>

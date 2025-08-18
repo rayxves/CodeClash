@@ -12,25 +12,25 @@ export default function LanguageSelector({
   setSelectedLanguage,
 }: LanguageSelectorProps) {
   return (
-    <div className="mb-8 flex flex-col items-center">
-      <h2 className="text-lg font-semibold text-gray-700 mb-3">
+    <div className="mb-12 flex flex-col items-center">
+      <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
         Linguagens disponíveis
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-5/6 h-4/6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-3xl">
         {languages.map((lang) => (
           <button
             key={lang.name}
             onClick={() => {localStorage.setItem("language", lang.name); setSelectedLanguage(lang)}}
-            className={`flex flex-col items-center justify-center py-2 rounded-xl border transition-all ${
+            className={`group flex flex-col items-center justify-center py-6 px-4 rounded-xl border-2 transition-all duration-300 hover:shadow-elegant ${
               selectedLanguage.name === lang.name
-                ? "border-blue-400 bg-white shadow-md"
-                : "border-gray-200 bg-white hover:border-blue-200"
+                ? "border-primary bg-primary/5 shadow-primary"
+                : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
             }`}
           >
-            <div className={`p-3 rounded-full ${lang.color} mb-2`}>
+            <div className={`p-4 rounded-full ${lang.color} mb-3 group-hover:scale-110 transition-transform duration-300`}>
               {lang.icon}
             </div>
-            <span className="font-medium text-gray-800">{lang.name}</span>
+            <span className="font-semibold text-card-foreground text-center">{lang.name}</span>
           </button>
         ))}
       </div>

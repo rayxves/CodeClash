@@ -19,16 +19,19 @@ export interface ApiResponse<T> {
     recommendations?: CodeReference[]; 
   }
 
-  export interface CategoryViewData {
+export interface CategoryViewData {
   currentCategory: {
     id: string;
     name: string;
-  };
+  } | null;
   children: Array<{
     id: string;
     name: string;
     description?: string;
     code?: string;
+    language?: string;
+    category?: string;
+    parentId?: number | null;
     children?: []; 
   }>;
 }

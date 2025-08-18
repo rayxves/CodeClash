@@ -72,10 +72,10 @@ export default function CodeModal() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gradient-surface flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-700">Carregando código...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-foreground">Carregando código...</p>
         </div>
       </div>
     );
@@ -83,26 +83,26 @@ export default function CodeModal() {
 
   if (error) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
+      <div className="w-full min-h-screen bg-gradient-surface flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
         <div className="w-full max-w-6xl mt-12">
-          <div className="bg-white p-8 rounded-xl shadow-sm text-center mb-6">
-            <Code2 className="w-10 h-10 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-800 mb-2">
+          <div className="bg-card p-8 rounded-2xl shadow-card text-center mb-6 border border-border">
+            <Code2 className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-card-foreground mb-2">
               {error.split(". ")[0]}.
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               {error.split(". ").slice(1).join(". ")}
             </p>
             <button
               onClick={() => navigate("/code-model")}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all hover-lift"
             >
               Explorar códigos
             </button>
           </div>
 
           {nameSearchResults.length > 0 && (
-            <div className="bg-white p-6 rounded-xl shadow-sm">
+            <div className="bg-card p-6 rounded-2xl shadow-card border border-border">
               <RecommendationsList
                 recommendations={nameSearchResults}
                 onSelectCode={handleSelectRecommendedCode}
@@ -117,15 +117,15 @@ export default function CodeModal() {
 
   if (!code) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gradient-surface flex items-center justify-center">
         <div className="text-center">
-          <Code2 className="w-10 h-10 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
+          <Code2 className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-card-foreground mb-2">
             Nenhum código encontrado
           </h3>
           <button
             onClick={() => navigate("/code-model")}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all hover-lift"
           >
             Voltar para a lista de códigos
           </button>
@@ -135,21 +135,23 @@ export default function CodeModal() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
+    <div className="w-full min-h-screen bg-gradient-surface flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
       {copySuccess && (
         <div className="text-gray-900 text-sm text-center mt-10 absolute top-52 right-10 sm:right-20 lg:right-28 bg-gray-300 px-2 py-1 rounded-md">
           {copySuccess}
         </div>
       )}
 
-      <div className="w-full max-w-6xl mt-8">
-        <CodeHeader
-          language={code.language}
-          category={code.category}
-          name={name}
-        />
+      <div className="w-full max-w-6xl mt-10">
+        {code && (
+          <CodeHeader
+            language={code.language}
+            category={code.category}
+            name={name || code.name}
+          />
+        )}
 
-        <div className="w-full bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 mb-8">
+        <div className="w-full bg-card rounded-2xl shadow-card overflow-hidden border border-border mb-8">
           <div className="bg-gray-800 px-4 sm:px-5 py-2 flex justify-between items-center">
             <div className="flex items-center overflow-hidden">
               <div className="flex space-x-1.5 mr-2 sm:mr-3 shrink-0">

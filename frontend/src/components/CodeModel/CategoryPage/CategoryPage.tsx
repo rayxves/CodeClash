@@ -48,15 +48,15 @@ export default function CategoryPage() {
   }, [searchTerm, categoryData]);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 mt-12">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8 gap-3 flex flex-col">
+    <main className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background py-8 px-4 sm:px-6 mt-16">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-8 gap-6 flex flex-col bg-card/50 backdrop-blur-sm p-6 rounded-2xl border border-border">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+            className="flex items-center gap-3 text-primary hover:text-primary/80 transition-all group w-fit "
           >
             <svg
-              className="w-4 h-4"
+              className="w-5 h-5 group-hover:-translate-x-1 transition-transform"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -68,31 +68,44 @@ export default function CategoryPage() {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            Voltar
+            <span className="font-medium">Voltar</span>
           </button>
 
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
 
         {loading ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded animate-pulse" />
+              <div
+                key={i}
+                className="h-24 bg-muted/30 rounded-2xl animate-pulse"
+              />
             ))}
           </div>
         ) : categoryData ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {filteredChildren.length > 0 ? (
-              <div className="bg-white rounded-lg shadow p-4">
+              <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border p-6 hover:shadow-elegant transition-all">
                 <Suspense
                   fallback={
-                    <div className="p-4 text-center">
-                      Carregando conteúdo...
+                    <div className="p-8 text-center">
+                      <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">
+                        Carregando conteúdo...
+                      </p>
                     </div>
                   }
                 >
                   <CodeList
-                    codes={filteredChildren}
+                    codes={filteredChildren.map((child) => ({
+                      ...child,
+                      language: child.language || language,
+                      category: child.category || category,
+                      parentId: child.parentId || null,
+                      description: child.description || "",
+                      code: child.code || "",
+                    }))}
                     language={language}
                     isSearching={searchTerm.trim().length > 0}
                   />
@@ -103,10 +116,12 @@ export default function CategoryPage() {
             )}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-600">
-              Nenhum dado encontrado para esta categoria
-            </p>
+          <div className="text-center py-16">
+            <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border p-12">
+              <p className="text-muted-foreground text-lg">
+                Nenhum dado encontrado para esta categoria
+              </p>
+            </div>
           </div>
         )}
       </div>

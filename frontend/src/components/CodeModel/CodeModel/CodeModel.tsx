@@ -110,11 +110,17 @@ export default function CodeModel() {
     : selectedLanguage;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-surface py-12 px-4 sm:px-6">
       <Link
         to="/"
-        className="mt-12 flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base group mb-6"
-      ></Link>
+        className="mt-8 mb-8 flex items-center text-primary hover:text-primary/80 transition-colors text-sm sm:text-base group max-w-4xl mx-auto"
+      >
+        <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        Voltar para início
+      </Link>
+      
       <div className="max-w-4xl mx-auto">
         <LanguageSelector
           languages={LANGUAGES}
@@ -122,13 +128,18 @@ export default function CodeModel() {
           setSelectedLanguage={setSelectedLanguage}
         />
 
-        <div className="flex items-center gap-3 mb-4 p-3 bg-white rounded-lg shadow-sm">
-          <div className={`p-2 rounded-full ${language.color}`}>
+        <div className="flex items-center gap-4 mb-8 p-6 bg-card rounded-2xl border border-border shadow-card">
+          <div className={`p-3 rounded-xl ${language.color} shadow-sm`}>
             {language.icon}
           </div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            {language.name}
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold text-card-foreground">
+              {language.name}
+            </h2>
+            <p className="text-muted-foreground mt-1">
+              Explore algoritmos e estruturas de dados
+            </p>
+          </div>
         </div>
 
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />

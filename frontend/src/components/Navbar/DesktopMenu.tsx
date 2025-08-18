@@ -1,44 +1,36 @@
-"use client";
-import { Lightbulb } from "lucide-react";
-
-interface DesktopMenuProps {
-  toggleFilter: (filterType: string) => void;
-}
-
-export default function DesktopMenu({
-  toggleFilter,
-}: DesktopMenuProps) {
+export default function DesktopMenu() {
   return (
-    <ul className="hidden lg:flex space-x-6 text-sm items-center font-medium  text-whitesmoke relative">
-       <li className="hover:text-gray-300 hover:cursor-pointer">
-        <a href="/">Home</a>
-      </li>
-      <li className="hover:text-gray-300 hover:cursor-pointer">
-        <a href="/about">Sobre</a>
-      </li>
-      <li className="hover:text-gray-300 hover:cursor-pointer">
-        <a href="/submission">Submissão</a>
-      </li>
-      <li className="hover:text-gray-300 hover:cursor-pointer">
-        <a href="/code-model">Códigos Modelo</a>
-      </li>
-      <li className="relative">
-        <button
-          onClick={() => toggleFilter("name")}
-          className="flex items-center gap-2 hover:text-gray-300 hover:cursor-pointer"
-        >
-          <span>Busca rápida</span>
-          <Lightbulb className="w-4 h-4" />
-        </button>
-      </li>
-      <li>
-        <a
-          href="submission"
-          className="bg-button  hover:bg-buttonhover text-whitesmoke px-4 py-2 rounded-md"
-        >
-          Get Started
-        </a>
-      </li>
-    </ul>
+    <div className="hidden lg:flex items-center gap-6">
+      <a
+        href="/"
+        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+      >
+        Início
+      </a>
+      <a
+        href="/about"
+        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+      >
+        Sobre
+      </a>
+      <a
+        href="/problems"
+        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+      >
+        Problemas
+      </a>
+      <a
+        href="/code-model"
+        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+      >
+        Códigos
+      </a>
+      <a
+        href="/submission"
+        className="px-4 py-2 bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-lg transition-all font-medium "
+      >
+        Submeter código
+      </a>
+    </div>
   );
 }

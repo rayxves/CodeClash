@@ -14,21 +14,21 @@ export default function SourceCodeSection({
   language,
 }: SourceCodeSectionProps) {
   return (
-    <div className="mb-8 bg-white p-3 rounded-xl shadow-sm border border-gray-200">
-      <h2 className="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+    <div className="mb-8 bg-card/50 backdrop-blur-sm p-6 rounded-2xl border border-border hover:shadow-elegant transition-all hover-lift">
+      <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
         {sourceType === "model" ? (
           <>
-            <Code2 className="w-5 h-5 text-blue-600 mr-2" />
+            <Code2 className="w-6 h-6 text-primary mr-3" />
             Código modelo analisado
           </>
         ) : (
           <>
-            <Code2 className="w-5 h-5 text-blue-600 mr-2" />
+            <Code2 className="w-6 h-6 text-primary mr-3" />
             Seu código analisado
           </>
         )}
       </h2>
-      <div className="bg-[#1e1e2f] overflow-auto max-h-[50vh] sm:max-h-[65vh] rounded-lg  text-xs sm:text-sm">
+      <div className="bg-muted/20 overflow-auto max-h-[50vh] sm:max-h-[65vh] rounded-xl border border-border text-xs sm:text-sm">
         <SyntaxHighlighter
           language={language?.toLowerCase()}
           style={nightOwl}
@@ -36,18 +36,20 @@ export default function SourceCodeSection({
           wrapLines
           customStyle={{
             margin: 0,
-            padding: "0.5rem",
-            background: "#1e1e2f",
-            lineHeight: "1.4",
+            padding: "1rem",
+            background: "hsl(var(--muted) / 0.2)",
+            lineHeight: "1.6",
             overflowX: "auto",
             wordBreak: "break-word",
+            borderRadius: "0.75rem",
           }}
           lineNumberStyle={{
-            minWidth: "1.75em",
-            paddingRight: "0.75em",
-            marginRight: "0.25em",
-            color: "#6e7681",
+            minWidth: "2em",
+            paddingRight: "1em",
+            marginRight: "0.5em",
+            color: "hsl(var(--muted-foreground))",
             textAlign: "right",
+            fontFamily: "var(--font-mono)",
           }}
         >
           {sourceCode}

@@ -13,10 +13,10 @@ export default function HeaderSection({
     <div className="flex justify-between items-center mb-6">
       <button
         onClick={onBack}
-        className="flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base group"
+        className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-medium group"
       >
-        <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1 group-hover:-translate-x-0.5 transition-transform" />
-        <span className="whitespace-nowrap">Voltar</span>
+        <ChevronLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+        <span>Voltar</span>
       </button>
     </div>
   );

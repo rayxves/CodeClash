@@ -14,16 +14,16 @@ export default function CodeHeader({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3 sm:mb-4">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 px-2 pt-6 rounded-2xl">
       <Link
         to={`/code-model/${encodeURIComponent(language)}/${encodeURIComponent(
           category
         )}`}
-        className="flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base group"
+        className="flex items-center text-primary hover:text-primary/80 transition-all text-sm sm:text-base group "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 sm:h-5 sm:w-5 mr-1 group-hover:-translate-x-0.5 transition-transform"
+          className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform sm:mb-6"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -33,12 +33,12 @@ export default function CodeHeader({
             clipRule="evenodd"
           />
         </svg>
-        <span className="whitespace-nowrap">Voltar</span>
+        <span className="font-medium sm:pb-6">Voltar</span>
       </Link>
 
-      <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
+      <div className="flex flex-wrap gap-3 w-full sm:w-auto justify-end">
         <button
-          className="px-3 py-1.5 text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all flex items-center shadow-sm hover:shadow-md active:scale-95"
+          className="px-4 py-2  text-sm bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-xl transition-all flex items-center font-medium hover-lift"
           aria-label="Ver recomendações"
           onClick={() =>
             navigate(
@@ -50,7 +50,7 @@ export default function CodeHeader({
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5"
+            className="h-4 w-4 mr-2"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -59,13 +59,13 @@ export default function CodeHeader({
           Recomendações
         </button>
         <button
-          className="px-3 py-1.5 text-xs sm:text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all flex items-center shadow-sm hover:shadow-md active:scale-95"
+          className="px-4 py-2 text-sm bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-[0_10px_40px_-10px_rgba(34,197,94,0.3)] text-white rounded-xl transition-all flex items-center font-medium hover-lift"
           aria-label="Fazer nova submissão"
         >
           <Link to="/submission" className="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5"
+              className="h-4 w-4 mr-2"
               viewBox="0 0 20 20"
               fill="currentColor"
             >

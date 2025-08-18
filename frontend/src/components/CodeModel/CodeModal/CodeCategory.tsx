@@ -16,26 +16,26 @@ export default function CodeCategory({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-6 bg-card hover:bg-muted/50 transition-colors"
         aria-expanded={isOpen}
       >
-        <div className="flex items-center gap-3">
-          <Folder className="w-5 h-5 text-blue-500 flex-shrink-0" />
+        <div className="flex items-center gap-4">
+          <Folder className="w-5 h-5 text-primary flex-shrink-0" />
           <div className="text-left">
-            <span className="font-medium text-gray-800 block">{categoryItem.name}</span>
+            <span className="font-semibold text-card-foreground block">{categoryItem.name}</span>
             {categoryItem.description && (
-              <span className="text-sm text-gray-500">{categoryItem.description}</span>
+              <span className="text-sm text-muted-foreground">{categoryItem.description}</span>
             )}
           </div>
         </div>
-        <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+        <ChevronRight className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
       </button>
 
       {isOpen && categoryItem.children && (
-        <div className="bg-gray-50 p-4 space-y-3 border-t border-gray-200">
+        <div className="bg-muted/30 p-6 space-y-4 border-t border-border">
           {categoryItem.children.map((child) => (
             child.children && child.children.length > 0 ? (
               <CodeCategory

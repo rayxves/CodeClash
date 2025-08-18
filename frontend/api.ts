@@ -84,7 +84,27 @@ export async function getCategoryView(
     return {
       currentCategory: null,
       children: [],
-      breadcrumbs: [],
     };
+  }
+}
+
+export async function getProblems() {
+  try {
+    const problems = await api.get("/problems");
+    console.log(problems.data);
+    return problems.data;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    throw error;
+  }
+}
+
+export async function getProblemById(id: number) {
+  try {
+    const problem = await api.get(`/problems/${id}`);
+    return problem.data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
   }
 }
