@@ -16,7 +16,7 @@ namespace Controllers
             _problemInterface = problemInterface;
         }
 
-        [HttpGet("all")]
+        [HttpGet()]
         public async Task<ActionResult<List<Problem>>> GetAllProblems()
         {
             var problems = await _problemInterface.GetAllProblemsAsync();

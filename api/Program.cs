@@ -15,6 +15,7 @@ using Observers;
 using Services;
 using Services.Extensions;
 using Strategies;
+using SubmissionChain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,6 +118,14 @@ builder.Services.AddScoped<IObserver, PointsObserver>();
 builder.Services.AddScoped<IObserver, SolutionPersistenceObserver>();
 builder.Services.AddScoped<IObserver, FrontendNotifierObserver>();
 builder.Services.AddScoped<ISubmissionStrategySelector, SubmissionStrategySelector>();
+builder.Services.AddScoped<ILanguageResolver, LanguageResolver>();
+builder.Services.AddScoped<ITestExecutorService, TestExecutorService>();
+builder.Services.AddScoped<SubmissionDirector>();
+builder.Services.AddScoped<ISubmissionHandler>(sp =>
+{
+    var judge0Service = sp.GetRequiredService<IJudge0Services>();
+    return SubmissionChainFactory.Create(judge0Service);
+});
 
 var app = builder.Build();
 
