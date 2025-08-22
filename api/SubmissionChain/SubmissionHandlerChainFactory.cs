@@ -16,6 +16,7 @@ public static class SubmissionChainFactory
             .SetNext(new TimeoutHandler())
             .SetNext(new RuntimeErrorHandler())
             .SetNext(new UnprocessableEntityHandler())
+            .SetNext(new ProcessingHandler())
             .SetNext(new AcceptedHandler());
 
         return chain;

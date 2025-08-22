@@ -37,27 +37,41 @@ public class Judge0Services : IJudge0Services
             if (request == null) throw new ArgumentNullException(nameof(request));
             if (string.IsNullOrWhiteSpace(request.Code)) throw new ArgumentException("Código fonte vazio");
 
-            var payload = new
+            object payload;
+
+            if (string.IsNullOrEmpty(request.ExpectedOutput))
             {
-                source_code = Base64Encode(request.Code),
-                language_id = request.LanguageId,
-                stdin = Base64Encode(request.Input ?? string.Empty),
-                expected_output = Base64Encode(request.ExpectedOutput ?? string.Empty),
-                base64_encoded = true
-            };
+                payload = new
+                {
+                    source_code = Base64Encode(request.Code),
+                    language_id = request.LanguageId,
+                    base64_encoded = true
+                };
+            }
+            else
+            {
+                payload = new
+                {
+                    source_code = Base64Encode(request.Code),
+                    language_id = request.LanguageId,
+                    stdin = Base64Encode(request.Input ?? string.Empty),
+                    expected_output = Base64Encode(request.ExpectedOutput),
+                    base64_encoded = true
+                };
+            }
             var serializerOptions = new JsonSerializerOptions
             {
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                WriteIndented = true 
+                WriteIndented = true
             };
 
             var jsonPayload = JsonSerializer.Serialize(payload, serializerOptions);
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
 
-            var response = await _httpClient.PostAsJsonAsync(
-                "submissions?wait=true&base64_encoded=true",
-                content);
+            var response = await _httpClient.PostAsync(
+            "submissions?wait=true&base64_encoded=true",
+            content);
 
             if (!response.IsSuccessStatusCode)
             {

@@ -9,19 +9,19 @@ public class SolutionPersistenceObserver : IObserver
 {
     private readonly ApplicationDbContext _context;
 
-    public SolutionPersistenceObserver(ApplicationDbContext context, ISubject submissionPublisher)
+    public SolutionPersistenceObserver(ApplicationDbContext context)
     {
-  
+
         _context = context;
-      
+
     }
 
     public async Task UpdateAsync(SubmissionSuccessContext context)
     {
-         var solution = await _context.UserProblemSolutions
-            .FirstOrDefaultAsync(s => s.Id == context.Solution.Id);
+        var solution = await _context.UserProblemSolutions
+           .FirstOrDefaultAsync(s => s.Id == context.Solution.Id);
 
-        if (solution == null) return; 
+        if (solution == null) return;
 
         int points = ProblemHelperServices.GetPointsForDifficulty(context.Problem.Difficulty);
 
@@ -30,7 +30,6 @@ public class SolutionPersistenceObserver : IObserver
         solution.MessageOutput = "Todos os testes passaram.";
 
         _context.UserProblemSolutions.Update(solution);
-        await _context.SaveChangesAsync();
     }
 
 

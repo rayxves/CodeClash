@@ -1,27 +1,22 @@
 using Dtos;
 
 namespace Observers;
-
+// Observers/SubmissionPublisher.cs
 public class SubmissionPublisher : ISubject
 {
-    private readonly IServiceProvider _serviceProvider;
+    // Injete a lista de observers diretamente!
+    private readonly IEnumerable<IObserver> _observers;
 
-    public SubmissionPublisher(IServiceProvider serviceProvider)
+    public SubmissionPublisher(IEnumerable<IObserver> observers)
     {
-        _serviceProvider = serviceProvider;
+        _observers = observers;
     }
 
-    
     public async Task NotifyAsync(SubmissionSuccessContext context)
     {
-        using (var scope = _serviceProvider.CreateScope())
+        foreach (var observer in _observers)
         {
-            var observers = scope.ServiceProvider.GetServices<IObserver>();
-            
-            foreach (var observer in observers)
-            {
-                await observer.UpdateAsync(context);
-            }
+            await observer.UpdateAsync(context);
         }
     }
 }

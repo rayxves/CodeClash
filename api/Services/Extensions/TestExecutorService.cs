@@ -50,6 +50,7 @@ public class TestExecutorService : ITestExecutorService
             {
                 TestCaseId = testCase.Id,
                 Status = context.Response?.Status?.Description ?? "Error",
+                ExpectedOutput = context.Request?.ExpectedOutput ?? "",
                 Output = context.Response?.Stdout ?? context.Response?.Stderr ?? context.ErrorMessage ?? "",
                 Passed = context.Response?.Status?.Description == "Accepted",
                 Time = context.Response?.Time ?? "0"

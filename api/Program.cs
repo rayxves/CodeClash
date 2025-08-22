@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using Builders;
 using Data;
 using Dtos;
@@ -28,6 +29,12 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
+
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
 
 builder.Services.AddSwaggerGen(option =>
 {
@@ -91,11 +98,12 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowSpecificOrigins", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:8080")
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
@@ -120,6 +128,8 @@ builder.Services.AddScoped<IObserver, FrontendNotifierObserver>();
 builder.Services.AddScoped<ISubmissionStrategySelector, SubmissionStrategySelector>();
 builder.Services.AddScoped<ILanguageResolver, LanguageResolver>();
 builder.Services.AddScoped<ITestExecutorService, TestExecutorService>();
+builder.Services.AddScoped<ProblemSubmissionStrategy>();
+builder.Services.AddScoped<SimpleExecutionStrategy>();
 builder.Services.AddScoped<SubmissionDirector>();
 builder.Services.AddScoped<ISubmissionHandler>(sp =>
 {
@@ -147,7 +157,7 @@ var app = builder.Build();
 
 
 
-app.UseCors("AllowAll");
+app.UseCors("AllowSpecificOrigins");
 
 app.UseRouting();
 app.UseAuthentication();

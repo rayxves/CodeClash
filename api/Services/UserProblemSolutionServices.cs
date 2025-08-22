@@ -117,7 +117,8 @@ namespace Services
 
         public async Task<UserProblemSolution> UpdateUserProblemSolutionAsync(UserProblemSolutionDto userProblemSolution)
         {
-            var existingSolution = await _context.UserProblemSolutions.FindAsync(userProblemSolution.ProblemId);
+            var existingSolution = await _context.UserProblemSolutions
+                .FirstOrDefaultAsync(s => s.UserId == userProblemSolution.UserId && s.ProblemId == userProblemSolution.ProblemId);
             if (existingSolution == null)
             {
                 throw new InvalidOperationException($"UserProblemSolution with ID '{userProblemSolution.ProblemId}' not found.");
@@ -131,7 +132,7 @@ namespace Services
             existingSolution.IsApproved = userProblemSolution.IsApproved;
 
             _context.UserProblemSolutions.Update(existingSolution);
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return existingSolution;
         }

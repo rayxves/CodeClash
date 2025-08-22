@@ -22,7 +22,7 @@ public class CodeController : ControllerBase
 
     [Authorize]
     [HttpPost("submit")]
-    public async Task<ActionResult<Judge0Response>> SubmitDirect([FromBody] SubmissionRequestDto dto, int? problemId)
+    public async Task<ActionResult<Judge0Response>> SubmitDirect([FromBody] SubmissionRequestDto dto)
     {
         try
         {
@@ -31,7 +31,8 @@ public class CodeController : ControllerBase
             {
                 return Unauthorized("Usuário não autenticado.");
             }
-            var response = await _submissionFacade.SubmitCodeAsync(dto.Code, dto.Language, problemId.HasValue ? problemId : null, userId.Value);
+
+            var response = await _submissionFacade.SubmitCodeAsync(dto.Code, dto.Language, dto.ProblemId, userId.Value);
             return Ok(response);
         }
         catch (Exception ex)
@@ -96,7 +97,7 @@ public class CodeController : ControllerBase
     [HttpGet("view/{language}/{categoryName?}")]
     public async Task<IActionResult> GetCategoryView(string language, string? categoryName = null)
     {
-        
+
         var result = await _codeService.GetCategoryViewAsync(language, categoryName);
 
         if (result == null)

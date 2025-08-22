@@ -44,7 +44,7 @@ namespace Controllers
             try
             {
                 var user = await _userInterface.RegisterUserAsync(registerDto);
-                return CreatedAtAction(nameof(user.Id), new { username = user.Username }, user);
+                return Ok(user);
             }
             catch (Exception ex)
             {
