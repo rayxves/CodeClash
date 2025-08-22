@@ -22,13 +22,7 @@ namespace Services
 
             if (existingSolution != null)
             {
-                existingSolution.Code = code;
-                existingSolution.Language = language;
-                existingSolution.SolvedAt = DateTime.UtcNow;
-                existingSolution.IsApproved = false;
-                existingSolution.PointsEarned = 0;
-                _context.UserProblemSolutions.Update(existingSolution);
-                await _context.SaveChangesAsync();
+
                 return existingSolution;
             }
 

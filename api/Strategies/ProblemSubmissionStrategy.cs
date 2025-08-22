@@ -44,7 +44,7 @@ namespace Strategies
                 OverallStatus = testResults.All(r => r.Passed) ? "Accepted" : "Wrong Answer"
             };
 
-            if (finalResultDto.OverallStatus == "Accepted")
+            if (finalResultDto.OverallStatus == "Accepted" && initialSolution.PointsEarned == 0)
             {
                 await _submissionPublisher.NotifyAsync(new SubmissionSuccessContext
                 {
