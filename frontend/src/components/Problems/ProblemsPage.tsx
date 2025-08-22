@@ -129,7 +129,7 @@ export default function ProblemsPage() {
                 <Select
                   options={difficulties.map((d) => ({ value: d, label: d }))}
                   value={{ value: difficultyFilter, label: difficultyFilter }}
-                  onChange={(option) => setDifficultyFilter(option.value)}
+                  onChange={(option) => setDifficultyFilter(option?.value || "")}
                   styles={customStyles}
                   classNamePrefix="react-select"
                   maxMenuHeight={200}
@@ -139,7 +139,7 @@ export default function ProblemsPage() {
               <Select
                 options={categories.map((d) => ({ value: d, label: d }))}
                 value={{ value: categoryFilter, label: categoryFilter }}
-                onChange={(option) => setCategoryFilter(option.value)}
+                onChange={(option) => setCategoryFilter(option?.value || "")}
                 styles={customStyles}
                 classNamePrefix="react-select"
                 maxMenuHeight={200}

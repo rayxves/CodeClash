@@ -10,30 +10,76 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  Lock,
+  X,
 } from "lucide-react";
 import MonacoEditor from "react-monaco-editor";
-import axios from "axios";
-import ExecutionOutput from "./ExecutionOutput";
-import type {
-  Problem,
-  SubmissionResult,
-  TestResult,
-} from "../../types/problem";
-import { getProblemById } from "../../../api";
-import ReactMarkdown from "react-markdown";
 
-interface Judge0Response {
-  stdout: string | null;
-  stderr: string | null;
-  compile_output: string | null;
-  message?: string;
-  status?: {
-    id: number;
-    description: string;
-  };
-  time?: string;
-  memory?: string;
+import type { Problem } from "../../types/problem";
+import { getProblemById, submitCode } from "../../../api";
+import ReactMarkdown from "react-markdown";
+import { useAuth } from "../../contexts/AuthContext";
+import SubmissionResultDisplay from "./SubmissionResultDisplay";
+
+interface Notification {
+  id: string;
+  type: "error" | "success" | "info";
+  message: string;
+  duration?: number;
 }
+
+const NotificationToast = ({
+  notification,
+  onDismiss,
+}: {
+  notification: Notification;
+  onDismiss: (id: string) => void;
+}) => {
+  const { type, message, id } = notification;
+
+  useEffect(() => {
+    if (notification.duration) {
+      const timer = setTimeout(() => {
+        onDismiss(id);
+      }, notification.duration);
+
+      return () => clearTimeout(timer);
+    }
+  }, [id, notification.duration, onDismiss]);
+
+  const bgColor =
+    type === "error"
+      ? "bg-red-100 border-red-300 text-red-800"
+      : type === "success"
+      ? "bg-green-100 border-green-300 text-green-800"
+      : "bg-blue-100 border-blue-300 text-blue-800";
+
+  const icon =
+    type === "error" ? (
+      <XCircle className="w-5 h-5" />
+    ) : type === "success" ? (
+      <CheckCircle className="w-5 h-5" />
+    ) : (
+      <Clock className="w-5 h-5" />
+    );
+
+  return (
+    <div
+      className={`flex items-center justify-between p-4 mb-2 rounded-lg border ${bgColor} shadow-lg animate-fadeIn`}
+    >
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-sm font-medium">{message}</span>
+      </div>
+      <button
+        onClick={() => onDismiss(id)}
+        className="text-gray-500 hover:text-gray-700 transition-colors"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  );
+};
 
 const languages = [
   { name: "Python", id: "python", icon: <Code2 className="w-4 h-4" /> },
@@ -46,17 +92,33 @@ export default function EnhancedSubmissionPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const problemId = searchParams.get("problemId");
+  const { isAuthenticated } = useAuth();
 
   const [code, setCode] = useState("// Write your code here\n");
   const [language, setLanguage] = useState("python");
-  const [output, setOutput] = useState<Judge0Response | string | null>(null);
+  const [output, setOutput] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fontSize, setFontSize] = useState(14);
 
   const [problem, setProblem] = useState<Problem | null>(null);
-  const [submissionResult, setSubmissionResult] =
-    useState<SubmissionResult | null>(null);
   const [isSubmittingProblem, setIsSubmittingProblem] = useState(false);
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const addNotification = (
+    type: "error" | "success" | "info",
+    message: string,
+    duration = 5000
+  ) => {
+    const id = Date.now().toString();
+    setNotifications((prev) => [...prev, { id, type, message, duration }]);
+  };
+
+  const removeNotification = (id: string) => {
+    setNotifications((prev) =>
+      prev.filter((notification) => notification.id !== id)
+    );
+  };
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -65,88 +127,114 @@ export default function EnhancedSubmissionPage() {
           const problem = await getProblemById(Number(problemId));
           setProblem(problem);
         } catch (error) {
-          console.log(error);
+          addNotification(
+            "error",
+            "Erro ao carregar o problema. Tente novamente mais tarde."
+          );
         }
       }
     };
     fetchProblem();
   }, [problemId, language]);
 
-  const handleSimpleSubmit = async () => {
+  const handleSubmit = async (language: string, code: string) => {
+    if (!isAuthenticated) {
+      addNotification(
+        "error",
+        "Você precisa estar logado para executar código. Faça login ou crie uma conta."
+      );
+      navigate("/login");
+      return;
+    }
+
+    if (!code.trim()) {
+      addNotification("error", "O código não pode estar vazio.");
+      return;
+    }
+
     setIsLoading(true);
+    setIsSubmittingProblem(!!problemId);
     try {
-      const response = await axios.post<Judge0Response>(
-        "http://localhost:5070/api/code/submit",
-        {
-          language: language,
-          code: code,
-          input: null,
-        }
+      const response = await submitCode(
+        language,
+        code,
+        problemId ? Number(problemId) : undefined
       );
 
-      setOutput(response.data);
+      setOutput(response);
+
+      if (problemId) {
+        addNotification("success", "Solução submetida com sucesso!");
+      } else {
+        addNotification("success", "Código executado com sucesso!");
+      }
+
+      if (response.pointsGained && response.pointsGained > 0) {
+        setTimeout(() => {
+          addNotification(
+            "success",
+            `Parabéns! Você ganhou ${response.pointsGained} pontos!`,
+            7000
+          );
+        }, 1000);
+      }
     } catch (error: any) {
       console.error("Submission error:", error);
 
-      if (error.response?.data?.error) {
+      let errorMessage =
+        "Erro ao executar o código. Tente novamente mais tarde.";
+
+      if (error.message) {
         setOutput({
-          stderr: null,
-          stdout: null,
-          compile_output: null,
-          message: error.response.data.error,
-          status: {
-            id: 13,
-            description: "Error",
-          },
+          error: error.message,
         });
+      } else if (error.response?.data) {
+        setOutput(error.response.data);
+        errorMessage = "Erro no servidor ao processar sua solicitação.";
+      } else if (error.request) {
+        errorMessage =
+          "Não foi possível conectar ao servidor. Verifique sua conexão.";
       } else {
-        setOutput(error.message);
+        setOutput("");
       }
+
+      addNotification("error", errorMessage);
     } finally {
       setIsLoading(false);
+      setIsSubmittingProblem(false);
     }
   };
 
-  const handleProblemSubmit = async () => {
-    if (!problem || !code.trim()) return;
-
-    setIsSubmittingProblem(true);
-    setSubmissionResult(null);
-
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const results: TestResult[] = problem.testCases.map((testCase) => {
-      const mockPassed = Math.random() > 0.3;
-      return {
-        testCase,
-        userOutput: mockPassed ? testCase.expectedOutput : "Wrong output",
-        passed: mockPassed,
-        error: mockPassed ? undefined : "Output não corresponde ao esperado",
-      };
-    });
-
-    const passed = results.filter((r) => r.passed).length;
-    const result: SubmissionResult = {
-      passed,
-      total: results.length,
-      results,
-      allPassed: passed === results.length,
-    };
-
-    setSubmissionResult(result);
-    setIsSubmittingProblem(false);
-  };
-
   const handleGetRecommendations = () => {
-    navigate(`/recommendations?code=${encodeURIComponent(code)}`);
+    if (!code.trim()) {
+      addNotification(
+        "error",
+        "O código não pode estar vazio para obter recomendações."
+      );
+      return;
+    }
+    navigate(
+      `/recommendations/${encodeURIComponent(
+        language
+      )}/by-code/${encodeURIComponent(code)}`
+    );
   };
 
-  const isProblemsMode = !!problem;
+  const isProblemsMode = !!problemId;
 
   return (
     <div className="min-h-screen bg-gradient-surface pt-20 pb-8 px-4 sm:px-6">
+      <div className="fixed top-20 right-4 z-50 w-80 max-w-full">
+        {notifications.map((notification) => (
+          <NotificationToast
+            key={notification.id}
+            notification={notification}
+            onDismiss={removeNotification}
+          />
+        ))}
+      </div>
+
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-6">
           <Link
             to={isProblemsMode ? "/problems" : "/"}
@@ -159,35 +247,35 @@ export default function EnhancedSubmissionPage() {
           <div className="flex items-center gap-3 mb-2">
             <Code2 className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-bold text-foreground">
-              {isProblemsMode
-                ? `Resolvendo: ${problem?.title}`
+              {isProblemsMode && problem
+                ? `Resolvendo: ${problem.title}`
                 : "Code Playground"}
             </h1>
           </div>
 
-          {isProblemsMode && (
+          {isProblemsMode && problem && (
             <div className="bg-card rounded-xl border border-border p-4 mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <span
                   className={`text-xs px-3 py-1 rounded-full border font-medium ${
-                    problem?.difficulty === "Fácil"
+                    problem.difficulty === "Fácil"
                       ? "text-green-600 font-semibold bg-green-50 border-green-200"
-                      : problem?.difficulty === "Médio"
+                      : problem.difficulty === "Médio"
                       ? "text-amber-600 font-semibold bg-amber-50 border-amber-200"
                       : "text-red-600 font-semibold bg-red-50 border-red-200"
                   }`}
                 >
-                  {problem?.difficulty}
+                  {problem.difficulty}
                 </span>
                 <span className="text-xs text-muted-foreground px-3 py-1 bg-muted rounded-full">
-                  {problem?.category}
+                  {problem.category}
                 </span>
               </div>
               <ReactMarkdown
                 components={{
                   h2: ({ ...props }) => (
                     <h2
-                      className="text-lg font-bold text-gray-300 mt-4 mb-1"
+                      className="text-lg font-bold text-muted-foreground mt-4 mb-1"
                       {...props}
                     />
                   ),
@@ -199,16 +287,15 @@ export default function EnhancedSubmissionPage() {
                   ),
                 }}
               >
-                {problem?.description || ""}
+                {problem.description || ""}
               </ReactMarkdown>
 
-              {/* Test Cases Preview */}
               <div className="mt-4">
                 <h4 className="text-sm font-semibold text-card-foreground mb-2">
                   Exemplos:
                 </h4>
                 <div className="space-y-2">
-                  {problem?.testCases
+                  {problem.testCases
                     .filter((tc) => !tc.isHidden)
                     .map((testCase, index) => (
                       <div
@@ -241,11 +328,9 @@ export default function EnhancedSubmissionPage() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Code Editor */}
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1  gap-6">
+          <div className="">
             <div className="bg-card rounded-2xl border border-border shadow-card overflow-hidden">
-              {/* Editor Header */}
               <div className="bg-muted/50 px-6 py-4 border-b border-border flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex space-x-1.5">
@@ -289,7 +374,6 @@ export default function EnhancedSubmissionPage() {
                 </div>
               </div>
 
-              {/* Monaco Editor */}
               <div className="bg-card">
                 <MonacoEditor
                   height="500px"
@@ -310,9 +394,7 @@ export default function EnhancedSubmissionPage() {
             </div>
           </div>
 
-          {/* Actions and Output */}
           <div className="space-y-6">
-            {/* Action Buttons */}
             <div className="bg-card rounded-2xl border border-border shadow-card p-6">
               <h3 className="text-lg font-semibold text-card-foreground mb-4">
                 Ações
@@ -321,11 +403,16 @@ export default function EnhancedSubmissionPage() {
               <div className="space-y-3">
                 {isProblemsMode ? (
                   <button
-                    onClick={handleProblemSubmit}
+                    onClick={() => handleSubmit(language, code)}
                     disabled={isSubmittingProblem || !code.trim()}
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-lg font-medium transition-all hover-lift disabled:cursor-not-allowed"
                   >
-                    {isSubmittingProblem ? (
+                    {!isAuthenticated ? (
+                      <>
+                        <Lock className="w-4 h-4" />
+                        Login Necessário
+                      </>
+                    ) : isSubmittingProblem ? (
                       <>
                         <Clock className="w-4 h-4 animate-spin" />
                         Avaliando...
@@ -339,11 +426,16 @@ export default function EnhancedSubmissionPage() {
                   </button>
                 ) : (
                   <button
-                    onClick={handleSimpleSubmit}
+                    onClick={() => handleSubmit(language, code)}
                     disabled={isLoading || !code.trim()}
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-muted disabled:text-muted-foreground text-white rounded-lg font-medium transition-all hover-lift disabled:cursor-not-allowed"
                   >
-                    {isLoading ? (
+                    {!isAuthenticated ? (
+                      <>
+                        <Lock className="w-4 h-4" />
+                        Login Necessário
+                      </>
+                    ) : isLoading ? (
                       <>
                         <Clock className="w-4 h-4 animate-spin" />
                         Executando...
@@ -368,8 +460,7 @@ export default function EnhancedSubmissionPage() {
               </div>
             </div>
 
-            {/* Results */}
-            {(output || submissionResult) && (
+            {output && (
               <div className="bg-card rounded-2xl border border-border shadow-card overflow-hidden">
                 <div className="bg-muted/50 px-6 py-3 border-b border-border flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-primary" />
@@ -381,81 +472,26 @@ export default function EnhancedSubmissionPage() {
                 </div>
 
                 <div className="p-6">
-                  {isProblemsMode && submissionResult ? (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 mb-4">
-                        {submissionResult.allPassed ? (
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                        ) : (
-                          <XCircle className="w-5 h-5 text-red-600" />
-                        )}
-                        <span
-                          className={`font-semibold ${
-                            submissionResult.allPassed
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          {submissionResult.allPassed
-                            ? "Todos os testes passaram!"
-                            : `${submissionResult.passed}/${submissionResult.total} testes passaram`}
-                        </span>
-                      </div>
-
-                      <div className="space-y-2">
-                        {submissionResult.results.map((result, index) => (
-                          <div
-                            key={index}
-                            className={`p-3 rounded-lg border ${
-                              result.passed
-                                ? "bg-green-50 border-green-200"
-                                : "bg-red-50 border-red-200"
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 mb-1">
-                              {result.passed ? (
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                              ) : (
-                                <XCircle className="w-4 h-4 text-red-600" />
-                              )}
-                              <span className="text-sm font-medium">
-                                Teste {index + 1}{" "}
-                                {result.testCase.isHidden ? "(Oculto)" : ""}
-                              </span>
-                            </div>
-                            {!result.testCase.isHidden && (
-                              <div className="text-xs space-y-1 text-muted-foreground">
-                                <div>
-                                  <strong>Entrada:</strong>{" "}
-                                  {result.testCase.input}
-                                </div>
-                                <div>
-                                  <strong>Esperado:</strong>{" "}
-                                  {result.testCase.expectedOutput}
-                                </div>
-                                <div>
-                                  <strong>Obtido:</strong> {result.userOutput}
-                                </div>
-                              </div>
-                            )}
-                            {result.error && (
-                              <div className="text-xs text-red-600 mt-1">
-                                {result.error}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <ExecutionOutput result={output} />
-                  )}
+                  <SubmissionResultDisplay
+                    result={output}
+                    isProblemsMode={isProblemsMode}
+                  />
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
