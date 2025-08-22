@@ -12,6 +12,9 @@ import CodeModal from "./components/CodeModel/CodeModal/CodeModal.tsx";
 import EnhancedSubmissionPage from "./components/Submission/EnhancedSubmissionPage.tsx";
 import RecommendationsPage from "./components/CodeModel/Recomendation/RecomendationsPage.tsx";
 import ProblemsPage from "./components/Problems/ProblemsPage.tsx";
+import LoginPage from "./components/Auth/LoginPage.tsx";
+import RegisterPage from "./components/Auth/RegisterPage.tsx";
+import ProfilePage from "./components/Profile/ProfilePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -26,10 +29,18 @@ const router = createBrowserRouter([
       { path: "code-model/:language/:category", element: <CategoryPage /> },
       { path: "code-modal/:id/:name", element: <CodeModal /> },
       { path: "submission", element: <EnhancedSubmissionPage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "register", element: <RegisterPage /> },
+      { path: "profile", element: <ProfilePage /> },
       {
-        path: "recommendations/:language/:name",
+        path: "recommendations/:language/by-name/:name",
         element: <RecommendationsPage />,
       },
+      {
+        path: "recommendations/:language/by-code/:code",
+        element: <RecommendationsPage />,
+      },
+
       { path: "recommendations", element: <RecommendationsPage /> },
     ],
   },
