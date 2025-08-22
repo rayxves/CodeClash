@@ -19,7 +19,7 @@ export default function RegisterPage() {
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
-    
+
     if (password.length < minLength) {
       return "A senha deve ter pelo menos 6 caracteres";
     }
@@ -38,6 +38,11 @@ export default function RegisterPage() {
     return null;
   };
 
+  const validateUsername = (username: string) => {
+    const regex = /^[a-zA-Z0-9_-]{3,20}$/;
+    return regex.test(username);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -47,6 +52,12 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!validateUsername(username)) {
+      setError(
+        "Nome de usuário inválido. Use apenas letras, números, hífen e underscore."
+      );
+      return;
+    }
     const passwordError = validatePassword(password);
     if (passwordError) {
       setError(passwordError);
@@ -64,10 +75,10 @@ export default function RegisterPage() {
       await register(username, email, password);
       navigate("/");
     } catch (error: any) {
-       if (error.response.status !== 500) {
+      if (error.response.status !== 500) {
         setError(error.response.data);
       } else {
-        setError("Erro interno ao tentar realizar o registro.")
+        setError("Erro interno ao tentar realizar o registro.");
       }
     } finally {
       setIsLoading(false);
@@ -100,7 +111,7 @@ export default function RegisterPage() {
                 htmlFor="username"
                 className="text-sm font-medium text-foreground"
               >
-                Nome de usuário 
+                Nome de usuário
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -142,7 +153,7 @@ export default function RegisterPage() {
                 htmlFor="password"
                 className="text-sm font-medium text-foreground"
               >
-                Senha 
+                Senha
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />

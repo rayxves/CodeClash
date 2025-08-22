@@ -108,7 +108,7 @@ export default function EnhancedSubmissionPage() {
   const addNotification = (
     type: "error" | "success" | "info",
     message: string,
-    duration = 5000
+    duration = 4000
   ) => {
     const id = Date.now().toString();
     setNotifications((prev) => [...prev, { id, type, message, duration }]);
@@ -147,7 +147,7 @@ export default function EnhancedSubmissionPage() {
       return;
     }
 
-    if (!code.trim()) {
+    if (!code.trim() || code == "// Write your code here") {
       addNotification("error", "O código não pode estar vazio.");
       return;
     }
@@ -174,7 +174,7 @@ export default function EnhancedSubmissionPage() {
           addNotification(
             "success",
             `Parabéns! Você ganhou ${response.pointsGained} pontos!`,
-            7000
+            5000
           );
         }, 1000);
       }
@@ -184,18 +184,18 @@ export default function EnhancedSubmissionPage() {
       let errorMessage =
         "Erro ao executar o código. Tente novamente mais tarde.";
 
-      if (error.message) {
+      if (error.message && error.status == 400) {
         setOutput({
           error: error.message,
         });
-      } else if (error.response?.data) {
-        setOutput(error.response.data);
+        return;
+      } else if (error.message && error.status == 500) {
+        setOutput("");
         errorMessage = "Erro no servidor ao processar sua solicitação.";
       } else if (error.request) {
+        setOutput("");
         errorMessage =
           "Não foi possível conectar ao servidor. Verifique sua conexão.";
-      } else {
-        setOutput("");
       }
 
       addNotification("error", errorMessage);

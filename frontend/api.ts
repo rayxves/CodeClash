@@ -175,14 +175,13 @@ export async function submitCode(
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      if (error.response && error.response.data && error.response.data.error) {
-        throw new Error(error.response.data.error);
-      } else {
-        throw new Error(error.message);
-      }
+      const status = error.response?.status || 500;
+      const message = error.response?.data?.error || error.message;
+
+      throw { status, message };
     }
 
-    throw new Error("Ocorreu um erro inesperado.");
+    throw { status: 500, message: "Ocorreu um erro inesperado." };
   }
 }
 
@@ -218,9 +217,8 @@ export async function getUser() {
   }
 }
 
-
 export async function getUserProblemSolutions() {
-   const userDataString = Cookies.get("user");
+  const userDataString = Cookies.get("user");
 
   if (!userDataString) {
     throw new Error("Usuário precisa estar autenticado.");
@@ -249,6 +247,4 @@ export async function getUserProblemSolutions() {
 
     throw new Error("Ocorreu um erro inesperado.");
   }
-  
-  
 }

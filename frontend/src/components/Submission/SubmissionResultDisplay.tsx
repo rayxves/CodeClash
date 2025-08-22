@@ -107,7 +107,6 @@ export default function SubmissionResultDisplay({
     );
   }
 
-  // Modo simples - mostrar output básico
   if (result.simpleExecutionResult) {
     const execution = result.simpleExecutionResult;
     const isSuccess = execution.status.id === 3;

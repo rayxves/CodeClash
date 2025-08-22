@@ -205,7 +205,15 @@ export default function ProfilePage() {
                     Problemas resolvidos:
                   </span>
                   <span className="font-medium text-foreground">
-                    {userProblemSolutions.length}
+                    {userProblemSolutions.filter((up) => up.isApproved).length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">
+                    Problemas pendentes:
+                  </span>
+                  <span className="font-medium text-foreground">
+                    {userProblemSolutions.filter((up) => !up.isApproved).length}
                   </span>
                 </div>
 

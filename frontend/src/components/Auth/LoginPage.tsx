@@ -12,26 +12,33 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const sanitizeInput = (input: string) => {
-    return input.replace(/[<>'";%()&+|-]/g, '');
+    return input.replace(/[<>'";%()&+|-]/g, "");
   };
 
   const validateUsername = (username: string) => {
-    const regex = /^[a-zA-Z0-9_-]{3,20}$/; 
+    const regex = /^[a-zA-Z0-9_-]{3,20}$/;
     return regex.test(username);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
+
     if (!validateUsername(username)) {
-      setError("Nome de usuário inválido. Use apenas letras, números, hífen e underscore.");
+      if (username.length < 3) {
+        setError("Nome de usuário precisa ter 3 ou mais caracteres.");
+        return;
+        
+      }
+      setError(
+        "Nome de usuário inválido. Use apenas letras, números, hífen e underscore."
+      );
       return;
     }
-    
+
     const sanitizedUsername = sanitizeInput(username);
     const sanitizedPassword = sanitizeInput(password);
-    
+
     if (!sanitizedUsername || sanitizedUsername.length < 3) {
       setError("Nome de usuário contém caracteres inválidos");
       return;
@@ -46,7 +53,7 @@ export default function LoginPage() {
       if (error.response.status !== 500) {
         setError(error.response.data);
       } else {
-        setError("Erro interno ao tentar realizar o login.")
+        setError("Erro interno ao tentar realizar o login.");
       }
     } finally {
       setIsLoading(false);
