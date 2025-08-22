@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import type { CategoryViewData, CodeReference } from "./src/types/code";
-
+import Cookies from "js-cookie";
 const api = axios.create({
   baseURL: "http://localhost:5070/api",
   timeout: 10000,
@@ -91,7 +91,6 @@ export async function getCategoryView(
 export async function getProblems() {
   try {
     const problems = await api.get("/problems");
-    console.log(problems.data);
     return problems.data;
   } catch (error: any) {
     console.error("API Error:", error);
@@ -107,4 +106,149 @@ export async function getProblemById(id: number) {
     console.error("API Error:", error);
     throw error;
   }
+}
+
+export async function loginUser(username: string, password: string) {
+  try {
+    const user = await api.post("/users/login", {
+      username,
+      password,
+    });
+
+    return user.data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
+}
+
+export async function registerUser(
+  username: string,
+  email: string,
+  password: string
+) {
+  try {
+    const user = await api.post("/users/register", {
+      username,
+      email,
+      password,
+    });
+
+    return user.data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
+}
+export async function submitCode(
+  language: string,
+  code: string,
+  problemId?: number | null
+) {
+  const userDataString = Cookies.get("user");
+
+  if (!userDataString) {
+    throw new Error("Usuário precisa estar autenticado.");
+  }
+
+  const finalProblemId = problemId === 0 ? null : problemId;
+
+  try {
+    const userData = JSON.parse(userDataString);
+    const token = userData.token;
+
+    const response = await api.post(
+      "/code/submit",
+      {
+        code,
+        language,
+        problemId: finalProblemId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data && error.response.data.error) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error(error.message);
+      }
+    }
+
+    throw new Error("Ocorreu um erro inesperado.");
+  }
+}
+
+export async function getUser() {
+  const userDataString = Cookies.get("user");
+
+  if (!userDataString) {
+    throw new Error("Usuário precisa estar autenticado.");
+  }
+
+  try {
+    const userData = JSON.parse(userDataString);
+    const token = userData.token;
+
+    const response = await api.get("/users/get-user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data && error.response.data.error) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error(error.message);
+      }
+    }
+
+    throw new Error("Ocorreu um erro inesperado.");
+  }
+}
+
+
+export async function getUserProblemSolutions() {
+   const userDataString = Cookies.get("user");
+
+  if (!userDataString) {
+    throw new Error("Usuário precisa estar autenticado.");
+  }
+
+  try {
+    const userData = JSON.parse(userDataString);
+    const token = userData.token;
+
+    const response = await api.get("user-problem-solutions/user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data && error.response.data.error) {
+        throw new Error(error.response.data.error);
+      } else {
+        throw new Error(error.message);
+      }
+    }
+
+    throw new Error("Ocorreu um erro inesperado.");
+  }
+  
+  
 }
