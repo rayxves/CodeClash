@@ -44,7 +44,7 @@ export default function CodeHeader({
             navigate(
               `/recommendations/${encodeURIComponent(
                 language
-              )}/${encodeURIComponent(name)}`
+              )}/by-name/${encodeURIComponent(name)}`
             )
           }
         >
@@ -59,10 +59,10 @@ export default function CodeHeader({
           Recomendações
         </button>
         <button
-          className="px-4 py-2 text-sm bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-[0_10px_40px_-10px_rgba(34,197,94,0.3)] text-white rounded-xl transition-all flex items-center font-medium hover-lift"
+          className="px-4 py-2 text-sm bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-[0_10px_40px_-10px_rgba(34,197,94,0.3)] text-white hover:text-white rounded-xl transition-all flex items-center font-medium hover-lift"
           aria-label="Fazer nova submissão"
         >
-          <Link to="/submission" className="flex items-center">
+          <Link to="/submission" className="flex items-center hover:text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 mr-2"

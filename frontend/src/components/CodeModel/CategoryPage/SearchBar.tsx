@@ -4,11 +4,13 @@ import { useEffect, useRef } from "react";
 interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  placehoder: string
 }
 
 export default function SearchBar({
   searchTerm,
   setSearchTerm,
+  placehoder
 }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,7 +28,7 @@ export default function SearchBar({
       <input
         ref={inputRef}
         type="text"
-        placeholder="Buscar algoritmos..."
+        placeholder={placehoder}
         className="block w-full pl-12 pr-4 py-4 text-card-foreground bg-card border-2 border-border rounded-2xl shadow-card focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 text-base"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}

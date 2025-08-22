@@ -39,7 +39,6 @@ export default function CodeDetailModal({
           customStyle={{
             margin: 0,
             padding: "1.5rem",
-            background: "hsl(var(--muted) / 0.2)",
             lineHeight: "1.6",
             overflowX: "auto",
             wordBreak: "break-word",
@@ -48,7 +47,6 @@ export default function CodeDetailModal({
             minWidth: "2em",
             paddingRight: "1em",
             marginRight: "0.5em",
-            color: "hsl(var(--muted-foreground))",
             textAlign: "right",
             fontFamily: "var(--font-mono)",
           }}

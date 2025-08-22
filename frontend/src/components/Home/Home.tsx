@@ -4,9 +4,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background text-foreground">
       <section className="py-24 px-4 mt-16">
-        <div className="container mx-auto flex flex-col md:flex-row items-center gap-16 max-w-7xl">
-          <div className="md:w-1/2 animate-fade-in">
-            <h1 className="text-4xl sm:text-6xl font-bold mb-6 leading-tight">
+        <div className="container mx-auto flex flex-col lg:flex-row items-center gap-16 max-w-7xl">
+          <div className="lg:w-1/2 animate-fade-in">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               Desafie seus conhecimentos e{" "}
               <span className="gradient-text">desenvolva suas habilidades</span>
             </h1>
@@ -36,7 +36,7 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="md:w-1/2 space-y-6 animate-slide-up">
+          <div className="lg:w-1/2 space-y-6 animate-slide-up">
             <div className="bg-card/50 backdrop-blur-sm p-6 rounded-2xl border border-border hover:shadow-elegant transition-all hover-lift">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center flex-shrink-0">

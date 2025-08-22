@@ -165,11 +165,11 @@ export default function CodeModal() {
             </div>
 
             <div className="w-fit flex gap-4 items-center justify-end">
-              <span className="text-gray-400 text-xs font-mono bg-gray-700 px-2 py-0.5 rounded-md">
+              <span className="text-gray-400 text-center text-xs font-mono bg-gray-700 px-2 py-0.5 rounded-md">
                 {code.language}
               </span>
               <ClipboardCopy
-                className="hover:cursor-copy"
+                className="hover:cursor-copy text-white"
                 size={16}
                 onClick={async () => await handleCopyClick(code.code)}
               />
@@ -218,7 +218,7 @@ export default function CodeModal() {
   );
 }
 
-function getExtension(language: string): string {
+export function getExtension(language: string): string {
   const extensions: Record<string, string> = {
     python: "py",
     java: "java",

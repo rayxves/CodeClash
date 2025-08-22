@@ -12,7 +12,7 @@ import RecommendationsList from "./RecomendationList";
 
 export default function RecommendationsPage() {
   const navigate = useNavigate();
-  const { language, name } = useParams<{ language?: string; name?: string }>();
+  const { language, name, code } = useParams<{ language?: string; name?: string; code?: string }>();
 
   const [recommendations, setRecommendations] = useState<CodeReference[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,11 +41,8 @@ export default function RecommendationsPage() {
             fetchRecommendations(modelCode.code);
           }
         } else {
-          const queryParams = new URLSearchParams(location.search);
-          const codeParam = queryParams.get("code");
-
-          if (codeParam) {
-            const userCode = decodeURIComponent(codeParam);
+          if (code) {
+            const userCode = decodeURIComponent(code);
             setSourceCode(userCode);
             setSourceType("user");
             fetchRecommendations(userCode);

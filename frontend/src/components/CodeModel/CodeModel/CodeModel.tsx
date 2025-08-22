@@ -19,6 +19,7 @@ import {
   Code2,
   Coffee,
 } from "lucide-react";
+import Cookies from "js-cookie";
 
 export const LANGUAGES: Language[] = [
   {
@@ -92,20 +93,21 @@ export const CATEGORIES: Category[] = [
 ];
 
 export default function CodeModel() {
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>(
-    LANGUAGES[0]
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(() => {
+    const saved = Cookies.get("language");
+    return LANGUAGES.find((l) => l.name === saved) || LANGUAGES[0];
+  });
+
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const filteredCategories = CATEGORIES.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const language = localStorage.getItem("language")
+  const language = Cookies.get("language")
     ? LANGUAGES.find(
         (lang) =>
-          lang.name.toLowerCase() ===
-          localStorage.getItem("language")?.toLowerCase()
+          lang.name.toLowerCase() === Cookies.get("language")?.toLowerCase()
       ) || LANGUAGES[0]
     : selectedLanguage;
 
@@ -115,12 +117,22 @@ export default function CodeModel() {
         to="/"
         className="mt-8 mb-8 flex items-center text-primary hover:text-primary/80 transition-colors text-sm sm:text-base group max-w-4xl mx-auto"
       >
-        <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        <svg
+          className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
         Voltar para início
       </Link>
-      
+
       <div className="max-w-4xl mx-auto">
         <LanguageSelector
           languages={LANGUAGES}
@@ -142,7 +154,11 @@ export default function CodeModel() {
           </div>
         </div>
 
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <SearchBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          placehoder="Buscar categorias..."
+        />
 
         <CategoryList
           categories={filteredCategories}

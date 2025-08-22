@@ -4,7 +4,7 @@ import { getCategoryView } from "../../../../api";
 import EmptyState from "./EmptyState";
 import SearchBar from "./SearchBar";
 import type { CategoryPageParams } from "../../../types/routes";
-import type { CategoryViewData } from "../../../types/code";
+import type { CategoryViewData, ChildCategory } from "../../../types/code";
 
 const CodeList = lazy(() => import("../CodeModal/CodeList"));
 
@@ -38,14 +38,30 @@ export default function CategoryPage() {
   const handleBack = () => {
     navigate(`/code-model`);
   };
+  function matchesSearch(child: ChildCategory, search: string): boolean {
+    if (
+      child.name?.toLowerCase().includes(search) ||
+      child.category?.toLowerCase().includes(search) ||
+      child.code?.toLowerCase().includes(search)
+    ) {
+      return true;
+    }
+
+    if (child.children && child.children.length > 0) {
+      return child.children.some((nested) => matchesSearch(nested, search));
+    }
+
+    return false;
+  }
 
   const filteredChildren = useMemo(() => {
     if (!categoryData?.children) return [];
     if (!searchTerm.trim()) return categoryData.children;
-    return categoryData.children.filter((child) =>
-      child.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm, categoryData]);
+
+    const search = searchTerm.toLowerCase();
+
+    return categoryData.children.filter((ch) => matchesSearch(ch, search));
+  }, [searchTerm, categoryData, matchesSearch]);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background py-8 px-4 sm:px-6 mt-16">
@@ -71,7 +87,11 @@ export default function CategoryPage() {
             <span className="font-medium">Voltar</span>
           </button>
 
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          <SearchBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            placehoder="Buscar algoritmos..."
+          />
         </div>
 
         {loading ? (

@@ -13,8 +13,8 @@ export default function AboutPage() {
           </div>
           <p className="text-lg sm:text-xl max-w-3xl mx-auto text-muted-foreground">
             Bem-vindo ao{" "}
-            <strong className="font-semibold text-primary">Code Clash</strong>{" "}
-            — seu campo de batalha para dominar algoritmos, superar desafios e
+            <strong className="font-semibold text-primary">Code Clash</strong> —
+            seu campo de batalha para dominar algoritmos, superar desafios e
             acelerar seu aprendizado.
           </p>
         </div>
@@ -55,7 +55,10 @@ export default function AboutPage() {
               </a>{" "}
               de algoritmos clássicos - desde ordenação até programação dinâmica
               - disponíveis em
-              <strong className="text-secondary-foreground"> Python</strong>,{" "}
+              <strong className="text-secondary-foreground">
+                {" "}
+                Python
+              </strong>,{" "}
               <strong className="text-secondary-foreground">Java</strong>,
               <strong className="text-secondary-foreground"> C++</strong> e{" "}
               <strong className="text-secondary-foreground">C#</strong>.
@@ -65,7 +68,7 @@ export default function AboutPage() {
           <section className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl shadow-card hover:shadow-card-hover transition-all border border-border hover:border-accent/20 group">
             <div className="flex items-center gap-4 mb-6">
               <div className="p-4 bg-accent/10 rounded-xl group-hover:bg-accent/20 transition-colors">
-                <Filter className="w-6 h-6 text-gray-100" />
+                <Filter className="w-6 h-6 text-card-foreground" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-card-foreground">
                 Busca Inteligente
