@@ -3,7 +3,7 @@ import type { CategoryViewData, CodeReference } from "./src/types/code";
 import Cookies from "js-cookie";
 const api = axios.create({
   baseURL: "https://codeclash-r6wh.onrender.com/api",
-  timeout: 10000,
+  timeout: 60000,
 });
 
 export const getCodeReferenceByFilters = async (
