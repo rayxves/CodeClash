@@ -68,7 +68,8 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(connectionString, o => o.CommandTimeout(120));
+
 });
 
 builder.Services.AddIdentity<User, IdentityRole>()
