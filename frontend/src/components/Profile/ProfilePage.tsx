@@ -21,7 +21,7 @@ import { getUser, getUserProblemSolutions } from "../../../api";
 import * as data from "../../types/auth";
 
 export default function ProfilePage() {
-  const [userData, setUserData] = useState<data.User>({});
+  const [userData, setUserData] = useState<data.User | null>(null);
   const [userProblemSolutions, setUserProblemSolutions] = useState<
     UserProblemSolution[]
   >([]);
@@ -169,12 +169,12 @@ export default function ProfilePage() {
               <User className="w-12 h-12 text-primary-foreground" />
             </div>
             <h1 className="text-2xl font-bold text-primary-foreground mb-2">
-              {userData.username || user.username}
+              {userData?.username || user.username}
             </h1>
             <div className="flex items-center justify-center gap-2 text-primary-foreground/90">
               <Trophy className="w-5 h-5" />
               <span className="font-medium">
-                {getRankTitle(userData.totalPoints || 0)}
+                {getRankTitle(userData?.totalPoints || 0)}
               </span>
             </div>
           </div>
@@ -191,13 +191,13 @@ export default function ProfilePage() {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Pontos totais:</span>
                   <span className="text-2xl font-bold text-primary">
-                    {userData.totalPoints || 0}
+                    {userData?.totalPoints || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Título atual:</span>
                   <span className="font-medium text-foreground">
-                    {getRankTitle(userData.totalPoints || 0)}
+                    {getRankTitle(userData?.totalPoints || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -221,15 +221,15 @@ export default function ProfilePage() {
                   <div className="flex justify-between text-sm text-muted-foreground mb-2">
                     <span>Progresso para o próximo nível</span>
                     <span>
-                      {userData.totalPoints >= 800
+                      {userData?.totalPoints || user.totalPoints >= 800
                         ? "Nível máximo!"
-                        : userData.totalPoints >= 500
-                        ? `${userData.totalPoints}/800`
-                        : userData.totalPoints >= 200
-                        ? `${userData.totalPoints}/500`
-                        : userData.totalPoints >= 100
-                        ? `${userData.totalPoints}/200`
-                        : `${userData.totalPoints}/100`}
+                        : userData?.totalPoints || user.totalPoints >= 500
+                        ? `${userData?.totalPoints || user.totalPoints}/800`
+                        : userData?.totalPoints || user.totalPoints >= 200
+                        ? `${userData?.totalPoints || user.totalPoints}/500`
+                        : userData?.totalPoints || user.totalPoints >= 100
+                        ? `${userData?.totalPoints || user.totalPoints}/200`
+                        : `${userData?.totalPoints || user.totalPoints}/100`}
                     </span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
@@ -237,24 +237,49 @@ export default function ProfilePage() {
                       className="bg-gradient-primary h-2 rounded-full transition-all"
                       style={{
                         width:
-                          (userData.totalPoints || 0) >= 800
+                          (userData?.totalPoints || user.totalPoints || 0) >=
+                          800
                             ? "100%"
-                            : (userData.totalPoints || 0) >= 500
+                            : (userData?.totalPoints ||
+                                user.totalPoints ||
+                                0) >= 500
                             ? `${
-                                (((userData.totalPoints || 0) - 500) / 300) *
+                                (((userData?.totalPoints ||
+                                  user.totalPoints ||
+                                  0) -
+                                  500) /
+                                  300) *
                                 100
                               }%`
-                            : (userData.totalPoints || 0) >= 200
+                            : (userData?.totalPoints ||
+                                user.totalPoints ||
+                                0) >= 200
                             ? `${
-                                (((userData.totalPoints || 0) - 200) / 300) *
+                                (((userData?.totalPoints ||
+                                  user.totalPoints ||
+                                  0) -
+                                  200) /
+                                  300) *
                                 100
                               }%`
-                            : (userData.totalPoints || 0) >= 100
+                            : (userData?.totalPoints ||
+                                user.totalPoints ||
+                                0) >= 100
                             ? `${
-                                (((userData.totalPoints || 0) - 100) / 100) *
+                                (((userData?.totalPoints ||
+                                  user.totalPoints ||
+                                  0) -
+                                  100) /
+                                  100) *
                                 100
                               }%`
-                            : `${((userData.totalPoints || 0) / 100) * 100}%`,
+                            : `${
+                                ((userData?.totalPoints ||
+                                  user.totalPoints ||
+                                  0) /
+                                  100) *
+                                100
+                              }%`,
                       }}
                     />
                   </div>

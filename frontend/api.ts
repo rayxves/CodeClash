@@ -2,7 +2,7 @@ import axios, { type AxiosResponse } from "axios";
 import type { CategoryViewData, CodeReference } from "./src/types/code";
 import Cookies from "js-cookie";
 const api = axios.create({
-  baseURL: "http://localhost:5070/api",
+  baseURL: "https://codeclash-r6wh.onrender.com/api",
   timeout: 10000,
 });
 
