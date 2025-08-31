@@ -28,15 +28,13 @@ export default function CodeModal() {
     const fetchCode = async () => {
       try {
         setError(null);
-        const [codeResult, nameResult] = await Promise.all([
-          getCodeReferenceById(Number(id)),
-          getCodeReferenceByFilters(undefined, undefined, name),
-        ]);
-
+        const codeResult = await getCodeReferenceById(Number(id));
         setCode(codeResult);
-        setNameSearchResults(nameResult);
+
+        getCodeReferenceByFilters(undefined, undefined, name)
+          .then(setNameSearchResults)
+          .catch();
       } catch (error) {
-        console.error("Error fetching code:", error);
         setError(error instanceof Error ? error.message : "Erro desconhecido");
         setCode(null);
       } finally {
