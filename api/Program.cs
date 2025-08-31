@@ -108,6 +108,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(2);
+});
+
+
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddHttpClient();
