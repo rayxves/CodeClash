@@ -6,8 +6,8 @@ import type { CodeReference } from "../../../types/code";
 import CodeHeader from "./CodeHeader";
 import CodeFooter from "./CodeFooter";
 import {
-  getCodeReferenceByFilters,
   getCodeReferenceById,
+  getCodeReferenceByFilters,
 } from "../../../../api";
 import type { CodeModalParams } from "../../../types/routes";
 import RecommendationsList from "../Recomendation/RecomendationList";
@@ -17,7 +17,8 @@ export default function CodeModal() {
   const { id, name } = useParams<CodeModalParams>();
   const [copySuccess, setCopySuccess] = useState("");
   const [code, setCode] = useState<CodeReference | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingCode, setLoadingCode] = useState(true);
+  const [loadingRecs, setLoadingRecs] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [nameSearchResults, setNameSearchResults] = useState<CodeReference[]>(
     []
@@ -28,32 +29,33 @@ export default function CodeModal() {
     const fetchCode = async () => {
       try {
         setError(null);
+        setLoadingCode(true);
         const codeResult = await getCodeReferenceById(Number(id));
         setCode(codeResult);
 
+        setLoadingRecs(true);
         getCodeReferenceByFilters(undefined, undefined, name)
           .then(setNameSearchResults)
-          .catch();
+          .catch(() => setNameSearchResults([]))
+          .finally(() => setLoadingRecs(false));
       } catch (error) {
         setError(error instanceof Error ? error.message : "Erro desconhecido");
         setCode(null);
       } finally {
-        setLoading(false);
+        setLoadingCode(false);
       }
     };
 
-    setLoading(true);
     fetchCode();
-  }, [id]);
+  }, [id, name]);
 
   const handleCopyClick = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
       setCopySuccess("Código copiado!");
-    } catch (error: any) {
+    } catch {
       setCopySuccess("Falha ao copiar.");
     }
-
     setTimeout(() => setCopySuccess(""), 2000);
   };
 
@@ -65,7 +67,7 @@ export default function CodeModal() {
     );
   };
 
-  if (loading) {
+  if (loadingCode) {
     return (
       <div className="w-full min-h-screen bg-gradient-surface flex items-center justify-center">
         <div className="text-center">
@@ -102,6 +104,7 @@ export default function CodeModal() {
                 recommendations={nameSearchResults}
                 onSelectCode={handleSelectRecommendedCode}
                 navigate={navigate}
+                loading={loadingRecs}
               />
             </div>
           )}
@@ -206,6 +209,7 @@ export default function CodeModal() {
             recommendations={code.recommendations}
             onSelectCode={handleSelectRecommendedCode}
             navigate={navigate}
+            loading={loadingRecs}
           />
         )}
       </div>
@@ -219,7 +223,7 @@ export function getExtension(language: string): string {
     java: "java",
     "c#": "cs",
     csharp: "cs",
-    cpp: "c++",
+    cpp: "cpp",
     "c++": "cpp",
   };
 

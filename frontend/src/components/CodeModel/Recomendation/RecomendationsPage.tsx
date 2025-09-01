@@ -15,66 +15,62 @@ export default function RecommendationsPage() {
   const { language, name, code } = useParams<{ language?: string; name?: string; code?: string }>();
 
   const [recommendations, setRecommendations] = useState<CodeReference[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingCode, setLoadingCode] = useState(true);
+  const [loadingRecs, setLoadingRecs] = useState(false);
   const [selectedCode, setSelectedCode] = useState<CodeReference | null>(null);
-  const [sourceCode, setSourceCode] = useState<string>("");
+  const [sourceCode, setSourceCode] = useState("");
   const [sourceType, setSourceType] = useState<"user" | "model" | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoadingCode(true);
 
       try {
         if (language && name) {
-          const decodedLanguage = decodeURIComponent(language);
-          const decodedName = decodeURIComponent(name);
+          const [response] = await Promise.all([
+            getCodeReferenceByFilters(decodeURIComponent(language), undefined, decodeURIComponent(name)),
+          ]);
 
-          const response = await getCodeReferenceByFilters(
-            decodedLanguage,
-            undefined,
-            decodedName
-          );
           if (response.length > 0) {
             const modelCode = response[0];
             setSourceCode(modelCode.code);
             setSourceType("model");
             fetchRecommendations(modelCode.code);
-          }
-        } else {
-          if (code) {
-            const userCode = decodeURIComponent(code);
-            setSourceCode(userCode);
-            setSourceType("user");
-            fetchRecommendations(userCode);
           } else {
-            setLoading(false);
+            setSourceCode("");
           }
+        } else if (code) {
+          const userCode = decodeURIComponent(code);
+          setSourceCode(userCode);
+          setSourceType("user");
+          fetchRecommendations(userCode);
+        } else {
+          setSourceCode("");
         }
-      } catch (error) {
-        console.error("Error:", error);
-        setLoading(false);
+      } catch {
+        setSourceCode("");
+      } finally {
+        setLoadingCode(false);
       }
     };
 
     fetchData();
-  }, [location, language, name]);
+  }, [language, name, code]);
 
   const fetchRecommendations = async (code: string) => {
     try {
+      setLoadingRecs(true);
       const data = await recommendSimilar(code);
       setRecommendations(data);
-    } catch (error) {
-      console.error("Error fetching recommendations:", error);
+    } catch {
+      setRecommendations([]);
     } finally {
-      setLoading(false);
+      setLoadingRecs(false);
     }
   };
 
-
-
-  if (loading) return <LoadingScreen />;
-  if (!sourceCode)
-    return <NoCodeScreen language={language} name={name} navigate={navigate} />;
+  if (loadingCode) return <LoadingScreen />;
+  if (!sourceCode) return <NoCodeScreen language={language} name={name} navigate={navigate} />;
 
   return (
     <div className="min-h-screen bg-gradient-surface py-8 px-4 sm:px-6">
@@ -85,9 +81,9 @@ export default function RecommendationsPage() {
               code={selectedCode}
               onBackToCategory={() =>
                 navigate(
-                  `/code-model/${encodeURIComponent(
-                    selectedCode.language
-                  )}/${encodeURIComponent(selectedCode.category || "")}`
+                  `/code-model/${encodeURIComponent(selectedCode.language)}/${encodeURIComponent(
+                    selectedCode.category || ""
+                  )}`
                 )
               }
             />
@@ -102,15 +98,12 @@ export default function RecommendationsPage() {
         ) : (
           <div className="space-y-8">
             <HeaderSection onBack={() => navigate(-2)} />
-            <SourceCodeSection
-              sourceCode={sourceCode}
-              sourceType={sourceType}
-              language={language}
-            />
+            <SourceCodeSection sourceCode={sourceCode} sourceType={sourceType} language={language} />
             <RecommendationsList
               recommendations={recommendations}
               onSelectCode={setSelectedCode}
               navigate={navigate}
+              loading={loadingRecs}
             />
           </div>
         )}

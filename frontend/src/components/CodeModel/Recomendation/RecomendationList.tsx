@@ -7,27 +7,33 @@ interface RecommendationsListProps {
   recommendations: CodeReference[];
   onSelectCode: (code: CodeReference) => void;
   navigate: NavigateFunction;
+  loading: boolean;
 }
 
 export default function RecommendationsList({
   recommendations,
   onSelectCode,
   navigate,
+  loading,
 }: RecommendationsListProps) {
   return (
     <div className="w-full overflow-x-hidden">
       <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center">
-        {recommendations.length > 0 ? (
+        {loading || recommendations.length > 0 ? (
           <div className="flex items-center gap-3">
             <Stars className="w-6 h-6 text-primary" />
             Recomendações
           </div>
-        ) : (
-          ""
-        )}
+        ) : null}
       </h2>
 
-      {recommendations.length > 0 ? (
+      {loading ? (
+        <div className="grid gap-6 w-full">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : recommendations.length > 0 ? (
         <div className="grid gap-6 w-full">
           {recommendations.map((code) => (
             <RecommendationCard
@@ -58,7 +64,7 @@ function RecommendationCard({
   navigate: NavigateFunction;
 }) {
   return (
-    <div className="bg-card rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-border p-6 w-full group ">
+    <div className="bg-card rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-border p-6 w-full group">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="flex items-start gap-4 flex-1 min-w-0">
           <div className="p-3 bg-primary/10 rounded-xl flex-shrink-0">
@@ -83,7 +89,7 @@ function RecommendationCard({
             </div>
           </div>
         </div>
-        
+
         <div className="flex gap-3 lg:flex-shrink-0">
           <button
             className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all hover-lift text-sm"
@@ -106,6 +112,31 @@ function RecommendationCard({
               Ver categoria
             </button>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <div className="bg-card rounded-2xl shadow-card border border-border p-6 w-full animate-pulse">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex items-start gap-4 flex-1 min-w-0">
+          <div className="p-3 bg-muted rounded-xl flex-shrink-0 w-12 h-12" />
+          <div className="min-w-0 flex-1">
+            <div className="h-5 bg-muted rounded w-2/3 mb-3" />
+            <div className="h-4 bg-muted rounded w-full mb-2" />
+            <div className="h-4 bg-muted rounded w-3/4 mb-3" />
+            <div className="flex gap-2">
+              <div className="h-6 w-16 bg-muted rounded-full" />
+              <div className="h-6 w-20 bg-muted rounded-full" />
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 lg:flex-shrink-0">
+          <div className="h-9 w-28 bg-muted rounded-lg" />
+          <div className="h-9 w-32 bg-muted rounded-lg" />
         </div>
       </div>
     </div>
