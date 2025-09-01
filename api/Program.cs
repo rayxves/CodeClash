@@ -20,22 +20,19 @@ using SubmissionChain;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-});
-
 builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    })
     .AddJsonOptions(opts =>
     {
         opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "CodeClash API", Version = "v1" });
@@ -67,16 +64,12 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
     options.UseNpgsql(connectionString, o => o.CommandTimeout(120));
-
 });
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
-
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -99,12 +92,17 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins", builder =>
+    options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        builder.WithOrigins("https://code-clash-egn9j5v9y-rayssas-projects-160aac96.vercel.app", "https://code-clash-git-main-rayssas-projects-160aac96.vercel.app", "https://code-clash-gray.vercel.app", "http://10.1.6.223:8080")
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials();
+        policy.WithOrigins(
+                "https://code-clash-egn9j5v9y-rayssas-projects-160aac96.vercel.app",
+                "https://code-clash-git-main-rayssas-projects-160aac96.vercel.app",
+                "https://code-clash-gray.vercel.app",
+                "http://10.1.6.223:8080"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 
@@ -114,12 +112,11 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(2);
 });
 
-
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddHttpClient();
-
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
+
 builder.Services.AddScoped<IJudge0Services, Judge0Services>();
 builder.Services.AddScoped<ISubmissionFacade, SubmissionFacade>();
 builder.Services.AddScoped<ICodeReferenceServices, CodeReferenceService>();
@@ -147,24 +144,6 @@ builder.Services.AddScoped<ISubmissionHandler>(sp =>
 
 var app = builder.Build();
 
-// using (var scope = app.Services.CreateScope())
-// {
-//     var services = scope.ServiceProvider;
-//     try
-//     {
-//         var context = services.GetRequiredService<ApplicationDbContext>();
-//         await DbSeeder.SeedDatabaseAsync(context);
-//     }
-//     catch (Exception ex)
-//     {
-//         var logger = services.GetRequiredService<ILogger<Program>>();
-//         logger.LogError(ex, "An error occurred while seeding the database.");
-//     }
-// }
-
-
-
-
 app.UseCors("AllowSpecificOrigins");
 
 app.UseRouting();
@@ -177,7 +156,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
 }
 
 app.Run();
