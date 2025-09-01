@@ -14,7 +14,6 @@ import {
   X,
 } from "lucide-react";
 import MonacoEditor from "react-monaco-editor";
-
 import type { Problem } from "../../types/problem";
 import { getProblemById, submitCode } from "../../../api";
 import ReactMarkdown from "react-markdown";
@@ -88,6 +87,25 @@ const languages = [
   { name: "C#", id: "csharp", icon: <Code2 className="w-4 h-4" /> },
 ];
 
+const ProblemDetailSkeleton = () => (
+  <div className="bg-card rounded-xl border border-border p-4 mb-6 animate-pulse">
+    <div className="flex items-center gap-2 mb-4">
+      <div className="bg-muted h-7 w-20 rounded-full"></div>
+      <div className="bg-muted h-7 w-28 rounded-full"></div>
+    </div>
+    <div className="space-y-2 mb-4">
+      <div className="bg-muted h-4 w-full rounded"></div>
+      <div className="bg-muted h-4 w-full rounded"></div>
+      <div className="bg-muted h-4 w-4/5 rounded"></div>
+    </div>
+    <div className="bg-muted h-5 w-32 mb-2 rounded"></div>
+    <div className="space-y-2">
+      <div className="bg-muted h-16 w-full rounded-lg"></div>
+      <div className="bg-muted h-16 w-full rounded-lg"></div>
+    </div>
+  </div>
+);
+
 export default function EnhancedSubmissionPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -102,6 +120,7 @@ export default function EnhancedSubmissionPage() {
 
   const [problem, setProblem] = useState<Problem | null>(null);
   const [isSubmittingProblem, setIsSubmittingProblem] = useState(false);
+  const [isLoadingProblem, setIsLoadingProblem] = useState(true);
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -123,19 +142,24 @@ export default function EnhancedSubmissionPage() {
   useEffect(() => {
     const fetchProblem = async () => {
       if (problemId) {
+        setIsLoadingProblem(true);
         try {
-          const problem = await getProblemById(Number(problemId));
-          setProblem(problem);
+          const problemData = await getProblemById(Number(problemId));
+          setProblem(problemData);
         } catch (error) {
           addNotification(
             "error",
             "Erro ao carregar o problema. Tente novamente mais tarde."
           );
+        } finally {
+          setIsLoadingProblem(false);
         }
+      } else {
+        setIsLoadingProblem(false);
       }
     };
     fetchProblem();
-  }, [problemId, language]);
+  }, [problemId]);
 
   const handleSubmit = async (language: string, code: string) => {
     if (!isAuthenticated) {
@@ -179,8 +203,6 @@ export default function EnhancedSubmissionPage() {
         }, 1000);
       }
     } catch (error: any) {
-      console.error("Submission error:", error);
-
       let errorMessage =
         "Erro ao executar o código. Tente novamente mais tarde.";
 
@@ -206,7 +228,7 @@ export default function EnhancedSubmissionPage() {
   };
 
   const handleGetRecommendations = () => {
-    if (!code.trim()) {
+    if (!code.trim() || code == "// Write your code here") {
       addNotification(
         "error",
         "O código não pode estar vazio para obter recomendações."
@@ -247,85 +269,94 @@ export default function EnhancedSubmissionPage() {
           <div className="flex items-center gap-3 mb-2">
             <Code2 className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-bold text-foreground">
-              {isProblemsMode && problem
+              {isProblemsMode && problem && !isLoadingProblem
                 ? `Resolvendo: ${problem.title}`
+                : isProblemsMode
+                ? "Carregando Problema..."
                 : "Code Playground"}
             </h1>
           </div>
 
-          {isProblemsMode && problem && (
-            <div className="bg-card rounded-xl border border-border p-4 mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span
-                  className={`text-xs px-3 py-1 rounded-full border font-medium ${
-                    problem.difficulty === "Fácil"
-                      ? "text-green-600 font-semibold bg-green-50 border-green-200"
-                      : problem.difficulty === "Médio"
-                      ? "text-amber-600 font-semibold bg-amber-50 border-amber-200"
-                      : "text-red-600 font-semibold bg-red-50 border-red-200"
-                  }`}
+          {isProblemsMode &&
+            (isLoadingProblem ? (
+              <ProblemDetailSkeleton />
+            ) : problem ? (
+              <div className="bg-card rounded-xl border border-border p-4 mb-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <span
+                    className={`text-xs px-3 py-1 rounded-full border font-medium ${
+                      problem.difficulty === "Fácil"
+                        ? "text-green-600 font-semibold bg-green-50 border-green-200"
+                        : problem.difficulty === "Médio"
+                        ? "text-amber-600 font-semibold bg-amber-50 border-amber-200"
+                        : "text-red-600 font-semibold bg-red-50 border-red-200"
+                    }`}
+                  >
+                    {problem.difficulty}
+                  </span>
+                  <span className="text-xs text-muted-foreground px-3 py-1 bg-muted rounded-full">
+                    {problem.category}
+                  </span>
+                </div>
+                <ReactMarkdown
+                  components={{
+                    h2: ({ ...props }) => (
+                      <h2
+                        className="text-lg font-bold text-muted-foreground mt-4 mb-1"
+                        {...props}
+                      />
+                    ),
+                    p: ({ ...props }) => (
+                      <p
+                        className="text-muted-foreground leading-relaxed"
+                        {...props}
+                      />
+                    ),
+                  }}
                 >
-                  {problem.difficulty}
-                </span>
-                <span className="text-xs text-muted-foreground px-3 py-1 bg-muted rounded-full">
-                  {problem.category}
-                </span>
-              </div>
-              <ReactMarkdown
-                components={{
-                  h2: ({ ...props }) => (
-                    <h2
-                      className="text-lg font-bold text-muted-foreground mt-4 mb-1"
-                      {...props}
-                    />
-                  ),
-                  p: ({ ...props }) => (
-                    <p
-                      className="text-muted-foreground leading-relaxed"
-                      {...props}
-                    />
-                  ),
-                }}
-              >
-                {problem.description || ""}
-              </ReactMarkdown>
+                  {problem.description || ""}
+                </ReactMarkdown>
 
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold text-card-foreground mb-2">
-                  Exemplos:
-                </h4>
-                <div className="space-y-2">
-                  {problem.testCases
-                    .filter((tc) => !tc.isHidden)
-                    .map((testCase, index) => (
-                      <div
-                        key={index}
-                        className="bg-muted rounded-lg p-3 text-sm"
-                      >
-                        <div className="flex gap-4">
-                          <div>
-                            <span className="font-medium text-muted-foreground">
-                              Entrada:
-                            </span>
-                            <span className="ml-2 font-mono">
-                              {testCase.input}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-muted-foreground">
-                              Saída:
-                            </span>
-                            <span className="ml-2 font-mono">
-                              {testCase.expectedOutput}
-                            </span>
+                <div className="mt-4">
+                  <h4 className="text-sm font-semibold text-card-foreground mb-2">
+                    Exemplos:
+                  </h4>
+                  <div className="space-y-2">
+                    {problem.testCases
+                      .filter((tc) => !tc.isHidden)
+                      .map((testCase, index) => (
+                        <div
+                          key={index}
+                          className="bg-muted rounded-lg p-3 text-sm"
+                        >
+                          <div className="flex gap-4">
+                            <div>
+                              <span className="font-medium text-muted-foreground">
+                                Entrada:
+                              </span>
+                              <span className="ml-2 font-mono">
+                                {testCase.input}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="font-medium text-muted-foreground">
+                                Saída:
+                              </span>
+                              <span className="ml-2 font-mono">
+                                {testCase.expectedOutput}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="text-center py-8 text-red-500">
+                <p>O problema não pôde ser carregado.</p>
+              </div>
+            ))}
         </div>
 
         <div className="grid grid-cols-1  gap-6">

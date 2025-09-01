@@ -95,11 +95,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
         policy.WithOrigins(
-                "https://code-clash-egn9j5v9y-rayssas-projects-160aac96.vercel.app",
-                "https://code-clash-git-main-rayssas-projects-160aac96.vercel.app",
-                "https://code-clash-gray.vercel.app",
-                "http://10.1.6.223:8080"
-            )
+                "https://code-clash-gray.vercel.app"            )
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();

@@ -35,7 +35,7 @@ export default function CodeModal() {
 
         setLoadingRecs(true);
         getCodeReferenceByFilters(undefined, undefined, name)
-          .then(setNameSearchResults)
+          .then((res) => setNameSearchResults(res || []))
           .catch(() => setNameSearchResults([]))
           .finally(() => setLoadingRecs(false));
       } catch (error) {

@@ -15,7 +15,6 @@ const customStyles = {
     "&:hover": {
       borderColor: "hsl(var(--primary))",
     },
-
     "&:active": {
       backgroundColor: "hsl(var(--muted))",
       borderColor: "hsl(var(--primary))",
@@ -56,18 +55,46 @@ const customStyles = {
   }),
 };
 
+const ProblemCardSkeleton = () => (
+  <div className="bg-card rounded-2xl border border-border shadow-card p-6 animate-pulse">
+    <div className="flex items-start justify-between mb-4">
+      <div className="bg-muted h-5 w-16 rounded-md"></div>
+      <div className="bg-muted h-5 w-20 rounded-full"></div>
+    </div>
+    <div className="bg-muted h-6 w-3/4 mb-3 rounded-md"></div>
+    <div className="space-y-2 mb-4">
+      <div className="bg-muted h-4 w-full rounded-md"></div>
+      <div className="bg-muted h-4 w-full rounded-md"></div>
+      <div className="bg-muted h-4 w-2/3 rounded-md"></div>
+    </div>
+    <div className="flex items-center justify-between mt-6">
+      <div className="bg-muted h-6 w-24 rounded-full"></div>
+      <div className="bg-primary/50 h-10 w-28 rounded-lg"></div>
+    </div>
+  </div>
+);
+
 export default function ProblemsPage() {
   const navigate = useNavigate();
   const [problems, setProblems] = useState<Problem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [difficultyFilter, setDifficultyFilter] =
-    useState<string>("Dificuldade");
+  const [difficultyFilter, setDifficultyFilter] = useState<string>("Dificuldade");
   const [categoryFilter, setCategoryFilter] = useState<string>("Categoria");
 
   useEffect(() => {
     const fetchProblems = async () => {
-      const problems = await getProblems();
-      setProblems(problems);
+      setIsLoading(true);
+      setError(null);
+      try {
+        const problemsData = await getProblems();
+        setProblems(problemsData);
+      } catch (err) {
+        setError("Não foi possível carregar os problemas. Tente novamente.");
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchProblems();
   }, []);
@@ -77,21 +104,18 @@ export default function ProblemsPage() {
       problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       problem.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDifficulty =
-      difficultyFilter == "Dificuldade" ||
+      difficultyFilter === "Dificuldade" ||
       difficultyFilter === "Todos" ||
       problem.difficulty === difficultyFilter;
     const matchesCategory =
-      categoryFilter == "Categoria" ||
+      categoryFilter === "Categoria" ||
       categoryFilter === "Todas" ||
       problem.category === categoryFilter;
 
     return matchesSearch && matchesDifficulty && matchesCategory;
   });
 
-  const categories = [
-    "Todas",
-    ...Array.from(new Set(problems.map((p) => p.category))),
-  ];
+  const categories = ["Todas", ...Array.from(new Set(problems.map((p) => p.category)))];
   const difficulties = ["Todos", "Fácil", "Médio", "Difícil"];
 
   const handleSolveProblem = (problem: Problem) => {
@@ -110,7 +134,6 @@ export default function ProblemsPage() {
           </p>
         </div>
 
-        {/* Search and Filters */}
         <div className="bg-card rounded-2xl border border-border shadow-card p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative items-center">
@@ -123,9 +146,8 @@ export default function ProblemsPage() {
                 className="w-full pl-10 pr-4 py-3 bg-muted border border-border rounded-xl text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               />
             </div>
-
             <div className="flex gap-3">
-              <div className="">
+              <div>
                 <Select
                   options={difficulties.map((d) => ({ value: d, label: d }))}
                   value={{ value: difficultyFilter, label: difficultyFilter }}
@@ -149,98 +171,107 @@ export default function ProblemsPage() {
           </div>
         </div>
 
-        {/* Problems Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProblems.map((problem) => (
-            <div
-              key={problem.id}
-              className="bg-card rounded-2xl border border-border shadow-card p-6 hover:shadow-card-hover transition-all duration-300 group"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">
-                    #{problem.id}
-                  </span>
-                </div>
-                <span
-                  className={`text-xs px-3 py-1 rounded-full border font-medium ${
-                    problem.difficulty === "Fácil"
-                      ? "text-green-600 bg-green-50 border-green-200"
-                      : problem.difficulty === "Médio"
-                      ? "text-amber-600 bg-amber-50 border-amber-200"
-                      : "text-red-600 bg-red-50 border-red-200"
-                  }`}
-                >
-                  {problem.difficulty}
-                </span>
-              </div>
-
-              <h3 className="text-lg font-bold text-card-foreground mb-2 group-hover:text-primary transition-colors">
-                {problem.title}
-              </h3>
-              <div className="relative">
-                <div
-                  className="prose prose-sm max-w-none text-muted-foreground overflow-hidden"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: "vertical",
-                    textOverflow: "ellipsis",
-                    maxHeight: "4.5rem", 
-                  }}
-                >
-                  <ReactMarkdown
-                    components={{
-                      h2: ({ ...props }) => (
-                        <h2
-                          className="text-lg font-bold text-gray-300 mt-20 mb-1"
-                          {...props}
-                        />
-                      ),
-                      p: ({ ...props }) => (
-                        <p
-                          className="text-muted-foreground leading-relaxed m-0"
-                          style={{
-                            display: "inline",
-                          }}
-                          {...props}
-                        />
-                      ),
-                    }}
-                  >
-                    {problem?.description || ""}
-                  </ReactMarkdown>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground px-3 py-1 bg-muted rounded-full">
-                  {problem.category}
-                </span>
-                <button
-                  onClick={() => handleSolveProblem(problem)}
-                  className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all hover-lift text-sm"
-                >
-                  Resolver
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredProblems.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold text-card-foreground mb-2">
-              Nenhum problema encontrado
-            </h3>
-            <p className="text-muted-foreground">
-              Tente ajustar seus filtros de busca
-            </p>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (<ProblemCardSkeleton key={i} />))}
           </div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-500">{error}</div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProblems.map((problem) => (
+                <div
+                  key={problem.id}
+                  className="bg-card rounded-2xl border border-border shadow-card p-6 flex flex-col hover:shadow-card-hover transition-all duration-300 group"
+                >
+                  <div className="flex-grow">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-5 h-5 text-primary" />
+                        <span className="text-sm font-medium text-muted-foreground">
+                          #{problem.id}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-xs px-3 py-1 rounded-full border font-medium ${
+                          problem.difficulty === "Fácil"
+                            ? "text-green-600 bg-green-50 border-green-200"
+                            : problem.difficulty === "Médio"
+                            ? "text-amber-600 bg-amber-50 border-amber-200"
+                            : "text-red-600 bg-red-50 border-red-200"
+                        }`}
+                      >
+                        {problem.difficulty}
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-card-foreground mb-2 group-hover:text-primary transition-colors">
+                      {problem.title}
+                    </h3>
+                    <div
+                      className="prose prose-sm max-w-none text-muted-foreground overflow-hidden"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        textOverflow: "ellipsis",
+                        maxHeight: "4.5rem",
+                      }}
+                    >
+                      <ReactMarkdown
+                        components={{
+                          h2: ({ ...props }) => (
+                            <h2
+                              className="text-lg font-bold text-gray-300 mt-20 mb-1"
+                              {...props}
+                            />
+                          ),
+                          p: ({ ...props }) => (
+                            <p
+                              className="text-muted-foreground leading-relaxed m-0"
+                              style={{
+                                display: "inline",
+                              }}
+                              {...props}
+                            />
+                          ),
+                        }}
+                      >
+                        {problem?.description || ""}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-4">
+                    <span className="text-xs text-muted-foreground px-3 py-1 bg-muted rounded-full">
+                      {problem.category}
+                    </span>
+                    <button
+                      onClick={() => handleSolveProblem(problem)}
+                      className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all hover-lift text-sm"
+                    >
+                      Resolver
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {filteredProblems.length === 0 && !isLoading && (
+              <div className="text-center py-12 col-span-1 md:col-span-2 lg:col-span-3">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                  Nenhum problema encontrado
+                </h3>
+                <p className="text-muted-foreground">
+                  Tente ajustar seus filtros de busca
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

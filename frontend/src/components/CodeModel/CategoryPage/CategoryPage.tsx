@@ -25,7 +25,6 @@ export default function CategoryPage() {
         const data = await getCategoryView(language, category);
         setCategoryData(data);
       } catch (error) {
-        console.error("Error fetching category data:", error);
         setCategoryData(null);
       } finally {
         setLoading(false);

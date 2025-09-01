@@ -15,22 +15,20 @@ export default function RecommendationsPage() {
   const { language, name, code } = useParams<{ language?: string; name?: string; code?: string }>();
 
   const [recommendations, setRecommendations] = useState<CodeReference[]>([]);
-  const [loadingCode, setLoadingCode] = useState(true);
-  const [loadingRecs, setLoadingRecs] = useState(false);
+  const [loadingCode, setLoadingCode] = useState<boolean>(true);
+  const [loadingRecs, setLoadingRecs] = useState<boolean>(false);
   const [selectedCode, setSelectedCode] = useState<CodeReference | null>(null);
-  const [sourceCode, setSourceCode] = useState("");
+  const [sourceCode, setSourceCode] = useState<string>("");
   const [sourceType, setSourceType] = useState<"user" | "model" | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoadingCode(true);
-
       try {
         if (language && name) {
-          const [response] = await Promise.all([
-            getCodeReferenceByFilters(decodeURIComponent(language), undefined, decodeURIComponent(name)),
-          ]);
-
+          const decodedLanguage = decodeURIComponent(language);
+          const decodedName = decodeURIComponent(name);
+          const response = await getCodeReferenceByFilters(decodedLanguage, undefined, decodedName);
           if (response.length > 0) {
             const modelCode = response[0];
             setSourceCode(modelCode.code);
@@ -57,11 +55,11 @@ export default function RecommendationsPage() {
     fetchData();
   }, [language, name, code]);
 
-  const fetchRecommendations = async (code: string) => {
+  const fetchRecommendations = async (codeStr: string) => {
     try {
       setLoadingRecs(true);
-      const data = await recommendSimilar(code);
-      setRecommendations(data);
+      const data = await recommendSimilar(codeStr);
+      setRecommendations(data || []);
     } catch {
       setRecommendations([]);
     } finally {
