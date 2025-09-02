@@ -228,7 +228,7 @@ export async function getUserProblemSolutions() {
     const userData = JSON.parse(userDataString);
     const token = userData.token;
 
-    const response = await api.get("user-problem-solutions/user", {
+    const response = await api.get("/user-problem-solutions/user", {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

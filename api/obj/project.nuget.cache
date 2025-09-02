@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vp9/GeVTBsQ=",
+  "dgSpecHash": "MN3cGjwbklw=",
   "success": true,
   "projectFilePath": "/home/ray/Documentos/Csharp/CodeClash/api/api.csproj",
   "expectedPackageFiles": [
@@ -82,7 +82,8 @@
     "/home/ray/.nuget/packages/system.reflection.metadata/7.0.0/system.reflection.metadata.7.0.0.nupkg.sha512",
     "/home/ray/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "/home/ray/.nuget/packages/system.text.json/9.0.0/system.text.json.9.0.0.nupkg.sha512",
-    "/home/ray/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512"
+    "/home/ray/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512",
+    "/home/ray/.nuget/packages/microsoft.netcore.app.crossgen2.linux-x64/9.0.7/microsoft.netcore.app.crossgen2.linux-x64.9.0.7.nupkg.sha512"
   ],
   "logs": []
 }

@@ -64,14 +64,16 @@ export default function ProfilePage() {
         ]);
 
         if (userRes.status === "fulfilled") {
-          setUserData(userRes.value);
+          setUserData(userRes.value || null);
         } else {
+          setUserData(null);
           setUserError("Não foi possível carregar as informações do perfil.");
         }
 
         if (solutionsRes.status === "fulfilled") {
           setUserProblemSolutions(solutionsRes.value || []);
         } else {
+          setUserProblemSolutions([]);
           setSolutionsError(
             "Não foi possível carregar o histórico de problemas."
           );
