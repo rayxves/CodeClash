@@ -24,16 +24,18 @@ export default function RecommendationsPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoadingCode(true);
+      setLoadingRecs(true);
       try {
         if (language && name) {
-          const decodedLanguage = decodeURIComponent(language);
-          const decodedName = decodeURIComponent(name);
-          const response = await getCodeReferenceByFilters(decodedLanguage, undefined, decodedName);
-          if (response.length > 0) {
-            const modelCode = response[0];
+          const [response, recs] = await Promise.allSettled([
+            getCodeReferenceByFilters(decodeURIComponent(language), undefined, decodeURIComponent(name)),
+            recommendSimilar(""),
+          ]);
+          if (response.status === "fulfilled" && response.value.length > 0) {
+            const modelCode = response.value[0];
             setSourceCode(modelCode.code);
             setSourceType("model");
-            fetchRecommendations(modelCode.code);
+            if (recs.status === "fulfilled") setRecommendations(recs.value || []);
           } else {
             setSourceCode("");
           }
@@ -41,7 +43,8 @@ export default function RecommendationsPage() {
           const userCode = decodeURIComponent(code);
           setSourceCode(userCode);
           setSourceType("user");
-          fetchRecommendations(userCode);
+          const recs = await recommendSimilar(userCode);
+          setRecommendations(recs || []);
         } else {
           setSourceCode("");
         }
@@ -49,23 +52,12 @@ export default function RecommendationsPage() {
         setSourceCode("");
       } finally {
         setLoadingCode(false);
+        setLoadingRecs(false);
       }
     };
 
     fetchData();
   }, [language, name, code]);
-
-  const fetchRecommendations = async (codeStr: string) => {
-    try {
-      setLoadingRecs(true);
-      const data = await recommendSimilar(codeStr);
-      setRecommendations(data || []);
-    } catch {
-      setRecommendations([]);
-    } finally {
-      setLoadingRecs(false);
-    }
-  };
 
   if (loadingCode) return <LoadingScreen />;
   if (!sourceCode) return <NoCodeScreen language={language} name={name} navigate={navigate} />;

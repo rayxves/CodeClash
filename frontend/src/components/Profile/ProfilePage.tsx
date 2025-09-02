@@ -29,12 +29,12 @@ export default function ProfilePage() {
   const [userProblemSolutions, setUserProblemSolutions] = useState<
     UserProblemSolution[]
   >([]);
-  
+
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isSolutionsLoading, setIsSolutionsLoading] = useState(true);
   const [userError, setUserError] = useState<string | null>(null);
   const [solutionsError, setSolutionsError] = useState<string | null>(null);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedSolutions, setExpandedSolutions] = useState<Set<number>>(
     new Set()
@@ -45,44 +45,44 @@ export default function ProfilePage() {
 
   const ITEMS_PER_PAGE = 5;
 
-  // Lógica de busca de dados otimizada (sem Promise.all)
   useEffect(() => {
     if (!user) {
       navigate("/login");
       return;
     }
 
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       setIsUserLoading(true);
+      setIsSolutionsLoading(true);
       setUserError(null);
+      setSolutionsError(null);
+
       try {
-        const userDataResponse = await getUser();
-        setUserData(userDataResponse);
-      } catch (err: any) {
-        console.error("Error fetching user data:", err);
-        setUserError("Não foi possível carregar as informações do perfil.");
+        const [userRes, solutionsRes] = await Promise.allSettled([
+          getUser(),
+          getUserProblemSolutions(),
+        ]);
+
+        if (userRes.status === "fulfilled") {
+          setUserData(userRes.value);
+        } else {
+          setUserError("Não foi possível carregar as informações do perfil.");
+        }
+
+        if (solutionsRes.status === "fulfilled") {
+          setUserProblemSolutions(solutionsRes.value || []);
+        } else {
+          setSolutionsError(
+            "Não foi possível carregar o histórico de problemas."
+          );
+        }
       } finally {
         setIsUserLoading(false);
-      }
-    };
-
-    const fetchUserSolutions = async () => {
-      setIsSolutionsLoading(true);
-      setSolutionsError(null);
-      try {
-        const userProblemSln = await getUserProblemSolutions();
-        setUserProblemSolutions(userProblemSln || []);
-      } catch (err: any) {
-        setSolutionsError(
-          "Não foi possível carregar o histórico de problemas."
-        );
-      } finally {
         setIsSolutionsLoading(false);
       }
     };
 
-    fetchUserData();
-    fetchUserSolutions();
+    fetchData();
   }, [user, navigate]);
 
   const handleLogout = () => {
@@ -183,18 +183,35 @@ export default function ProfilePage() {
               </div>
               {isUserLoading || isSolutionsLoading ? (
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center"><Skeleton className="h-5 w-24" /><Skeleton className="h-8 w-16" /></div>
-                  <div className="flex justify-between items-center"><Skeleton className="h-5 w-28" /><Skeleton className="h-5 w-32" /></div>
-                  <div className="flex justify-between items-center"><Skeleton className="h-5 w-40" /><Skeleton className="h-5 w-10" /></div>
-                  <div className="flex justify-between items-center"><Skeleton className="h-5 w-36" /><Skeleton className="h-5 w-10" /></div>
-                  <div className="mt-4 space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-2 w-full" /></div>
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-5 w-24" />
+                    <Skeleton className="h-8 w-16" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-5 w-28" />
+                    <Skeleton className="h-5 w-32" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-5 w-40" />
+                    <Skeleton className="h-5 w-10" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-5 w-36" />
+                    <Skeleton className="h-5 w-10" />
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-2 w-full" />
+                  </div>
                 </div>
               ) : userError ? (
                 <div className="text-center text-red-500">{userError}</div>
               ) : (
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Pontos totais:</span>
+                    <span className="text-muted-foreground">
+                      Pontos totais:
+                    </span>
                     <span className="text-2xl font-bold text-primary">
                       {userData?.totalPoints || 0}
                     </span>
@@ -210,7 +227,10 @@ export default function ProfilePage() {
                       Problemas resolvidos:
                     </span>
                     <span className="font-medium text-foreground">
-                      {userProblemSolutions.filter((up) => up.isApproved).length}
+                      {
+                        userProblemSolutions.filter((up) => up.isApproved)
+                          .length
+                      }
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
@@ -218,7 +238,10 @@ export default function ProfilePage() {
                       Problemas pendentes:
                     </span>
                     <span className="font-medium text-foreground">
-                      {userProblemSolutions.filter((up) => !up.isApproved).length}
+                      {
+                        userProblemSolutions.filter((up) => !up.isApproved)
+                          .length
+                      }
                     </span>
                   </div>
                   <div className="mt-4">
@@ -241,15 +264,49 @@ export default function ProfilePage() {
                         className="bg-gradient-primary h-2 rounded-full transition-all"
                         style={{
                           width:
-                            (userData?.totalPoints || user.totalPoints || 0) >= 800
+                            (userData?.totalPoints || user.totalPoints || 0) >=
+                            800
                               ? "100%"
-                              : (userData?.totalPoints || user.totalPoints || 0) >= 500
-                              ? `${(((userData?.totalPoints || user.totalPoints || 0) - 500) / 300) * 100}%`
-                              : (userData?.totalPoints || user.totalPoints || 0) >= 200
-                              ? `${(((userData?.totalPoints || user.totalPoints || 0) - 200) / 300) * 100}%`
-                              : (userData?.totalPoints || user.totalPoints || 0) >= 100
-                              ? `${(((userData?.totalPoints || user.totalPoints || 0) - 100) / 100) * 100}%`
-                              : `${((userData?.totalPoints || user.totalPoints || 0) / 100) * 100}%`,
+                              : (userData?.totalPoints ||
+                                  user.totalPoints ||
+                                  0) >= 500
+                              ? `${
+                                  (((userData?.totalPoints ||
+                                    user.totalPoints ||
+                                    0) -
+                                    500) /
+                                    300) *
+                                  100
+                                }%`
+                              : (userData?.totalPoints ||
+                                  user.totalPoints ||
+                                  0) >= 200
+                              ? `${
+                                  (((userData?.totalPoints ||
+                                    user.totalPoints ||
+                                    0) -
+                                    200) /
+                                    300) *
+                                  100
+                                }%`
+                              : (userData?.totalPoints ||
+                                  user.totalPoints ||
+                                  0) >= 100
+                              ? `${
+                                  (((userData?.totalPoints ||
+                                    user.totalPoints ||
+                                    0) -
+                                    100) /
+                                    100) *
+                                  100
+                                }%`
+                              : `${
+                                  ((userData?.totalPoints ||
+                                    user.totalPoints ||
+                                    0) /
+                                    100) *
+                                  100
+                                }%`,
                         }}
                       />
                     </div>
@@ -266,14 +323,20 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <span className="text-sm text-muted-foreground">Nome de usuário:</span>
-                    <p className="font-medium text-foreground">{user.username}</p>
+                    <span className="text-sm text-muted-foreground">
+                      Nome de usuário:
+                    </span>
+                    <p className="font-medium text-foreground">
+                      {user.username}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <span className="text-sm text-muted-foreground">Email:</span>
+                    <span className="text-sm text-muted-foreground">
+                      Email:
+                    </span>
                     <p className="font-medium text-foreground">{user.email}</p>
                   </div>
                 </div>
@@ -298,72 +361,187 @@ export default function ProfilePage() {
               {isSolutionsLoading ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="p-4 rounded-lg border border-border/50 space-y-3">
-                      <div className="flex justify-between items-start"><div className="space-y-2"><Skeleton className="h-5 w-48" /><Skeleton className="h-4 w-20" /></div><Skeleton className="h-4 w-24" /></div>
+                    <div
+                      key={i}
+                      className="p-4 rounded-lg border border-border/50 space-y-3"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-2">
+                          <Skeleton className="h-5 w-48" />
+                          <Skeleton className="h-4 w-20" />
+                        </div>
+                        <Skeleton className="h-4 w-24" />
+                      </div>
                       <Skeleton className="h-8 w-36" />
                     </div>
                   ))}
                 </div>
               ) : solutionsError ? (
-                <div className="text-center py-8 text-red-500"><AlertCircle className="w-12 h-12 mx-auto mb-4" /><p>{solutionsError}</p></div>
+                <div className="text-center py-8 text-red-500">
+                  <AlertCircle className="w-12 h-12 mx-auto mb-4" />
+                  <p>{solutionsError}</p>
+                </div>
               ) : userProblemSolutions.length === 0 ? (
                 <div className="text-center py-8">
                   <Code className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-foreground mb-2">Nenhum problema resolvido ainda</h3>
-                  <p className="text-muted-foreground">Comece a resolver problemas para aparecerem aqui!</p>
-                  <button onClick={() => navigate("/problems")} className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">Explorar Problemas</button>
+                  <h3 className="text-lg font-medium text-foreground mb-2">
+                    Nenhum problema resolvido ainda
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Comece a resolver problemas para aparecerem aqui!
+                  </p>
+                  <button
+                    onClick={() => navigate("/problems")}
+                    className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    Explorar Problemas
+                  </button>
                 </div>
               ) : (
                 <>
                   <div className="space-y-4 mb-6">
                     {currentSolutions.map((solution) => (
-                      <div key={solution.id} className="p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors">
+                      <div
+                        key={solution.id}
+                        className="p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors"
+                      >
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <h3 className="font-semibold text-foreground">{solution.problem.title}</h3>
-                            <span className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(solution.problem.difficulty)}`}>{solution.problem.difficulty}</span>
+                            <h3 className="font-semibold text-foreground">
+                              {solution.problem.title}
+                            </h3>
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(
+                                solution.problem.difficulty
+                              )}`}
+                            >
+                              {solution.problem.difficulty}
+                            </span>
                           </div>
                           <div className="text-right">
                             {solution.pointsEarned > 0 && (
-                              <div className="flex items-center gap-1 text-green-600 font-medium"><CheckCircle className="w-4 h-4" />+{solution.pointsEarned} pontos</div>
+                              <div className="flex items-center gap-1 text-green-600 font-medium">
+                                <CheckCircle className="w-4 h-4" />+
+                                {solution.pointsEarned} pontos
+                              </div>
                             )}
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1"><Calendar className="w-3 h-3" />{formatDate(solution.solvedAt)}</div>
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                              <Calendar className="w-3 h-3" />
+                              {formatDate(solution.solvedAt)}
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>Linguagem: {solution.language}</span><span>•</span><span className={solution.isApproved ? "text-green-600" : "text-red-600"}>{solution.messageOutput}</span>
+                          <span>Linguagem: {solution.language}</span>
+                          <span>•</span>
+                          <span
+                            className={
+                              solution.isApproved
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }
+                          >
+                            {solution.messageOutput}
+                          </span>
                         </div>
                         <div className="mt-3 flex gap-2">
-                          <button onClick={() => toggleSolutionExpansion(solution.id)} className="flex items-center gap-1 px-3 py-1 text-sm bg-muted hover:bg-muted/80 rounded-md transition-colors">
-                            {expandedSolutions.has(solution.id) ? (<><ChevronUp className="w-4 h-4" />Menos detalhes</>) : (<><ChevronDown className="w-4 h-4" />Mais detalhes</>)}
+                          <button
+                            onClick={() => toggleSolutionExpansion(solution.id)}
+                            className="flex items-center gap-1 px-3 py-1 text-sm bg-muted hover:bg-muted/80 rounded-md transition-colors"
+                          >
+                            {expandedSolutions.has(solution.id) ? (
+                              <>
+                                <ChevronUp className="w-4 h-4" />
+                                Menos detalhes
+                              </>
+                            ) : (
+                              <>
+                                <ChevronDown className="w-4 h-4" />
+                                Mais detalhes
+                              </>
+                            )}
                           </button>
                           {expandedSolutions.has(solution.id) && (
                             <div className="flex gap-2">
-                              <button onClick={() => toggleCodeVisibility(solution.id)} className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md transition-colors">
-                                {showCode.has(solution.id) ? (<><EyeOff className="w-4 h-4" />Ocultar código</>) : (<><Eye className="w-4 h-4" />Ver código</>)}
+                              <button
+                                onClick={() =>
+                                  toggleCodeVisibility(solution.id)
+                                }
+                                className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md transition-colors"
+                              >
+                                {showCode.has(solution.id) ? (
+                                  <>
+                                    <EyeOff className="w-4 h-4" />
+                                    Ocultar código
+                                  </>
+                                ) : (
+                                  <>
+                                    <Eye className="w-4 h-4" />
+                                    Ver código
+                                  </>
+                                )}
                               </button>
-                              <button onClick={() => navigate(`/submission?problemId=${solution.problem.id}`)} className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-green-700 hover:bg-blue-200 rounded-md transition-colors">
-                                <><Code className="w-4 h-4" />Ver problema</>
+                              <button
+                                onClick={() =>
+                                  navigate(
+                                    `/submission?problemId=${solution.problem.id}`
+                                  )
+                                }
+                                className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-green-700 hover:bg-blue-200 rounded-md transition-colors"
+                              >
+                                <>
+                                  <Code className="w-4 h-4" />
+                                  Ver problema
+                                </>
                               </button>
                             </div>
                           )}
                         </div>
-                        {expandedSolutions.has(solution.id) && showCode.has(solution.id) && (
-                          <div className="mt-3 p-3 bg-gray-800 rounded-lg">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Code className="w-4 h-4 text-gray-400" /><span className="text-sm font-medium text-gray-300">Solução:</span><span className="text-xs text-gray-500 ml-auto">{solution.language}</span>
+                        {expandedSolutions.has(solution.id) &&
+                          showCode.has(solution.id) && (
+                            <div className="mt-3 p-3 bg-gray-800 rounded-lg">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Code className="w-4 h-4 text-gray-400" />
+                                <span className="text-sm font-medium text-gray-300">
+                                  Solução:
+                                </span>
+                                <span className="text-xs text-gray-500 ml-auto">
+                                  {solution.language}
+                                </span>
+                              </div>
+                              <pre className="text-xs font-mono text-gray-200 overflow-x-auto max-h-60 overflow-y-auto">
+                                {solution.code}
+                              </pre>
                             </div>
-                            <pre className="text-xs font-mono text-gray-200 overflow-x-auto max-h-60 overflow-y-auto">{solution.code}</pre>
-                          </div>
-                        )}
+                          )}
                       </div>
                     ))}
                   </div>
                   {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-2 mt-6">
-                      <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors">Anterior</button>
-                      <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
-                      <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors">Próxima</button>
+                      <button
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.max(prev - 1, 1))
+                        }
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
+                      >
+                        Anterior
+                      </button>
+                      <span className="text-sm text-muted-foreground">
+                        Página {currentPage} de {totalPages}
+                      </span>
+                      <button
+                        onClick={() =>
+                          setCurrentPage((prev) =>
+                            Math.min(prev + 1, totalPages)
+                          )
+                        }
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
+                      >
+                        Próxima
+                      </button>
                     </div>
                   )}
                 </>
@@ -371,7 +549,10 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex gap-4">
-              <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-lg transition-all">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-lg transition-all"
+              >
                 <LogOut className="w-4 h-4" />
                 Sair
               </button>

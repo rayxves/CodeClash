@@ -26,27 +26,37 @@ export default function CodeModal() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCode = async () => {
-      try {
-        setError(null);
-        setLoadingCode(true);
-        const codeResult = await getCodeReferenceById(Number(id));
-        setCode(codeResult);
+    const fetchData = async () => {
+      setError(null);
+      setLoadingCode(true);
+      setLoadingRecs(true);
 
-        setLoadingRecs(true);
-        getCodeReferenceByFilters(undefined, undefined, name)
-          .then((res) => setNameSearchResults(res || []))
-          .catch(() => setNameSearchResults([]))
-          .finally(() => setLoadingRecs(false));
-      } catch (error) {
-        setError(error instanceof Error ? error.message : "Erro desconhecido");
-        setCode(null);
+      try {
+        const [codeRes, recsRes] = await Promise.allSettled([
+          getCodeReferenceById(Number(id)),
+          getCodeReferenceByFilters(undefined, undefined, name),
+        ]);
+
+        if (codeRes.status === "fulfilled") {
+          setCode(codeRes.value);
+        } else {
+          setError("Erro ao carregar código.");
+        }
+
+        if (recsRes.status === "fulfilled") {
+          setNameSearchResults(recsRes.value || []);
+        } else {
+          setNameSearchResults([]);
+        }
+      } catch {
+        setError("Erro desconhecido");
       } finally {
         setLoadingCode(false);
+        setLoadingRecs(false);
       }
     };
 
-    fetchCode();
+    fetchData();
   }, [id, name]);
 
   const handleCopyClick = async (text: string) => {
