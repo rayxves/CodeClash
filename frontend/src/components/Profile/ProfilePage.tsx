@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { getRankTitle, type UserProblemSolution } from "../../types/auth";
 import {
@@ -17,24 +17,20 @@ import {
   EyeOff,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getUser, getUserProblemSolutions } from "../../../api";
+import { getUser, getUserProblemSolutions } from "../../api/services";
 import * as data from "../../types/auth";
 
 const Skeleton = ({ className }: { className?: string }) => (
   <div className={`bg-muted animate-pulse rounded-md ${className}`} />
 );
 
-export default function ProfilePage() {
+export default function OptimizedProfilePage() {
   const [userData, setUserData] = useState<data.User | null>(null);
   const [userProblemSolutions, setUserProblemSolutions] = useState<
     UserProblemSolution[]
   >([]);
-
-  const [isUserLoading, setIsUserLoading] = useState(true);
-  const [isSolutionsLoading, setIsSolutionsLoading] = useState(true);
-  const [userError, setUserError] = useState<string | null>(null);
-  const [solutionsError, setSolutionsError] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedSolutions, setExpandedSolutions] = useState<Set<number>>(
     new Set()
@@ -45,51 +41,42 @@ export default function ProfilePage() {
 
   const ITEMS_PER_PAGE = 5;
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
     if (!user) {
       navigate("/login");
       return;
     }
-
-    const fetchData = async () => {
-      setIsUserLoading(true);
-      setIsSolutionsLoading(true);
-      setUserError(null);
-      setSolutionsError(null);
-
-      try {
-        const [userRes, solutionsRes] = await Promise.allSettled([
-          getUser(),
-          getUserProblemSolutions(),
-        ]);
-
-        if (userRes.status === "fulfilled") {
-          setUserData(userRes.value || null);
-        } else {
-          setUserData(null);
-          setUserError("Não foi possível carregar as informações do perfil.");
-        }
-
-        if (solutionsRes.status === "fulfilled") {
-          setUserProblemSolutions(solutionsRes.value || []);
-        } else {
-          setUserProblemSolutions([]);
-          setSolutionsError(
-            "Não foi possível carregar o histórico de problemas."
-          );
-        }
-      } finally {
-        setIsUserLoading(false);
-        setIsSolutionsLoading(false);
-      }
-    };
-
-    fetchData();
+    setError(null);
+    try {
+      const [userRes, solutionsRes] = await Promise.all([
+        getUser(),
+        getUserProblemSolutions(),
+      ]);
+      setUserData(userRes || null);
+      setUserProblemSolutions(solutionsRes || []);
+    } catch (err) {
+      console.error("Erro ao carregar dados:", err);
+      setError(
+        "Não foi possível carregar os dados do perfil. Tente recarregar a página."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }, [user, navigate]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    loadData();
+  }, [loadData]);
 
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const handleRetry = () => {
+    setIsLoading(true);
+    loadData();
   };
 
   const formatDate = (dateString: string) => {
@@ -147,6 +134,38 @@ export default function ProfilePage() {
     return null;
   }
 
+  if (error && !isLoading) {
+    return (
+      <div className="min-h-screen pt-24 pb-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-card rounded-xl shadow-elegant border border-border/50 overflow-hidden p-8">
+            <div className="text-center">
+              <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-foreground mb-2">
+                Erro ao carregar perfil
+              </h2>
+              <p className="text-muted-foreground mb-6">{error}</p>
+              <div className="space-x-4">
+                <button
+                  onClick={handleRetry}
+                  className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all"
+                >
+                  Tentar novamente
+                </button>
+                <button
+                  onClick={() => navigate("/")}
+                  className="px-6 py-3 bg-muted hover:bg-muted/80 text-muted-foreground rounded-lg font-medium transition-all"
+                >
+                  Voltar ao início
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pt-24 pb-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -155,7 +174,7 @@ export default function ProfilePage() {
             <div className="w-24 h-24 bg-primary-foreground/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="w-12 h-12 text-primary-foreground" />
             </div>
-            {isUserLoading ? (
+            {isLoading ? (
               <div className="space-y-2">
                 <Skeleton className="h-8 w-48 mx-auto" />
                 <Skeleton className="h-6 w-32 mx-auto" />
@@ -183,7 +202,7 @@ export default function ProfilePage() {
                   Ranking
                 </h2>
               </div>
-              {isUserLoading || isSolutionsLoading ? (
+              {isLoading ? (
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <Skeleton className="h-5 w-24" />
@@ -206,8 +225,6 @@ export default function ProfilePage() {
                     <Skeleton className="h-2 w-full" />
                   </div>
                 </div>
-              ) : userError ? (
-                <div className="text-center text-red-500">{userError}</div>
               ) : (
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -351,7 +368,7 @@ export default function ProfilePage() {
                 <h2 className="text-xl font-semibold text-foreground">
                   Problemas Resolvidos
                 </h2>
-                {isSolutionsLoading ? (
+                {isLoading ? (
                   <Skeleton className="h-6 w-10 rounded-full" />
                 ) : (
                   <span className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-sm">
@@ -360,7 +377,7 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {isSolutionsLoading ? (
+              {isLoading ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
                     <div
@@ -377,11 +394,6 @@ export default function ProfilePage() {
                       <Skeleton className="h-8 w-36" />
                     </div>
                   ))}
-                </div>
-              ) : solutionsError ? (
-                <div className="text-center py-8 text-red-500">
-                  <AlertCircle className="w-12 h-12 mx-auto mb-4" />
-                  <p>{solutionsError}</p>
                 </div>
               ) : userProblemSolutions.length === 0 ? (
                 <div className="text-center py-8">

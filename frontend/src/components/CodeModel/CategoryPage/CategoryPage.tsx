@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, Suspense, lazy, useMemo } from "react";
-import { getCategoryView } from "../../../../api";
+import { getCategoryView } from "../../../api/services";
 import EmptyState from "./EmptyState";
 import SearchBar from "./SearchBar";
 import type { CategoryPageParams } from "../../../types/routes";

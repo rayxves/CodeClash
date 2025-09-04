@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Problem } from "../../types/problem";
 import { Search, Star } from "lucide-react";
-import { getProblems } from "../../../api";
+import { getProblems } from "../../api/services";
 import Select from "react-select";
 import ReactMarkdown from "react-markdown";
 
@@ -80,24 +80,26 @@ export default function ProblemsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [difficultyFilter, setDifficultyFilter] = useState<string>("Dificuldade");
+  const [difficultyFilter, setDifficultyFilter] =
+    useState<string>("Dificuldade");
   const [categoryFilter, setCategoryFilter] = useState<string>("Categoria");
 
-  useEffect(() => {
-    const fetchProblems = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const problemsData = await getProblems();
-        setProblems(problemsData);
-      } catch (err) {
-        setError("Não foi possível carregar os problemas. Tente novamente.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProblems();
+  const fetchProblems = useCallback(async () => {
+    setError(null);
+    try {
+      const problemsData = await getProblems();
+      setProblems(problemsData);
+    } catch (err) {
+      setError("Não foi possível carregar os problemas. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchProblems();
+  }, [fetchProblems]);
 
   const filteredProblems = problems.filter((problem) => {
     const matchesSearch =
@@ -115,7 +117,10 @@ export default function ProblemsPage() {
     return matchesSearch && matchesDifficulty && matchesCategory;
   });
 
-  const categories = ["Todas", ...Array.from(new Set(problems.map((p) => p.category)))];
+  const categories = [
+    "Todas",
+    ...Array.from(new Set(problems.map((p) => p.category))),
+  ];
   const difficulties = ["Todos", "Fácil", "Médio", "Difícil"];
 
   const handleSolveProblem = (problem: Problem) => {
@@ -151,7 +156,9 @@ export default function ProblemsPage() {
                 <Select
                   options={difficulties.map((d) => ({ value: d, label: d }))}
                   value={{ value: difficultyFilter, label: difficultyFilter }}
-                  onChange={(option) => setDifficultyFilter(option?.value || "")}
+                  onChange={(option) =>
+                    setDifficultyFilter(option?.value || "")
+                  }
                   styles={customStyles}
                   classNamePrefix="react-select"
                   maxMenuHeight={200}
@@ -173,7 +180,9 @@ export default function ProblemsPage() {
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (<ProblemCardSkeleton key={i} />))}
+            {[...Array(6)].map((_, i) => (
+              <ProblemCardSkeleton key={i} />
+            ))}
           </div>
         ) : error ? (
           <div className="text-center py-12 text-red-500">{error}</div>

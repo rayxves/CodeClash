@@ -1,14 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { CodeReference } from "../../../types/code";
 import CodeHeader from "./CodeHeader";
 import CodeFooter from "./CodeFooter";
 import {
   getCodeReferenceById,
   getCodeReferenceByFilters,
-} from "../../../../api";
+} from "../../../api/services";
 import type { CodeModalParams } from "../../../types/routes";
 import RecommendationsList from "../Recomendation/RecomendationList";
 import { ClipboardCopy, Code2 } from "lucide-react";
@@ -17,47 +17,36 @@ export default function CodeModal() {
   const { id, name } = useParams<CodeModalParams>();
   const [copySuccess, setCopySuccess] = useState("");
   const [code, setCode] = useState<CodeReference | null>(null);
-  const [loadingCode, setLoadingCode] = useState(true);
-  const [loadingRecs, setLoadingRecs] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [nameSearchResults, setNameSearchResults] = useState<CodeReference[]>(
     []
   );
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setError(null);
-      setLoadingCode(true);
-      setLoadingRecs(true);
-
-      try {
-        const [codeRes, recsRes] = await Promise.allSettled([
-          getCodeReferenceById(Number(id)),
-          getCodeReferenceByFilters(undefined, undefined, name),
-        ]);
-
-        if (codeRes.status === "fulfilled") {
-          setCode(codeRes.value);
-        } else {
-          setError("Erro ao carregar código.");
-        }
-
-        if (recsRes.status === "fulfilled") {
-          setNameSearchResults(recsRes.value || []);
-        } else {
-          setNameSearchResults([]);
-        }
-      } catch {
-        setError("Erro desconhecido");
-      } finally {
-        setLoadingCode(false);
-        setLoadingRecs(false);
+  const fetchData = useCallback(async () => {
+    setError(null);
+    try {
+      const [codeRes, recsRes] = await Promise.all([
+        getCodeReferenceById(Number(id)),
+        getCodeReferenceByFilters(undefined, undefined, name),
+      ]);
+      setCode(codeRes);
+      setNameSearchResults(recsRes || []);
+      if (!codeRes) {
+        setError("Erro ao carregar código.");
       }
-    };
-
-    fetchData();
+    } catch {
+      setError("Erro desconhecido ao buscar dados.");
+    } finally {
+      setIsLoading(false);
+    }
   }, [id, name]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchData();
+  }, [fetchData]);
 
   const handleCopyClick = async (text: string) => {
     try {
@@ -77,7 +66,7 @@ export default function CodeModal() {
     );
   };
 
-  if (loadingCode) {
+  if (isLoading) {
     return (
       <div className="w-full min-h-screen bg-gradient-surface flex items-center justify-center">
         <div className="text-center">
@@ -88,17 +77,17 @@ export default function CodeModal() {
     );
   }
 
-  if (error) {
+  if (error || !code) {
     return (
       <div className="w-full min-h-screen bg-gradient-surface flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
         <div className="w-full max-w-6xl mt-12">
           <div className="bg-card p-8 rounded-2xl shadow-card text-center mb-6 border border-border">
             <Code2 className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-card-foreground mb-2">
-              {error.split(". ")[0]}.
+              {error ? error.split(". ")[0] + "." : "Código não encontrado."}
             </h3>
             <p className="text-muted-foreground mb-4">
-              {error.split(". ").slice(1).join(". ")}
+              {error ? error.split(". ").slice(1).join(". ") : ""}
             </p>
             <button
               onClick={() => navigate("/code-model")}
@@ -114,29 +103,10 @@ export default function CodeModal() {
                 recommendations={nameSearchResults}
                 onSelectCode={handleSelectRecommendedCode}
                 navigate={navigate}
-                loading={loadingRecs}
+                loading={isLoading}
               />
             </div>
           )}
-        </div>
-      </div>
-    );
-  }
-
-  if (!code) {
-    return (
-      <div className="w-full min-h-screen bg-gradient-surface flex items-center justify-center">
-        <div className="text-center">
-          <Code2 className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-card-foreground mb-2">
-            Nenhum código encontrado
-          </h3>
-          <button
-            onClick={() => navigate("/code-model")}
-            className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all hover-lift"
-          >
-            Voltar para a lista de códigos
-          </button>
         </div>
       </div>
     );
@@ -151,13 +121,11 @@ export default function CodeModal() {
       )}
 
       <div className="w-full max-w-6xl mt-10">
-        {code && (
-          <CodeHeader
-            language={code.language}
-            category={code.category}
-            name={name || code.name}
-          />
-        )}
+        <CodeHeader
+          language={code.language}
+          category={code.category}
+          name={name || code.name}
+        />
 
         <div className="w-full bg-card rounded-2xl shadow-card overflow-hidden border border-border mb-8">
           <div className="bg-gray-800 px-4 sm:px-5 py-2 flex justify-between items-center">
@@ -219,7 +187,7 @@ export default function CodeModal() {
             recommendations={code.recommendations}
             onSelectCode={handleSelectRecommendedCode}
             navigate={navigate}
-            loading={loadingRecs}
+            loading={isLoading}
           />
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import {
   Play,
@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import MonacoEditor from "react-monaco-editor";
 import type { Problem } from "../../types/problem";
-import { getProblemById, submitCode } from "../../../api";
+import { getProblemById, submitCode } from "../../api/services";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "../../contexts/AuthContext";
 import SubmissionResultDisplay from "./SubmissionResultDisplay";
@@ -124,14 +124,17 @@ export default function EnhancedSubmissionPage() {
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = (
-    type: "error" | "success" | "info",
-    message: string,
-    duration = 4000
-  ) => {
-    const id = Date.now().toString();
-    setNotifications((prev) => [...prev, { id, type, message, duration }]);
-  };
+  const addNotification = useCallback(
+    (
+      type: "error" | "success" | "info",
+      message: string,
+      duration = 4000
+    ) => {
+      const id = Date.now().toString();
+      setNotifications((prev) => [...prev, { id, type, message, duration }]);
+    },
+    []
+  );
 
   const removeNotification = (id: string) => {
     setNotifications((prev) =>
@@ -139,27 +142,28 @@ export default function EnhancedSubmissionPage() {
     );
   };
 
+  const fetchProblem = useCallback(async () => {
+    if (!problemId) {
+      setIsLoadingProblem(false);
+      return;
+    }
+    try {
+      const problemData = await getProblemById(Number(problemId));
+      setProblem(problemData);
+    } catch (error) {
+      addNotification(
+        "error",
+        "Erro ao carregar o problema. Tente novamente mais tarde."
+      );
+    } finally {
+      setIsLoadingProblem(false);
+    }
+  }, [problemId, addNotification]);
+
   useEffect(() => {
-    const fetchProblem = async () => {
-      if (problemId) {
-        setIsLoadingProblem(true);
-        try {
-          const problemData = await getProblemById(Number(problemId));
-          setProblem(problemData);
-        } catch (error) {
-          addNotification(
-            "error",
-            "Erro ao carregar o problema. Tente novamente mais tarde."
-          );
-        } finally {
-          setIsLoadingProblem(false);
-        }
-      } else {
-        setIsLoadingProblem(false);
-      }
-    };
+    setIsLoadingProblem(true);
     fetchProblem();
-  }, [problemId]);
+  }, [fetchProblem]);
 
   const handleSubmit = async (language: string, code: string) => {
     if (!isAuthenticated) {
@@ -171,7 +175,7 @@ export default function EnhancedSubmissionPage() {
       return;
     }
 
-    if (!code.trim() || code == "// Write your code here") {
+    if (!code.trim() || code === "// Write your code here") {
       addNotification("error", "O código não pode estar vazio.");
       return;
     }
@@ -206,12 +210,12 @@ export default function EnhancedSubmissionPage() {
       let errorMessage =
         "Erro ao executar o código. Tente novamente mais tarde.";
 
-      if (error.message && error.status == 400) {
+      if (error.message && error.status === 400) {
         setOutput({
           error: error.message,
         });
         return;
-      } else if (error.message && error.status == 500) {
+      } else if (error.message && error.status === 500) {
         setOutput("");
         errorMessage = "Erro no servidor ao processar sua solicitação.";
       } else if (error.request) {
@@ -228,7 +232,7 @@ export default function EnhancedSubmissionPage() {
   };
 
   const handleGetRecommendations = () => {
-    if (!code.trim() || code == "// Write your code here") {
+    if (!code.trim() || code === "// Write your code here") {
       addNotification(
         "error",
         "O código não pode estar vazio para obter recomendações."
