@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Mail, Lock, User, UserPlus } from "lucide-react";
+import { validatePassword, validateUsername } from "../../utils/validateUserData";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -12,36 +13,6 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
-
-  const validatePassword = (password: string) => {
-    const minLength = 6;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
-
-    if (password.length < minLength) {
-      return "A senha deve ter pelo menos 6 caracteres";
-    }
-    if (!hasUpperCase) {
-      return "A senha deve conter pelo menos uma letra maiúscula";
-    }
-    if (!hasLowerCase) {
-      return "A senha deve conter pelo menos uma letra minúscula";
-    }
-    if (!hasNumber) {
-      return "A senha deve conter pelo menos um número";
-    }
-    if (!hasSpecialChar) {
-      return "A senha deve conter pelo menos um caractere especial";
-    }
-    return null;
-  };
-
-  const validateUsername = (username: string) => {
-    const regex = /^[a-zA-Z0-9_-]{3,20}$/;
-    return regex.test(username);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

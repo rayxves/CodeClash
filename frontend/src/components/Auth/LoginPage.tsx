@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Mail, Lock, User } from "lucide-react";
+import { validateUsername, sanitizeInput } from "../../utils/validateUserData";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -10,15 +11,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  const sanitizeInput = (input: string) => {
-    return input.replace(/[<>'";%()&+|-]/g, "");
-  };
-
-  const validateUsername = (username: string) => {
-    const regex = /^[a-zA-Z0-9_-]{3,20}$/;
-    return regex.test(username);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
