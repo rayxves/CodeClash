@@ -8,7 +8,7 @@ import CodeFooter from "./CodeFooter";
 import {
   getCodeReferenceById,
   getCodeReferenceByFilters,
-} from "../../../api/services";
+} from "../../../api/codeReferenceServices";
 import type { CodeModalParams } from "../../../types/routes";
 import RecommendationsList from "../Recomendation/RecomendationList";
 import { ClipboardCopy, Code2 } from "lucide-react";

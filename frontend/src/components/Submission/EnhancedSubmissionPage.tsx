@@ -9,7 +9,7 @@ import {
   Stars,
   Terminal,
 } from "lucide-react";
-import { getProblemById, submitCode } from "../../api/services";
+import { getProblemById } from "../../api/problemServices";
 import { useAuth } from "../../contexts/AuthContext";
 import type { Problem } from "../../types/problem";
 import NotificationToast from "./NotificationToast";
@@ -18,6 +18,7 @@ import ProblemDetail from "./ProblemDetail";
 import ProblemDetailSkeleton from "./ProblemDetailSkeleton";
 import CodeEditor from "./CodeEditor";
 import SubmissionResultDisplay from "./SubmissionResultDisplay";
+import { submitCode } from "../../api/codeReferenceServices";
 
 export default function EnhancedSubmissionPage() {
   const navigate = useNavigate();

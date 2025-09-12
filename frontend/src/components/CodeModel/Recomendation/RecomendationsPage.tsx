@@ -7,7 +7,7 @@ import CodeDetailModal from "./CodeDetailModal";
 import {
   getCodeReferenceByFilters,
   recommendSimilar,
-} from "../../../api/services";
+} from "../../../api/codeReferenceServices";
 import type { CodeReference } from "../../../types/code";
 import { ChevronLeft } from "lucide-react";
 import HeaderSection from "./HeaderSection";

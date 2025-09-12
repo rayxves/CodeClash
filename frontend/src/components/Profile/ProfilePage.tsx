@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { type CompleteProfileData } from "../../types/auth";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getCompleteProfile } from "../../api/services";
+import { getCompleteProfile } from "../../api/userServices";
 import { ProfileHeader } from "./ProfileHeader";
 import { RankingCard } from "./RankingCard";
 import { PersonalInfoCard } from "./PersonalInfoCard";

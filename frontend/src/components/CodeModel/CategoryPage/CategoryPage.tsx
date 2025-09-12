@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, Suspense, lazy, useMemo } from "react";
-import { getCategoryView } from "../../../api/services";
+import { getCategoryView } from "../../../api/codeReferenceServices";
 import { useDebounce } from "../../../hooks/useDebounce";
 import EmptyState from "./EmptyState";
 import SearchBar from "./SearchBar";
@@ -13,7 +13,9 @@ export default function CategoryPage() {
   const { language = "", category = "" } = useParams<CategoryPageParams>();
   const navigate = useNavigate();
 
-  const [categoryData, setCategoryData] = useState<CategoryViewData | null>(null);
+  const [categoryData, setCategoryData] = useState<CategoryViewData | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -25,7 +27,7 @@ export default function CategoryPage() {
       try {
         const data = await getCategoryView(language, category);
         setCategoryData(data);
-      } catch (error) {
+      } catch {
         setCategoryData(null);
       } finally {
         setLoading(false);
@@ -41,7 +43,7 @@ export default function CategoryPage() {
 
   const matchesSearch = useMemo(() => {
     const search = debouncedSearchTerm.toLowerCase().trim();
-    
+
     function checkMatch(child: ChildCategory): boolean {
       if (
         child.name?.toLowerCase().includes(search) ||

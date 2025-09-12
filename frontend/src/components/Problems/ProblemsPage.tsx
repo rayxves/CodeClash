@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useDebounce } from "../../hooks/useDebounce";
-import { getProblems } from "../../api/services";
+import { getProblems } from "../../api/problemServices";
 import type { Problem } from "../../types/problem";
 import ProblemCard from "./ProblemCard";
 import ProblemCardSkeleton from "./ProblemCardSkeleton";
