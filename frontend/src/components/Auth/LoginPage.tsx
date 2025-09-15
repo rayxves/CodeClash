@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Mail, Lock, User } from "lucide-react";
-import { validateUsername, sanitizeInput } from "../../utils/validateUserData";
+import {
+  validateUsername,
+  sanitizeInput,
+  validatePassword,
+} from "../../utils/validateUserData";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,30 +24,27 @@ export default function LoginPage() {
       if (username.length < 3) {
         setError("Nome de usuário precisa ter 3 ou mais caracteres.");
         return;
-        
       }
       setError(
         "Nome de usuário inválido. Use apenas letras, números, hífen e underscore."
       );
       return;
     }
-
-    const sanitizedUsername = sanitizeInput(username);
-    const sanitizedPassword = sanitizeInput(password);
-
-    if (!sanitizedUsername || sanitizedUsername.length < 3) {
-      setError("Nome de usuário contém caracteres inválidos");
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
     setIsLoading(true);
 
     try {
-      await login(sanitizedUsername, sanitizedPassword);
+      const cleanUsername = sanitizeInput(username);
+      await login(cleanUsername, password);
       navigate("/");
     } catch (error: any) {
-      if (error.response.status !== 500) {
-        setError(error.response.data);
+      if (error?.response?.status !== 500) {
+        setError(error?.response?.data || "Credenciais inválidas.");
       } else {
         setError("Erro interno ao tentar realizar o login.");
       }
@@ -84,7 +85,10 @@ export default function LoginPage() {
                   id="username"
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => {
+                    const clean = sanitizeInput(e.target.value);
+                    setUsername(clean);
+                  }}
                   className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
                   placeholder="Seu nome de usuário"
                   required

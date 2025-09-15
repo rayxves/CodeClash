@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Mail, Lock, User, UserPlus } from "lucide-react";
-import { validatePassword, validateUsername } from "../../utils/validateUserData";
+import {
+  sanitizeInput,
+  validatePassword,
+  validateUsername,
+} from "../../utils/validateUserData";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -43,11 +47,12 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      await register(username, email, password);
+      const cleanUsername = sanitizeInput(username);
+      await register(cleanUsername, email, password); // senha enviada "como é"
       navigate("/");
     } catch (error: any) {
-      if (error.response.status !== 500) {
-        setError(error.response.data);
+      if (error?.response?.status !== 500) {
+        setError(error?.response?.data || "Erro ao tentar registrar.");
       } else {
         setError("Erro interno ao tentar realizar o registro.");
       }
@@ -90,7 +95,7 @@ export default function RegisterPage() {
                   id="username"
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(sanitizeInput(e.target.value))}
                   className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
                   placeholder="Seu nome de usuário"
                   required
