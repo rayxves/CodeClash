@@ -1,9 +1,11 @@
 {
-  
   "compilerOptions": {
+    "module": "commonjs",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "types": ["jest", "node", "@testing-library/jest-dom"]
   },
   "files": [],
   "references": [
