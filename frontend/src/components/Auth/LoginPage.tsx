@@ -20,11 +20,11 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
+    if (username.length < 3) {
+      setError("Nome de usuário precisa ter 3 ou mais caracteres.");
+      return;
+    }
     if (!validateUsername(username)) {
-      if (username.length < 3) {
-        setError("Nome de usuário precisa ter 3 ou mais caracteres.");
-        return;
-      }
       setError(
         "Nome de usuário inválido. Use apenas letras, números, hífen e underscore."
       );
