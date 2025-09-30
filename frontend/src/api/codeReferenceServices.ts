@@ -64,3 +64,14 @@ export async function submitCode(
   );
 }
 
+export const getCodeTreeByLanguage = async (
+  language: string
+): Promise<CodeReference> => {
+  try {
+    const response = await apiClient.get<CodeReference>(`/code/tree/${language}`);
+    return response;
+  } catch (error) {
+    console.error("Failed to fetch code tree:", error);
+    throw error;
+  }
+};
