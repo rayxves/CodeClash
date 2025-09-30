@@ -52,18 +52,19 @@ public class CodeController : ControllerBase
         return Ok(reference);
     }
 
+
     [HttpGet("tree/{language}")]
     public async Task<IActionResult> GetTreeByLanguage(string language)
     {
-        var tree = await _codeService.BuildTreeForLanguageAsync(language);
-        if (tree == null)
+        var treeComponent = await _codeService.BuildTreeForLanguageAsync(language);
+        if (treeComponent == null)
         {
             return NotFound($"Nenhuma árvore encontrada para a linguagem '{language}'.");
         }
 
-        return Ok(tree);
+        var treeDto = _codeService.MapComponentToDto(treeComponent);
+        return Ok(treeDto);
     }
-
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string? language, [FromQuery] string? category, [FromQuery] string? name)
     {

@@ -94,29 +94,58 @@ public class CodeReferenceService : ICodeReferenceServices
     {
         var allEntities = await _context.CodeReferences
             .Where(e => e.Language.ToLower() == language.ToLower())
+            .AsNoTracking() 
             .ToListAsync();
 
         if (!allEntities.Any()) return null;
 
-        var root = allEntities.FirstOrDefault(e => e.ParentId == null);
-        if (root == null) return null;
+        var virtualRoot = new CodeCategory(new CodeReferenceEntity
+        {
+            Id = 0, 
+            Name = language,
+            Language = language,
+            Description = $"Conteúdo principal para a linguagem {language}"
+        });
 
         var map = allEntities.ToDictionary(
             e => e.Id,
             e => string.IsNullOrEmpty(e.Code) ? (CodeComponent)new CodeCategory(e) : new CodeAlgorithm(e)
         );
 
-        foreach (var e in allEntities)
+        foreach (var entity in allEntities)
         {
-            if (e.ParentId.HasValue && map.TryGetValue(e.ParentId.Value, out var parent))
+            if (entity.ParentId.HasValue && map.TryGetValue(entity.ParentId.Value, out var parent))
             {
-                parent.Add(map[e.Id]);
+                parent.Add(map[entity.Id]);
+            }
+            else if (!entity.ParentId.HasValue)
+            {
+                virtualRoot.Add(map[entity.Id]);
             }
         }
 
-        return map[root.Id];
+        return virtualRoot;
     }
 
+    public CodeComponentDto MapComponentToDto(CodeComponent component)
+    {
+        var dto = new CodeComponentDto
+        {
+            Id = component.Id,
+            Name = component.Name,
+            Category = component.Category,
+            Language = component.Language,
+            Description = component.Description,
+            Children = component.GetChildren().Select(MapComponentToDto).ToList()
+        };
+
+        if (component is CodeAlgorithm algorithm)
+        {
+            dto.Code = algorithm.Code;
+        }
+
+        return dto;
+    }
     public async Task<object> GetByIdAsync(int id)
     {
         var entity = await _context.CodeReferences
@@ -209,4 +238,5 @@ public class CodeReferenceService : ICodeReferenceServices
             })
             .ToList();
     }
+
 }
