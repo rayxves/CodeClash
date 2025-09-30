@@ -12,6 +12,7 @@ public interface ICodeReferenceServices
     Task<List<CodeReferenceEntity>> GetAllDescendantsAsync(List<int> parentIds);
     Task<IEnumerable<object>> RecommendSimilarAsync(string userCodeAttempt, int take = 5);
     Task<CodeComponent?> BuildTreeForLanguageAsync(string language);
+     CodeComponentDto MapComponentToDto(CodeComponent component);
     Task<CategoryViewDto?> GetCategoryViewAsync(string language, string? categoryName = null);
 
 }

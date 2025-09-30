@@ -137,7 +137,8 @@ builder.Services.AddScoped<ITestExecutorService, TestExecutorService>();
 builder.Services.AddScoped<ISubmissionStrategy, ProblemSubmissionStrategy>();
 builder.Services.AddScoped<ISubmissionStrategy, SimpleExecutionStrategy>();
 builder.Services.AddScoped<SubmissionDirector>();
-builder.Services.AddScoped<ISubmissionServices, SubmissionServices>(); 
+builder.Services.AddScoped<ISubmissionServices, SubmissionServices>();
+builder.Services.AddScoped<ITreeNavigationService, TreeNavigationService>();
 builder.Services.AddScoped<ISubmissionHandler>(sp =>
 {
     var judge0Service = sp.GetRequiredService<IJudge0Services>();
