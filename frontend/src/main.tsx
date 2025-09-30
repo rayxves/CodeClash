@@ -15,6 +15,7 @@ import ProblemsPage from "./components/Problems/ProblemsPage.tsx";
 import LoginPage from "./components/Auth/LoginPage.tsx";
 import RegisterPage from "./components/Auth/RegisterPage.tsx";
 import ProfilePage from "./components/Profile/ProfilePage.tsx";
+import TreeNavigator from "./components/CodeModel/TreeNavigator/TreeNavigator.tsx";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: "about", element: <AboutPage /> },
       { path: "problems", element: <ProblemsPage /> },
       { path: "code-model", element: <CodeModel /> },
+      { path: "/:language", element: <TreeNavigator /> },
       { path: "code-model/:language/:category", element: <CategoryPage /> },
       { path: "code-modal/:id/:name", element: <CodeModal /> },
       { path: "submission", element: <EnhancedSubmissionPage /> },
