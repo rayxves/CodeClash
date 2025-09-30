@@ -12,6 +12,7 @@ import {
 import type { CodeModalParams } from "../../../types/routes";
 import RecommendationsList from "../Recomendation/RecomendationList";
 import { ClipboardCopy, Code2 } from "lucide-react";
+import { getLanguageExtension } from "../../../utils/getLanguageExtensions";
 
 export default function CodeModal() {
   const { id, name } = useParams<CodeModalParams>();
@@ -136,7 +137,7 @@ export default function CodeModal() {
                 <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
               </div>
               <h2 className="text-white font-mono text-xs sm:text-sm truncate">
-                {code.name}.{getExtension(code.language.toLowerCase())}
+                {code.name}.{getLanguageExtension(code.language.toLowerCase())}
               </h2>
             </div>
 
@@ -154,7 +155,7 @@ export default function CodeModal() {
 
           <div className="bg-[#1e1e2f] overflow-auto max-h-[60vh] sm:max-h-[65vh] text-xs sm:text-sm">
             <SyntaxHighlighter
-              language={getExtension(code.language.toLowerCase())}
+              language={getLanguageExtension(code.language.toLowerCase())}
               style={vscDarkPlus}
               showLineNumbers
               wrapLines
@@ -193,17 +194,4 @@ export default function CodeModal() {
       </div>
     </div>
   );
-}
-
-export function getExtension(language: string): string {
-  const extensions: Record<string, string> = {
-    python: "py",
-    java: "java",
-    "c#": "cs",
-    csharp: "cs",
-    cpp: "cpp",
-    "c++": "cpp",
-  };
-
-  return extensions[language.toLowerCase()] || "txt";
 }

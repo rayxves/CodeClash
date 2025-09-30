@@ -1,7 +1,7 @@
 import { Code2 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { getExtension } from "../CodeModal/CodeModal";
+import { getLanguageExtension } from "../../../utils/getLanguageExtensions";
 
 interface SourceCodeSectionProps {
   sourceCode: string;
@@ -31,7 +31,7 @@ export default function SourceCodeSection({
       </h2>
       <div className="bg-muted/20 overflow-auto max-h-[50vh] sm:max-h-[65vh] rounded-xl border border-border text-xs sm:text-sm text-muted">
         <SyntaxHighlighter
-          language={getExtension(language ?? "py")}
+          language={getLanguageExtension(language ?? "py")}
           style={nightOwl}
           showLineNumbers
           wrapLines

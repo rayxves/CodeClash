@@ -2,6 +2,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { ChevronLeft } from "lucide-react";
 import type { CodeReference } from "../../../types/code";
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { getLanguageExtension } from "../../../utils/getLanguageExtensions";
 
 interface CodeDetailModalProps {
   code: CodeReference;
@@ -22,7 +23,7 @@ export default function CodeDetailModal({
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
           </div>
           <h2 className="text-card-foreground font-mono text-sm truncate">
-            {code.name}.{getExtension(code.language.toLowerCase())}
+            {code.name}.{getLanguageExtension(code.language.toLowerCase())}
           </h2>
         </div>
         <span className="text-muted-foreground text-xs font-mono bg-muted px-3 py-1 rounded-full">
@@ -32,7 +33,7 @@ export default function CodeDetailModal({
 
       <div className="bg-muted/20 overflow-auto max-h-[60vh] text-sm">
         <SyntaxHighlighter
-          language={getExtension(code.language.toLowerCase())}
+          language={getLanguageExtension(code.language.toLowerCase())}
           style={nightOwl}
           showLineNumbers
           wrapLines
@@ -68,21 +69,4 @@ export default function CodeDetailModal({
       </div>
     </div>
   );
-}
-
-function getExtension(language: string): string {
-  switch (language.toLowerCase()) {
-    case "python":
-      return "py";
-    case "java":
-      return "java";
-    case "c#":
-    case "csharp":
-      return "cs";
-    case "cpp":
-    case "c++":
-      return "cpp";
-    default:
-      return "txt";
-  }
 }
