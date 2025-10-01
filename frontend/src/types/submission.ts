@@ -4,6 +4,7 @@ export interface TestResult {
   status: string;
   expectedOutput: string;
   output: string;
+  compileOutput: string;
   time: string;
   input?: string;
   error?: string;
@@ -24,7 +25,7 @@ export interface SimpleExecutionResult {
 export interface SubmissionResponse {
   testResults: TestResult[];
   simpleExecutionResult: SimpleExecutionResult | null;
-  overallStatus: string;
+  overallStatus: number;
   compilationError: string | null;
   notification: string | null;
   pointsGained: number | null;
