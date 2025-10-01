@@ -17,7 +17,14 @@ const languages = [
   { name: "C#", id: "csharp", icon: <Code2 className="w-4 h-4" /> },
 ];
 
-export default function CodeEditor({ code, setCode, language, setLanguage, fontSize, setFontSize }: Props) {
+export default function CodeEditor({
+  code,
+  setCode,
+  language,
+  setLanguage,
+  fontSize,
+  setFontSize,
+}: Props) {
   return (
     <div className="bg-card rounded-2xl border border-border shadow-card overflow-hidden">
       <div className="bg-muted/50 px-6 py-4 border-b border-border flex items-center justify-between">
@@ -28,7 +35,9 @@ export default function CodeEditor({ code, setCode, language, setLanguage, fontS
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
           </div>
           <span className="text-sm font-mono text-card-foreground">
-            editor.{languages.find((l) => l.id === language)?.name.toLowerCase() || "py"}
+            editor.
+            {languages.find((l) => l.id === language)?.name.toLowerCase() ||
+              "py"}
           </span>
         </div>
 
@@ -36,7 +45,7 @@ export default function CodeEditor({ code, setCode, language, setLanguage, fontS
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            className="px-3 py-1 bg-card border border-border rounded-lg text-card-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            className="px-2 py-1 bg-card border cursor-pointer border-border rounded text-card-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           >
             {languages.map((lang) => (
               <option key={lang.id} value={lang.id}>

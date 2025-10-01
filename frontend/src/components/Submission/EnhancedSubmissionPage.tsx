@@ -98,12 +98,25 @@ export default function EnhancedSubmissionPage() {
       );
       setOutput(response);
 
-      addNotification(
-        "success",
-        problemId
-          ? "Solução submetida com sucesso!"
-          : "Código executado com sucesso!"
-      );
+      const isAccepted = response.overallStatus === 0;
+      const isSimpleExecutionSuccess =
+        !problemId && response.simpleExecutionResult?.status?.id === 3;
+
+      if (isAccepted || isSimpleExecutionSuccess) {
+        addNotification(
+          "success",
+          problemId
+            ? "Solução aceita com sucesso!"
+            : "Código executado com sucesso!"
+        );
+      } else {
+        addNotification(
+          "info",
+          problemId
+            ? "Solução avaliada. Confira o resultado."
+            : "Código executado. Confira a saída."
+        );
+      }
 
       if (response.pointsGained && response.pointsGained > 0) {
         setTimeout(() => {

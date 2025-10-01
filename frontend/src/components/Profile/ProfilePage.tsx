@@ -10,13 +10,12 @@ import { PersonalInfoCard } from "./PersonalInfoCard";
 import { SolutionsCard } from "./SolutionsCard";
 import { ErrorState } from "./ErrorState";
 
-export default function OptimizedProfilePage() {
+export default function ProfilePage() {
   const [profileData, setProfileData] = useState<CompleteProfileData | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [expandedSolutions, setExpandedSolutions] = useState<Set<number>>(
     new Set()
   );
@@ -25,6 +24,8 @@ export default function OptimizedProfilePage() {
   const navigate = useNavigate();
 
   const ITEMS_PER_PAGE = 5;
+  const [visibleSolutionsCount, setVisibleSolutionsCount] =
+    useState(ITEMS_PER_PAGE);
 
   const loadData = useCallback(async () => {
     if (!user) {
@@ -61,12 +62,16 @@ export default function OptimizedProfilePage() {
 
   const userProblemSolutions = profileData?.solutions || [];
   const userData = profileData?.user;
-  const totalPages = Math.ceil(userProblemSolutions.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentSolutions = userProblemSolutions.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+
+  const currentSolutions = userProblemSolutions.slice(0, visibleSolutionsCount);
+  const hasMoreSolutions =
+    visibleSolutionsCount < userProblemSolutions.length;
+
+  const handleLoadMore = () => {
+    setVisibleSolutionsCount(
+      (prevCount) => prevCount + ITEMS_PER_PAGE
+    );
+  };
 
   if (!user) {
     return null;
@@ -98,13 +103,12 @@ export default function OptimizedProfilePage() {
               isLoading={isLoading}
               userProblemSolutions={userProblemSolutions}
               currentSolutions={currentSolutions}
-              totalPages={totalPages}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
               expandedSolutions={expandedSolutions}
               setExpandedSolutions={setExpandedSolutions}
               showCode={showCode}
               setShowCode={setShowCode}
+              onLoadMore={handleLoadMore}
+              hasMoreSolutions={hasMoreSolutions}
             />
 
             <div className="flex gap-4">
