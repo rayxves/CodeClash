@@ -27,7 +27,7 @@ export interface ChildCategory {
   language: string;
   category: string;
   parentId: number | null;
-  children?: [];
+  children?: ChildCategory[];
 }
 
 export interface CategoryViewData {

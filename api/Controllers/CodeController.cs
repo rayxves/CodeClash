@@ -53,8 +53,8 @@ public class CodeController : ControllerBase
     }
 
 
-    [HttpGet("tree/{language}")]
-    public async Task<IActionResult> GetTreeByLanguage(string language)
+    [HttpGet("tree")]
+    public async Task<IActionResult> GetTreeByLanguage([FromQuery] string language)
     {
         var treeComponent = await _codeService.BuildTreeForLanguageAsync(language);
         if (treeComponent == null)

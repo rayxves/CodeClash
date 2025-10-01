@@ -204,10 +204,13 @@ export default function CodeModel() {
               Navegação em Árvore Interativa
             </h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Explore todos os algoritmos e categorias de {selectedLanguage.name} em uma estrutura visual completa.
+              Explore todos os algoritmos e categorias de{" "}
+              {selectedLanguage.name} em uma estrutura visual completa.
             </p>
             <button
-              onClick={() => navigate(`/${selectedLanguage.name.toLowerCase()}`)}
+              onClick={() =>
+                navigate(`/${encodeURIComponent(selectedLanguage.name)}`)
+              }
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all"
             >
               Explorar em Árvore
