@@ -82,7 +82,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4">
+    <div className="min-h-screen pt-24 pb-12 px-2 sm:px-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-card rounded-xl shadow-elegant border border-border/50 overflow-hidden">
           <ProfileHeader
@@ -91,7 +91,7 @@ export default function ProfilePage() {
             totalPoints={userData?.totalPoints || 0}
           />
 
-          <div className="p-8 space-y-6">
+          <div className="p-4 sm:p-8 space-y-6">
             <RankingCard isLoading={isLoading} profileData={profileData} />
 
             <PersonalInfoCard

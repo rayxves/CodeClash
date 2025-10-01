@@ -1,63 +1,74 @@
-import { useAuth } from '../../contexts/AuthContext';
+import { Home, BookOpen, Code2, FileCode, User, Upload, LogIn, UserPlus } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function DesktopMenu() {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <div className="hidden lg:flex items-center gap-6">
+    <div className="hidden lg:flex items-center gap-2">
       <a
         href="/"
-        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+        className="flex items-center gap-2 px-4 py-2 text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-lg transition-all font-medium group"
       >
-        Início
+        <Home className="w-4 h-4" />
+        <span>Início</span>
       </a>
       <a
         href="/about"
-        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+        className="flex items-center gap-2 px-4 py-2 text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-lg transition-all font-medium"
       >
-        Sobre
+        <BookOpen className="w-4 h-4" />
+        <span>Sobre</span>
       </a>
       <a
         href="/problems"
-        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+        className="flex items-center gap-2 px-4 py-2 text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-lg transition-all font-medium"
       >
-        Problemas
+        <Code2 className="w-4 h-4" />
+        <span>Problemas</span>
       </a>
       <a
         href="/code-model"
-        className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+        className="flex items-center gap-2 px-4 py-2 text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-lg transition-all font-medium"
       >
-        Códigos
+        <FileCode className="w-4 h-4" />
+        <span>Códigos</span>
       </a>
-      
+
+      <div className="ml-2 h-8 w-px bg-border"></div>
+
       {isAuthenticated ? (
         <>
           <a
             href="/profile"
-            className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+            className="flex items-center gap-2 px-4 py-2 text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-lg transition-all font-medium"
           >
-            Perfil ({user?.username})
+            <User className="w-4 h-4" />
+            <span>{user?.username}</span>
           </a>
           <a
             href="/submission"
-            className="px-4 py-2 bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-lg transition-all font-medium"
+            className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-all font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
           >
-            Submeter código
+            <Upload className="w-4 h-4" />
+            <span>Submeter</span>
           </a>
         </>
       ) : (
         <>
           <a
             href="/login"
-            className="text-foreground/80 hover:text-foreground transition-all relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full font-medium"
+            className="flex items-center gap-2 px-4 py-2 text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-lg transition-all font-medium"
           >
-            Login
+            <LogIn className="w-4 h-4" />
+            <span>Login</span>
           </a>
           <a
             href="/register"
-            className="px-4 py-2 bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-lg transition-all font-medium"
+            className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-all font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
           >
-            Registrar
+            <UserPlus className="w-4 h-4" />
+            <span>Registrar</span>
           </a>
         </>
       )}

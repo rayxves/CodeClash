@@ -14,7 +14,9 @@ export default function CategoryPage() {
   const { language = "", category = "" } = useParams<CategoryPageParams>();
   const navigate = useNavigate();
 
-  const [categoryData, setCategoryData] = useState<CategoryViewData | null>(null);
+  const [categoryData, setCategoryData] = useState<CategoryViewData | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -48,7 +50,7 @@ export default function CategoryPage() {
       const nameMatch = child.name?.toLowerCase().includes(search);
       const categoryMatch = child.category?.toLowerCase().includes(search);
       const codeMatch = child.code?.toLowerCase().includes(search);
-      
+
       const currentMatches = nameMatch || categoryMatch || codeMatch;
 
       if (currentMatches && child.id) {
@@ -65,7 +67,8 @@ export default function CategoryPage() {
       if (currentMatches || matchedChildren.length > 0) {
         return {
           ...child,
-          children: matchedChildren.length > 0 ? matchedChildren : child.children,
+          children:
+            matchedChildren.length > 0 ? matchedChildren : child.children,
         };
       }
 
@@ -91,7 +94,7 @@ export default function CategoryPage() {
   const categoryTitle = useMemo(() => {
     return category
       .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   }, [category]);
 
@@ -126,14 +129,12 @@ export default function CategoryPage() {
             </button>
 
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl shadow-lg">
-                <Code2 className="w-8 h-8 text-primary" />
-              </div>
               <div>
                 <h1 className="text-3xl font-bold text-card-foreground">
                   {categoryTitle}
                 </h1>
                 <p className="text-muted-foreground text-lg mt-1 flex items-center gap-2">
+                  <Code2 className="sm:w-6 sm:h-6 text-primary" />
                   {language.charAt(0).toUpperCase() + language.slice(1)}
                 </p>
               </div>
@@ -142,7 +143,7 @@ export default function CategoryPage() {
             <SearchBar
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
-              placehoder="Buscar algoritmos por nome, categoria ou conteúdo..."
+              placehoder="Buscar algoritmos..."
             />
 
             {debouncedSearchTerm.trim() && resultsCount > 0 && (
@@ -150,7 +151,9 @@ export default function CategoryPage() {
                 <Filter className="w-4 h-4 text-primary" />
                 <span className="text-muted-foreground">
                   Encontrado{resultsCount > 1 ? "s" : ""}{" "}
-                  <strong className="text-primary font-semibold">{resultsCount}</strong>{" "}
+                  <strong className="text-primary font-semibold">
+                    {resultsCount}
+                  </strong>{" "}
                   resultado{resultsCount > 1 ? "s" : ""}
                 </span>
               </div>
@@ -165,7 +168,7 @@ export default function CategoryPage() {
                 key={i}
                 className="h-32 bg-card/30 rounded-3xl animate-pulse border border-border/30"
                 style={{
-                  animationDelay: `${i * 0.1}s`
+                  animationDelay: `${i * 0.1}s`,
                 }}
               />
             ))}
@@ -173,7 +176,7 @@ export default function CategoryPage() {
         ) : categoryData ? (
           <div className="space-y-6">
             {filteredChildren.length > 0 ? (
-              <div className="bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 p-8 shadow-xl hover:shadow-2xl transition-all">
+              <div className="bg-card/40 backdrop-blur-xl rounded-3xl border border-border/50 p-4 sm:p-8 shadow-xl hover:shadow-2xl transition-all">
                 <Suspense
                   fallback={
                     <div className="p-12 text-center">

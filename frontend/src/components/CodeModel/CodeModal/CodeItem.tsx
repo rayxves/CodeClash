@@ -18,7 +18,7 @@ export default function CodeItem({ code, language }: CodeItemProps) {
           )}`
         )
       }
-      className="flex items-center p-4 bg-muted hover:bg-accent/30 ring-1 ring-offset-primary/500  rounded-lg cursor-pointer transition-colors duration-200 group"
+      className="flex items-center py-4 px-1 sm:p-4 bg-muted hover:bg-accent/30 ring-1 ring-offset-primary/500  rounded-lg cursor-pointer transition-colors duration-200 group"
       role="button"
       tabIndex={0}
       onKeyDown={(e) =>
@@ -30,7 +30,7 @@ export default function CodeItem({ code, language }: CodeItemProps) {
         )
       }
     >
-      <div className="p-2 bg-blue-200 rounded-lg group-hover:bg-blue-100 transition-colors">
+      <div className="hidden sm:block p-2 bg-blue-200 rounded-lg group-hover:bg-blue-100 transition-colors">
         <Code2 className="w-5 h-5 text-blue-600 " />
       </div>
       <div className="ml-4 flex-1 min-w-0">

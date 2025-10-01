@@ -12,7 +12,8 @@ export function RankingCard({ isLoading, profileData }: RankingCardProps) {
   const userData = profileData?.user;
   const totalPoints = userData?.totalPoints || 0;
   const solved = profileData?.solutions.filter((s) => s.isApproved).length || 0;
-  const pending = profileData?.solutions.filter((s) => !s.isApproved).length || 0;
+  const pending =
+    profileData?.solutions.filter((s) => !s.isApproved).length || 0;
 
   return (
     <div className="bg-background rounded-lg p-6 border border-border/50">
@@ -33,11 +34,15 @@ export function RankingCard({ isLoading, profileData }: RankingCardProps) {
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Pontos totais:</span>
-            <span className="text-2xl font-bold text-primary">{totalPoints}</span>
+            <span className="text-2xl font-bold text-primary">
+              {totalPoints}
+            </span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Título atual:</span>
-            <span className="font-medium text-foreground">{getRankTitle(totalPoints)}</span>
+          <div className="flex flex-wrap justify-between items-center">
+            <span className="text-muted-foreground mr-1 sm:mr-0.5">Título atual:</span>
+            <span className="font-medium text-foreground">
+              {getRankTitle(totalPoints)}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Problemas resolvidos:</span>

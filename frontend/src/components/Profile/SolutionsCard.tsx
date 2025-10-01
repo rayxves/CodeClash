@@ -31,26 +31,24 @@ interface SolutionsCardProps {
   isLoading: boolean;
   userProblemSolutions: Solution[];
   currentSolutions: Solution[];
-  totalPages: number;
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
   expandedSolutions: Set<number>;
   setExpandedSolutions: (expanded: Set<number>) => void;
   showCode: Set<number>;
   setShowCode: (show: Set<number>) => void;
+  onLoadMore: () => void;
+  hasMoreSolutions: boolean;
 }
 
 export function SolutionsCard({
   isLoading,
   userProblemSolutions,
   currentSolutions,
-  totalPages,
-  currentPage,
-  setCurrentPage,
   expandedSolutions,
   setExpandedSolutions,
   showCode,
   setShowCode,
+  onLoadMore,
+  hasMoreSolutions,
 }: SolutionsCardProps) {
   const navigate = useNavigate();
 
@@ -99,7 +97,7 @@ export function SolutionsCard({
   };
 
   return (
-    <div className="bg-background rounded-lg p-6 border border-border/50">
+    <div className="bg-background rounded-lg p-4 sm:p-6 border border-border/50">
       <div className="flex items-center gap-3 mb-4">
         <CheckCircle className="w-6 h-6 text-primary" />
         <h2 className="text-xl font-semibold text-foreground">
@@ -149,143 +147,129 @@ export function SolutionsCard({
           </button>
         </div>
       ) : (
-        <>
-          <div className="space-y-4 mb-6">
-            {currentSolutions.map((solution) => (
-              <div
-                key={solution.id}
-                className="p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-foreground">
-                      {solution.problem.title}
-                    </h3>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(
-                        solution.problem.difficulty
-                      )}`}
-                    >
-                      {solution.problem.difficulty}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    {solution.pointsEarned > 0 && (
-                      <div className="flex items-center gap-1 text-green-600 font-medium">
-                        <CheckCircle className="w-4 h-4" />+
-                        {solution.pointsEarned} pontos
-                      </div>
-                    )}
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                      <Calendar className="w-3 h-3" />
-                      {formatDate(solution.solvedAt)}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span>Linguagem: {solution.language}</span>
-                  <span>•</span>
+        <div className="max-h-[500px] overflow-y-auto space-y-4 pr-2 -mr-2">
+          {currentSolutions.map((solution) => (
+            <div
+              key={solution.id}
+              className="p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                <div className="flex flex-col gap-1">
+                  <h3 className="font-semibold text-foreground">
+                    {solution.problem.title}
+                  </h3>
                   <span
-                    className={
-                      solution.isApproved ? "text-green-600" : "text-red-600"
-                    }
+                    className={`text-xs px-2 py-1 rounded-full border self-start ${getDifficultyColor(
+                      solution.problem.difficulty
+                    )}`}
                   >
-                    {solution.messageOutput}
+                    {solution.problem.difficulty}
                   </span>
                 </div>
-
-                <div className="mt-3 flex gap-2">
-                  <button
-                    onClick={() => toggleSolutionExpansion(solution.id)}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-muted hover:bg-muted/80 rounded-md transition-colors"
-                  >
-                    {expandedSolutions.has(solution.id) ? (
-                      <>
-                        <ChevronUp className="w-4 h-4" />
-                        Menos detalhes
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-4 h-4" />
-                        Mais detalhes
-                      </>
-                    )}
-                  </button>
-                  {expandedSolutions.has(solution.id) && (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => toggleCodeVisibility(solution.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md transition-colors"
-                      >
-                        {showCode.has(solution.id) ? (
-                          <>
-                            <EyeOff className="w-4 h-4" />
-                            Ocultar código
-                          </>
-                        ) : (
-                          <>
-                            <Eye className="w-4 h-4" />
-                            Ver código
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(`/submission?problemId=${solution.problem.id}`)
-                        }
-                        className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-green-700 hover:bg-blue-200 rounded-md transition-colors"
-                      >
-                        <Code className="w-4 h-4" />
-                        Ver problema
-                      </button>
+                <div className="text-left sm:text-right">
+                  {solution.pointsEarned > 0 && (
+                    <div className="flex items-center gap-1 text-green-600 font-medium">
+                      <CheckCircle className="w-4 h-4" />+
+                      {solution.pointsEarned} pontos
                     </div>
                   )}
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                    <Calendar className="w-3 h-3" />
+                    {formatDate(solution.solvedAt)}
+                  </div>
                 </div>
-
-                {expandedSolutions.has(solution.id) &&
-                  showCode.has(solution.id) && (
-                    <div className="mt-3 p-3 bg-gray-800 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Code className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm font-medium text-gray-300">
-                          Solução:
-                        </span>
-                        <span className="text-xs text-gray-500 ml-auto">
-                          {solution.language}
-                        </span>
-                      </div>
-                      <pre className="text-xs font-mono text-gray-200 overflow-x-auto max-h-60 overflow-y-auto">
-                        {solution.code}
-                      </pre>
-                    </div>
-                  )}
               </div>
-            ))}
-          </div>
 
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-6">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                <span>Linguagem: {solution.language}</span>
+                <span className="hidden sm:inline">•</span>
+                <span
+                  className={
+                    solution.isApproved ? "text-green-600" : "text-red-600"
+                  }
+                >
+                  {solution.messageOutput}
+                </span>
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  onClick={() => toggleSolutionExpansion(solution.id)}
+                  className="flex items-center gap-1 px-3 py-1 text-sm bg-muted hover:bg-muted/80 rounded-md transition-colors"
+                >
+                  {expandedSolutions.has(solution.id) ? (
+                    <>
+                      <ChevronUp className="w-4 h-4" />
+                      Menos detalhes
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-4 h-4" />
+                      Mais detalhes
+                    </>
+                  )}
+                </button>
+                {expandedSolutions.has(solution.id) && (
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => toggleCodeVisibility(solution.id)}
+                      className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md transition-colors"
+                    >
+                      {showCode.has(solution.id) ? (
+                        <>
+                          <EyeOff className="w-4 h-4" />
+                          Ocultar código
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="w-4 h-4" />
+                          Ver código
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() =>
+                        navigate(`/submission?problemId=${solution.problem.id}`)
+                      }
+                      className="flex items-center gap-1 px-3 py-1 text-sm bg-green-100 text-green-700 hover:bg-green-200 rounded-md transition-colors"
+                    >
+                      <Code className="w-4 h-4" />
+                      Ver problema
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {expandedSolutions.has(solution.id) &&
+                showCode.has(solution.id) && (
+                  <div className="mt-3 p-3 bg-gray-800 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Code className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-300">
+                        Solução:
+                      </span>
+                      <span className="text-xs text-gray-500 ml-auto">
+                        {solution.language}
+                      </span>
+                    </div>
+                    <pre className="text-xs font-mono text-gray-200 overflow-x-auto max-h-60">
+                      <code>{solution.code}</code>
+                    </pre>
+                  </div>
+                )}
+            </div>
+          ))}
+          {hasMoreSolutions && (
+            <div className="text-center mt-4">
               <button
-                onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
+                onClick={onLoadMore}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
               >
-                Anterior
-              </button>
-              <span className="text-sm text-muted-foreground">
-                Página {currentPage} de {totalPages}
-              </span>
-              <button
-                onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 rounded border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
-              >
-                Próxima
+                Carregar Mais
               </button>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

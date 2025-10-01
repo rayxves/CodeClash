@@ -1,172 +1,166 @@
 import {
   Code,
   Send,
-  Filter,
-  LayoutDashboard,
   Rocket,
   Trophy,
   BookOpen,
-  Zap,
+  Lightbulb,
+  ArrowRight,
 } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-surface px-4 sm:px-6 py-16 pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background px-4 sm:px-6 py-16 pt-24">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center mb-8 relative">
+        <div className="text-center mb-16 animate-fade-in">
+          <div className="inline-flex items-center justify-center mb-6 relative">
             <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
-            <Rocket className="relative w-14 h-14 text-primary mr-4 " />
-            <h1 className="relative text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-primary via-primary/80 to-primary-foreground/70 bg-clip-text text-transparent">
-              Code Clash
+            <Rocket className="relative w-12 h-12 sm:w-14 sm:h-14 text-primary mr-3" />
+            <h1 className="relative text-4xl sm:text-5xl lg:text-6xl font-extrabold gradient-navbar">
+              CodeClash
             </h1>
           </div>
-          <p className="text-xl lg:text-2xl max-w-4xl mx-auto text-muted-foreground leading-relaxed">
+          <p className="text-lg sm:text-xl lg:text-2xl max-w-4xl mx-auto text-muted-foreground leading-relaxed">
             Sua plataforma completa para{" "}
             <strong className="font-bold text-primary">
               dominar algoritmos
-            </strong>
+            </strong>{" "}
             , resolver desafios e evoluir suas habilidades de programação.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-16 ">
-          <section className="relative bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-border hover:border-primary/30 group overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10"></div>
-            <div className="relative flex items-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl group-hover:scale-110  shadow-lg">
-                <Send className="w-7 h-7 text-primary" />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <div className="relative bg-card/60 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl border border-border hover:border-primary/50 transition-all hover-lift group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
+            <div className="relative flex items-start gap-4 mb-4">
+              <div className="p-3 bg-primary/10 rounded-xl group-hover:scale-110 transition-transform">
+                <Send className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-2xl  font-bold text-card-foreground">
-                Submissões de Código
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold text-card-foreground mb-2">
+                  Submissão de Código
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Resolva problemas em <strong>C#, Python, Java ou C++</strong>{" "}
+                  com validação automática via Judge0. Feedback sobre erros de
+                  compilação, tempo de execução e corretude.
+                </p>
+              </div>
             </div>
-            <p className="relative text-muted-foreground text-lg leading-relaxed">
-              Envie seus códigos para{" "}
-              <strong className="text-card-foreground">
-                avaliação automática
-              </strong>{" "}
-              com <strong className="text-primary">Judge0</strong>. Receba
-              feedback instantâneo, identifique erros e melhore suas habilidades
-              com análise em tempo real.
-            </p>
-          </section>
+          </div>
 
-          <section className="relative bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-border hover:border-secondary/30 group overflow-hidden ">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 "></div>
-            <div className="relative flex items-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-2xl group-hover:scale-110   shadow-lg">
-                <Trophy className="w-7 h-7 text-secondary-foreground" />
+          <div className="relative bg-card/60 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl border border-border hover:border-amber-500/50 transition-all hover-lift group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all"></div>
+            <div className="relative flex items-start gap-4 mb-4">
+              <div className="p-3 bg-amber-500/10 rounded-xl group-hover:scale-110 transition-transform">
+                <Trophy className="w-6 h-6 text-amber-500" />
               </div>
-              <h2 className="text-2xl  font-bold text-card-foreground">
-                Resolva Problemas
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold text-card-foreground mb-2">
+                  Arena de Problemas
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Desafios de <strong>diferentes níveis e categorias</strong>.
+                  Todas suas soluções ficam salvas no perfil para acompanhar sua
+                  evolução.
+                </p>
+              </div>
             </div>
-            <p className="relative text-muted-foreground text-lg leading-relaxed">
-              Crie sua conta e resolva{" "}
-              <strong className="text-card-foreground">
-                problemas em diferentes níveis de dificuldade
-              </strong>
-              . Cada solução fica{" "}
-              <strong className="text-secondary-foreground">
-                salva no seu perfil
-              </strong>
-              , permitindo acompanhar sua evolução e revisar seu progresso
-            </p>
-          </section>
+          </div>
 
-          <section className="relative bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-border hover:border-accent/30 group overflow-hidden ">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl group-hover:bg-accent/10 "></div>
-            <div className="relative flex items-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl group-hover:scale-110   shadow-lg">
-                <Code className="w-7 h-7 text-card-foreground" />
+          <div className="relative bg-card/60 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl border border-border hover:border-emerald-500/50 transition-all hover-lift group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all"></div>
+            <div className="relative flex items-start gap-4 mb-4">
+              <div className="p-3 bg-emerald-500/10 rounded-xl group-hover:scale-110 transition-transform">
+                <BookOpen className="w-6 h-6 text-emerald-500" />
               </div>
-              <h2 className="text-2xl  font-bold text-card-foreground">
-                Modelos de Código
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold text-card-foreground mb-2">
+                  Biblioteca de Códigos
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Navegue por <strong>algoritmos e estruturas de dados</strong>{" "}
+                  clássicas, organizadas em árvore hierárquica por linguagem e
+                  categoria.
+                </p>
+              </div>
             </div>
-            <p className="relative text-muted-foreground text-lg leading-relaxed">
-              Acesse códigos modelo de algoritmos clássicos em{" "}
-              <strong className="text-accent">Python, Java, C++ e C#</strong>.
-              Explore de forma{" "}
-              <strong className="text-card-foreground">interativa</strong>{" "}
-              através de categorias ou visualização em árvore.
-            </p>
-          </section>
+          </div>
 
-          <section className="relative bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-border hover:border-primary/30 group overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 "></div>
-            <div className="relative flex items-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl group-hover:scale-110  shadow-lg">
-                <Zap className="w-7 h-7 text-primary" />
+          <div className="relative bg-card/60 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl border border-border hover:border-violet-500/50 transition-all hover-lift group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full blur-2xl group-hover:bg-violet-500/10 transition-all"></div>
+            <div className="relative flex items-start gap-4 mb-4">
+              <div className="p-3 bg-violet-500/10 rounded-xl group-hover:scale-110 transition-transform">
+                <Lightbulb className="w-6 h-6 text-violet-500" />
               </div>
-              <h2 className="text-2xl  font-bold text-card-foreground">
-                Recomendações Inteligentes
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold text-card-foreground mb-2">
+                  Recomendações Inteligentes
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Receba <strong>sugestões de algoritmos relacionados</strong>{" "}
+                  ao código que você submete para expandir seu conhecimento.
+                </p>
+              </div>
             </div>
-            <p className="relative text-muted-foreground text-lg leading-relaxed">
-              Receba{" "}
-              <strong className="text-primary">sugestões personalizadas</strong>{" "}
-              de algoritmos com base no seu histórico de estudos e submissões.
-              Aprenda de forma direcionada e eficiente.
-            </p>
-          </section>
+          </div>
 
-          <section className="relative bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-border hover:border-secondary/30 group overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10"></div>
-            <div className="relative flex items-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-2xl group-hover:scale-110  shadow-lg">
-                <Filter className="w-7 h-7 text-card-foreground" />
+          <div className="relative bg-card/60 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl border border-border hover:border-pink-500/50 transition-all hover-lift group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-full blur-2xl group-hover:bg-pink-500/10 transition-all"></div>
+            <div className="relative flex items-start gap-4 mb-4">
+              <div className="p-3 bg-pink-500/10 rounded-xl group-hover:scale-110 transition-transform">
+                <Trophy className="w-6 h-6 text-pink-500" />
               </div>
-              <h2 className="text-2xl  font-bold text-card-foreground">
-                Busca Avançada
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold text-card-foreground mb-2">
+                  Perfil e Progresso
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Acompanhe sua <strong>evolução, pontuação total</strong> e
+                  histórico completo de submissões em um perfil personalizado.
+                </p>
+              </div>
             </div>
-            <p className="relative text-muted-foreground text-lg leading-relaxed">
-              Encontre algoritmos rapidamente escolhendo{" "}
-              <strong className="text-secondary-foreground">
-                categoria e linguagem
-              </strong>
-              . Navegação intuitiva para otimizar seu tempo de estudo.
-            </p>
-          </section>
+          </div>
 
-          <section className="relative bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-sm p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-border hover:border-accent/30 group overflow-hidden ">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl group-hover:bg-accent/10 "></div>
-            <div className="relative flex items-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl group-hover:scale-110  shadow-lg">
-                <LayoutDashboard className="w-7 h-7 text-primary" />
+          <div className="relative bg-card/60 backdrop-blur-sm p-6 rounded-2xl shadow-lg hover:shadow-xl border border-border hover:border-blue-500/50 transition-all hover-lift group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all"></div>
+            <div className="relative flex items-start gap-4 mb-4">
+              <div className="p-3 bg-blue-500/10 rounded-xl group-hover:scale-110 transition-transform">
+                <Code className="w-6 h-6 text-blue-500" />
               </div>
-              <h2 className="text-2xl  font-bold text-card-foreground">
-                Navegação Interativa
-              </h2>
+              <div>
+                <h2 className="text-xl font-bold text-card-foreground mb-2">
+                  Múltiplas Linguagens
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Suporte para <strong>Python, Java, C++ e C#</strong>. Escolha
+                  sua linguagem favorita e explore algoritmos em diferentes
+                  sintaxes.
+                </p>
+              </div>
             </div>
-            <p className="relative text-muted-foreground text-lg leading-relaxed">
-              Escolha entre{" "}
-              <strong className="text-accent">
-                visualização em categorias
-              </strong>{" "}
-              ou{" "}
-              <strong className="text-card-foreground">
-                estrutura em árvore
-              </strong>{" "}
-              para explorar o conteúdo da maneira que preferir.
-            </p>
-          </section>
+          </div>
         </div>
 
-        <div className="text-center mt-20">
+       
+        <div className="text-center animate-slide-up">
           <div className="max-w-3xl mx-auto relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 rounded-3xl blur-2xl"></div>
-            <div className="relative bg-card/70 backdrop-blur-xl p-10 rounded-3xl shadow-2xl border border-border/50">
-              <div className="flex justify-center mb-8">
-                <BookOpen className="w-12 h-12 text-primary animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-violet-500/10 to-emerald-500/10 rounded-3xl blur-2xl"></div>
+            <div className="relative bg-card/70 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-border/50">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 bg-primary/10 rounded-2xl">
+                  <BookOpen className="w-10 h-10 text-primary" />
+                </div>
               </div>
-              <p className="text-muted-foreground text-xl mb-10 leading-relaxed">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-card-foreground">
+                Projeto Acadêmico
+              </h2>
+              <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                 Este projeto nasceu como{" "}
                 <strong className="text-card-foreground">
                   trabalho acadêmico
-                </strong>
+                </strong>{" "}
                 , mas evoluiu para um{" "}
                 <strong className="text-primary">
                   espaço de aprendizado contínuo
@@ -174,18 +168,15 @@ export default function AboutPage() {
                 , onde pratico, aplico e compartilho conhecimentos em
                 programação e algoritmos.
               </p>
-              <div className="flex flex-col sm:flex-row gap-5 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href="https://github.com/rayxves/CodeClash"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative overflow-hidden flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold rounded-2xl shadow-xl hover:shadow-2xl  tra hover:-translate-y-1"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-1"
                 >
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 "></div>
                   <svg
-                    className="relative w-6 h-6"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -195,14 +186,14 @@ export default function AboutPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="relative">Ver no GitHub</span>
+                  <span>Ver no GitHub</span>
                 </a>
                 <a
-                  href="/code-model"
-                  className="group relative overflow-hidden flex items-center justify-center gap-3 px-10 py-5 border-2 border-primary text-primary hover:bg-white/10 hover:text-primary-foreground font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1"
+                  href="/problems"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-secondary hover:bg-muted text-foreground font-semibold rounded-xl shadow-lg transition-all hover:-translate-y-1"
                 >
-                  <span className="relative">Começar agora</span>
-                  <Rocket className="relative w-6 h-6 group-hover:animate-float duration-75" />
+                  <span>Começar agora</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
             </div>

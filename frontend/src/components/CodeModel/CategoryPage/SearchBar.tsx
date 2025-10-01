@@ -33,7 +33,7 @@ export default function SearchBar({
         placeholder={placehoder}
         value={localSearch}
         onChange={(e) => setLocalSearch(e.target.value)}
-        className="w-full pl-12 pr-4 py-4 bg-card rounded-2xl border border-border text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-card transition-all"
+        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-card rounded-2xl border border-border text-card-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-card transition-all"
       />
     </div>
   );

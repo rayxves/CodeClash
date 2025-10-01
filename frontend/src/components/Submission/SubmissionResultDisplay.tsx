@@ -115,8 +115,8 @@ export default function SubmissionResultDisplay({
               : "bg-amber-900/20 border-amber-500/30"
           }`}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap gap-2 h-full items-center justify-between">
+            <div className="flex items-center text-end gap-3">
               {isSuccess ? (
                 <CheckCircle className="w-6 h-6 text-emerald-400" />
               ) : isError ? (
@@ -124,15 +124,14 @@ export default function SubmissionResultDisplay({
               ) : (
                 <AlertCircle className="w-6 h-6 text-amber-400" />
               )}
-              <div>
-                <h3 className="font-semibold text-gray-100">
-                  {statusDescription}
-                </h3>
-              </div>
+
+              <h3 className="font-semibold text-muted-foreground">
+                {statusDescription}
+              </h3>
             </div>
 
             {execution.time && (
-              <div className="flex items-center gap-2 text-gray-300">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 <Clock className="w-4 h-4" />
                 <span className="text-sm font-medium">{execution.time}s</span>
               </div>
@@ -179,7 +178,7 @@ export default function SubmissionResultDisplay({
 
           {execution.message && (
             <div>
-              <h4 className="text-sm font-semibold text-gray-300 mb-2">
+              <h4 className="text-sm font-semibold text-muted-foreground mb-2">
                 Mensagem do Sistema:
               </h4>
               <pre className="bg-gray-900 p-4 rounded-lg text-sm font-mono text-gray-300 whitespace-pre-wrap border border-gray-700 overflow-x-auto">

@@ -1,68 +1,43 @@
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 import DesktopMenu from "./DesktopMenu";
-import { Menu } from "lucide-react";
-import SearchDropdown from "./SearchDropdown";
+import { Code2, Menu } from "lucide-react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchType, setSearchType] = useState<string | null>(null);
 
   const toggleMenu = () => {
-    setMenuOpen((prev) => {
-      if (!prev) setSearchType(null);
-      return !prev;
-    });
+    setMenuOpen((prev) => !prev);
   };
 
   return (
-    <nav className="w-full  bg-card/95 backdrop-blur-lg fixed top-0 left-0 z-50">
-      <div className="container px-4 sm:px-6 py-4 flex items-center justify-between min-w-full">
-        <div className="flex items-center gap-3">
-          <h1 className="font-[arial] font-bold text-xl sm:text-2xl gradient-navbar">
-            CodeClash
-          </h1>
-        </div>
+    <>
+      <nav className="w-full bg-card/95 backdrop-blur-lg border-b border-border/50 fixed top-0 left-0 z-40 shadow-sm">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+          <div className="flex items-end h-full gap-2">
+            <div className="flex items-center justify-center w-10 h-8 bg-primary/10 rounded-lg">
+              <Code2 className="w-6 h-6 text-primary" />
+            </div>
+            <h1 className="font-bold text-xl text-end sm:text-2xl gradient-navbar">
+              CodeClash
+            </h1>
+          </div>
 
-        <div className="lg:hidden flex items-center gap-3">
           <button
             onClick={toggleMenu}
             aria-label="Abrir menu"
-            className="text-foreground hover:text-primary bg-secondary/50 hover:bg-secondary p-2 rounded-lg transition-all hover-lift"
+            className="lg:hidden p-2 text-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-all"
           >
             <Menu className="w-6 h-6" />
           </button>
-        </div>
 
-        <DesktopMenu />
-      </div>
+          <DesktopMenu />
+        </div>
+      </nav>
 
-      {searchType && (
-        <div className="hidden lg:block relative">
-          <SearchDropdown
-            onNavigation={() => {
-              setMenuOpen(false);
-              setSearchType(null);
-            }}
-          />
-        </div>
-      )}
+      {menuOpen && <MobileMenu toggleMenu={toggleMenu} />}
 
-      {searchType && (
-        <div className="lg:hidden relative">
-          <SearchDropdown
-            onNavigation={() => {
-              setMenuOpen(false);
-              setSearchType(null);
-            }}
-          />
-        </div>
-      )}
-      {menuOpen && (
-        <div className="lg:hidden relative ">
-          <MobileMenu toggleMenu={toggleMenu} />
-        </div>
-      )}
-    </nav>
+      <div className="h-16"></div>
+    </>
   );
 }

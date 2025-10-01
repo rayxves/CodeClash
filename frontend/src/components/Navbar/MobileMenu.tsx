@@ -1,5 +1,5 @@
 "use client";
-import { X } from "lucide-react";
+import { BookOpen, Code2, FileCode, Home, LogIn, Upload, User, UserPlus, X } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface MobileMenuProps {
@@ -10,70 +10,88 @@ export default function MobileMenu({ toggleMenu }: MobileMenuProps) {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <div className="absolute top-full right-0 mt-0  bg-card/95  rounded-b-md shadow-md py-4 pt-0 px-6  text-whitesmoke text-right w-fit z-50">
-      <div className="flex justify-end mb-2">
-        <button onClick={toggleMenu} aria-label="Fechar menu">
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-      <nav className="flex flex-col w-full space-y-4 mt-6 text-sm font-medium text-center">
-        <a
-          href="/"
-          className="bg-secondary rounded hover:bg-muted-foreground/40  shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
-        >
-          Home
-        </a>
-        <a
-          href="/problems"
-          className="bg-secondary rounded hover:bg-muted-foreground/40  shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
-        >
-          Problemas
-        </a>
-        <a
-          href="/code-model"
-          className="bg-secondary rounded hover:bg-muted-foreground/40 shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
-        >
-          Códigos Modelo
-        </a>
-        <a
-          href="/about"
-          className="bg-secondary rounded hover:bg-muted-foreground/40  shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
-        >
-          Sobre
-        </a>
+    <div className="lg:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
+      <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-card shadow-2xl">
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h2 className="text-lg font-bold gradient-navbar">Menu</h2>
+          <button
+            onClick={toggleMenu}
+            className="p-2 hover:bg-muted rounded-lg transition-all"
+            aria-label="Fechar menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-        {isAuthenticated ? (
-          <>
-            <a
-              href="/profile"
-              className="bg-secondary rounded hover:bg-muted-foreground/40  shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
-            >
-              Perfil ({user?.username})
-            </a>
-            <a
-              href="/submission"
-              className="bg-button hover:bg-buttonhover/90 text-whitesmoke hover:text-muted  px-4 py-2 rounded-md text-center hover:cursor-pointer"
-            >
-              Submeter
-            </a>
-          </>
-        ) : (
-          <>
-            <a
-              href="/login"
-              className="bg-secondary rounded hover:bg-muted-foreground/40  shadow-md w-full py-2 px-8 sm:px-12 hover:cursor-pointer"
-            >
-              Login
-            </a>
-            <a
-              href="/register"
-              className="bg-button hover:bg-buttonhover/90 text-whitesmoke hover:text-muted px-4 py-2 rounded-md text-center hover:cursor-pointer"
-            >
-              Registrar
-            </a>
-          </>
-        )}
-      </nav>
+        <nav className="flex flex-col p-4 space-y-2">
+          <a
+            href="/"
+            className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-medium"
+          >
+            <Home className="w-5 h-5" />
+            <span>Início</span>
+          </a>
+          <a
+            href="/problems"
+            className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-medium"
+          >
+            <Code2 className="w-5 h-5" />
+            <span>Problemas</span>
+          </a>
+          <a
+            href="/code-model"
+            className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-medium"
+          >
+            <FileCode className="w-5 h-5" />
+            <span>Códigos Modelo</span>
+          </a>
+          <a
+            href="/about"
+            className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-medium"
+          >
+            <BookOpen className="w-5 h-5" />
+            <span>Sobre</span>
+          </a>
+
+          <div className="my-2 border-t border-border"></div>
+
+          {isAuthenticated ? (
+            <>
+              <a
+                href="/profile"
+                className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-medium"
+              >
+                <User className="w-5 h-5" />
+                <span>Perfil ({user?.username})</span>
+              </a>
+              <a
+                href="/submission"
+                className="flex items-center gap-3 px-4 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-all font-medium shadow-lg shadow-primary/20"
+              >
+                <Upload className="w-5 h-5" />
+                <span>Submeter Código</span>
+              </a>
+            </>
+          ) : (
+            <>
+              <a
+                href="/login"
+                className="flex items-center gap-3 px-4 py-3 text-foreground hover:bg-primary/10 hover:text-primary rounded-lg transition-all font-medium"
+              >
+                <LogIn className="w-5 h-5" />
+                <span>Login</span>
+              </a>
+              <a
+                href="/register"
+                className="flex items-center gap-3 px-4 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-all font-medium shadow-lg shadow-primary/20"
+              >
+                <UserPlus className="w-5 h-5" />
+                <span>Registrar</span>
+              </a>
+            </>
+          )}
+        </nav>
+      </div>
     </div>
   );
 }

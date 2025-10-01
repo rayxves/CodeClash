@@ -30,15 +30,19 @@ export default function TestCaseDetail({
           ) : (
             <XCircle className="w-5 h-5 text-rose-400" />
           )}
-          <div>
-            <span className="font-medium text-secondary-foreground">Teste {index + 1}</span>
-            <span className="ml-2 text-xs px-2 py-1 rounded-full bg-muted text-card-foreground">
+          <div className="flex flex-col sm:flex-row">
+            <span className="font-medium text-secondary-foreground">
+              Teste {index + 1}
+            </span>
+            <span className="sm:ml-2 text-xs text-center px-2 py-1 rounded-full bg-muted text-card-foreground">
               {test.status}
             </span>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-secondary-foreground">{test.time}s</span>
+          <span className="text-xs text-secondary-foreground">
+            {test.time}s
+          </span>
           {isExpanded ? (
             <ChevronUp className="w-4 h-4 text-secondary-foreground" />
           ) : (
@@ -84,11 +88,13 @@ export default function TestCaseDetail({
             </pre>
           </div>
 
-          {test.error && (
+          {test.compileOutput && (
             <div>
-              <span className="text-xs font-medium text-card-foreground">Erro:</span>
+              <span className="text-xs font-medium text-card-foreground">
+                Saída da compilação:
+              </span>
               <pre className="mt-1 p-2 bg-rose-900/30 rounded text-sm font-mono text-rose-300 overflow-x-auto">
-                {test.error}
+                {test.compileOutput}
               </pre>
             </div>
           )}
