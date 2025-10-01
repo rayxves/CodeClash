@@ -2,6 +2,7 @@ using Builders;
 using Dtos;
 using SubmissionChain;
 using Strategies.Enums;
+using Services.Extensions;
 
 namespace Strategies
 {
@@ -22,23 +23,34 @@ namespace Strategies
         {
             var request = _submissionDirector.ConstructSimpleExecutionRequest(input.SourceCode, input.Language);
             var context = new SubmissionContext(request);
-            await _submissionChain.HandleAsync(context);
 
-            if (!string.IsNullOrEmpty(context.ErrorMessage))
-            {
-                throw new InvalidOperationException(context.ErrorMessage);
-            }
+            await _submissionChain.HandleAsync(context);
 
             if (context.Response == null)
             {
-                throw new Exception("Ocorreu um erro desconhecido ao processar a submissão.");
+                return new SubmissionResultDto
+                {
+                    OverallStatus = SubmissionStatus.ServerError,
+                    Notification = context.ErrorMessage ?? "Falha ao obter resposta do serviço de avaliação.",
+                    SimpleExecutionResult = new Judge0Response
+                    {
+                        Stderr = context.ErrorMessage ?? "Erro desconhecido."
+                    }
+                };
             }
+
+
+            Judge0StatusMapper.EnsureErrorDetailsPresent(context.Response);
+
+            var judge0Status = (SubmissionChain.Judge0Status)context.Response.Status.Id;
+            var submissionStatus = judge0Status.ToSubmissionStatus();
 
             return new SubmissionResultDto
             {
                 SimpleExecutionResult = context.Response,
-                OverallStatus = SubmissionStatus.Completed
+                OverallStatus = submissionStatus
             };
         }
+
     }
 }

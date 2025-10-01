@@ -30,7 +30,7 @@ namespace Services
         public async Task<SubmissionResultDto> ProcessSubmissionAsync(SubmissionStrategyInput input)
         {
             var strategy = _strategySelector.SelectStrategy(input);
-            
+
 
             var initialSolution = input.ProblemId.HasValue
                 ? await _solutionService.CreateInitialSubmissionAsync(input.UserId, input.ProblemId.Value, input.Language.Name, input.SourceCode)
@@ -40,19 +40,20 @@ namespace Services
 
             if (initialSolution != null)
             {
+
                 if (resultDto.OverallStatus == SubmissionStatus.Accepted && initialSolution.PointsEarned == 0)
                 {
                     await _submissionPublisher.NotifyAsync(new SubmissionSuccessContext
                     {
                         UserId = input.UserId,
-                        Problem = await _context.Problems.FindAsync(input.ProblemId.Value), 
+                        Problem = await _context.Problems.FindAsync(input.ProblemId.Value),
                         Solution = initialSolution,
                         ResultDto = resultDto
                     });
-                    
+
                     await _context.SaveChangesAsync();
                 }
-                else if(resultDto.OverallStatus != SubmissionStatus.Accepted)
+                else if (resultDto.OverallStatus != SubmissionStatus.Accepted && !initialSolution.IsApproved)
                 {
                     initialSolution.MessageOutput = "Um ou mais testes falharam.";
                     await _solutionService.UpdateUserProblemSolutionAsync(initialSolution.ToDto());

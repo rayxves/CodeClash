@@ -31,27 +31,13 @@ public class TestExecutorService : ITestExecutorService
             var context = new SubmissionContext(request);
             await _submissionChain.HandleAsync(context);
 
-            if (context.Response?.Status?.Description == "Compilation Error")
-            {
-                var initialSolution = await _solutionService.GetUserProblemSolutionAsync(input.UserId, input.ProblemId.Value);
-                initialSolution.MessageOutput = context.Response.CompileOutput ?? "Erro de compilação";
-                await _solutionService.UpdateUserProblemSolutionAsync(initialSolution.ToDto());
-                results.Add(new TestCaseResultDto
-                {
-                    TestCaseId = testCase.Id,
-                    Status = "Compilation Error",
-                    Output = initialSolution.MessageOutput,
-                    Passed = false
-                });
-                break;
-            }
-
             results.Add(new TestCaseResultDto
             {
                 TestCaseId = testCase.Id,
                 Status = context.Response?.Status?.Description ?? "Error",
                 ExpectedOutput = context.Request?.ExpectedOutput ?? "",
                 Output = context.Response?.Stdout ?? context.Response?.Stderr ?? context.ErrorMessage ?? "",
+                CompileOutput = context.Response?.CompileOutput ?? context.Response?.Message ?? "Ocorreu um erro durante a execução.",
                 Passed = context.Response?.Status?.Description == "Accepted",
                 Time = context.Response?.Time ?? "0"
             });

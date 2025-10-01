@@ -7,5 +7,6 @@ public class TestCaseResultDto
     public string Status { get; set; }
     public string ExpectedOutput { get; set; }
     public string Output { get; set; }
+    public string CompileOutput { get; set; }
     public string Time { get; set; }
 }

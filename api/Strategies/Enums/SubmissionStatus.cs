@@ -7,6 +7,7 @@ namespace Strategies.Enums
         CompilationError,
         RuntimeError,
         TimeLimitExceeded,
-        Completed
+        Completed,
+        ServerError
     }
 }

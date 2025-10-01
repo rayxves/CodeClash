@@ -30,6 +30,7 @@ public class SolutionPersistenceObserver : IObserver
         solution.MessageOutput = "Todos os testes passaram.";
 
         _context.UserProblemSolutions.Update(solution);
+        await _context.SaveChangesAsync();
     }
 
 
