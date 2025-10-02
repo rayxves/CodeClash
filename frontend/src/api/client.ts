@@ -27,7 +27,7 @@ class APIClient {
   private makeRequest<T>(
     url: string,
     options: RequestInit = {},
-    retries = 3,
+    retries = 2,
     timeout = 30000
   ): Promise<T> {
     return new Promise((resolve, reject) => {
@@ -89,14 +89,9 @@ class APIClient {
     });
   }
 
-  async keepAlive() {
-    this.makeRequest(`${this.baseURL}/health`, {}, 1, 5000).catch(() => {});
-  }
-
 }
 
 export const apiClient = new APIClient(
   "http://localhost:5070/api"
 );
 
-setInterval(() => apiClient.keepAlive(), 10 * 60 * 1000);
