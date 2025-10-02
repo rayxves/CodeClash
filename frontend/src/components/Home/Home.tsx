@@ -4,7 +4,7 @@ import CodeBlock from "./CodeBlock";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background text-foreground">
-      <section className="py-24 px-4 mt-16">
+      <section className="py-24 px-4">
         <div className="container mx-auto flex flex-col lg:flex-row items-center gap-16 max-w-7xl">
           <div className="lg:w-1/2 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">

@@ -103,7 +103,7 @@ export default function CategoryPage() {
   }, [filterAndHighlight.matchedIds]);
 
   return (
-    <main className="min-h-screen bg-gradient-surface py-8 px-4 sm:px-6 mt-16">
+    <main className="min-h-screen bg-gradient-surface py-8 px-4 sm:px-6 ">
       <div className="max-w-7xl mx-auto">
         <div className="relative mb-10 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-3xl blur-xl"></div>

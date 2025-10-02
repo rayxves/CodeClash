@@ -1,4 +1,5 @@
 import { useTreeNavigator } from "../../../hooks/useTreeNavigator";
+import NotificationToast from "../../Submission/NotificationToast";
 import NodeDetails from "./NodeDetails";
 import TreeControls from "./TreeControls";
 import TreeHeader from "./TreeHeader";
@@ -12,6 +13,8 @@ export default function TreeNavigator() {
     setNavigationMode,
     handleNext,
     handleReset,
+    notifications,
+    removeNotification,
     ...viewProps
   } = useTreeNavigator();
 
@@ -25,7 +28,17 @@ export default function TreeNavigator() {
 
   return (
     <div className="min-h-screen bg-gradient-surface py-8 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto mt-16 flex flex-col gap-4">
+      <div className="fixed top-20 right-4 z-50 w-80 max-w-full">
+        {notifications.map((notification) => (
+          <NotificationToast
+            key={notification.id}
+            notification={notification}
+            onDismiss={removeNotification}
+          />
+        ))}
+      </div>
+
+      <div className="max-w-7xl mx-auto flex flex-col gap-4">
         <TreeHeader language={language} />
         <TreeControls
           navigationMode={navigationMode}

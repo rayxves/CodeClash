@@ -168,7 +168,7 @@ export default function EnhancedSubmissionPage() {
   const isProblemsMode = !!problemId;
 
   return (
-    <div className="min-h-screen bg-gradient-surface pt-20 pb-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-surface pt-8 pb-8 px-4 sm:px-6">
       <div className="fixed top-20 right-4 z-50 w-80 max-w-full">
         {notifications.map((notification) => (
           <NotificationToast

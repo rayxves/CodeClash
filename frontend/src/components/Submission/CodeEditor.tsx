@@ -119,7 +119,6 @@ export default function CodeEditor({
         </div>
       </div>
 
-      {/* Editor */}
       <div className="h-[400px] sm:h-[500px]">
         <MonacoEditor
           height="100%"

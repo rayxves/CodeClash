@@ -26,6 +26,7 @@ export default function RecommendationsPage() {
   const [selectedCode, setSelectedCode] = useState<CodeReference | null>(null);
   const [sourceCode, setSourceCode] = useState<string>("");
   const [sourceType, setSourceType] = useState<"user" | "model" | null>(null);
+  const [error, setError] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -49,8 +50,12 @@ export default function RecommendationsPage() {
         setSourceType("user");
         const recs = await recommendSimilar(userCode);
         setRecommendations(recs || []);
+      } else {
+        setSourceCode("");
+        setRecommendations([]);
       }
     } catch {
+      setError(true);
       setSourceCode("");
       setRecommendations([]);
     } finally {
@@ -65,7 +70,7 @@ export default function RecommendationsPage() {
 
   if (isLoading) return <LoadingScreen />;
   if (!sourceCode)
-    return <NoCodeScreen language={language} name={name} navigate={navigate} />;
+    return <NoCodeScreen language={language} name={name} navigate={navigate} error={error} />;
 
   return (
     <div className="min-h-screen bg-gradient-surface py-8 px-4 sm:px-6">

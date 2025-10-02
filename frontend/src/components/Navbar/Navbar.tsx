@@ -13,7 +13,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="w-full bg-card/95 backdrop-blur-lg border-b border-border/50 fixed top-0 left-0 z-40 shadow-sm">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div className="container mx-auto px-2 sm:px-4 lg:px-6 py-3 flex items-center justify-between">
           <div className="flex items-end h-full gap-2">
             <div className="flex items-center justify-center w-10 h-8 bg-primary/10 rounded-lg">
               <Code2 className="w-6 h-6 text-primary" />

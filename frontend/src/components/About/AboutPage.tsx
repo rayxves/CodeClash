@@ -143,7 +143,6 @@ export default function AboutPage() {
           </div>
         </div>
 
-       
         <div className="text-center animate-slide-up">
           <div className="max-w-3xl mx-auto relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-violet-500/10 to-emerald-500/10 rounded-3xl blur-2xl"></div>

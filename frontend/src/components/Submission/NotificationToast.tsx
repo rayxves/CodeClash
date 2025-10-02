@@ -30,22 +30,25 @@ export default function NotificationToast({ notification, onDismiss }: Props) {
 
   const icon =
     type === "error" ? (
-      <XCircle className="w-5 h-5" />
+      <XCircle className="w-6 h-6 sm:w-7 sm:h-7" />
     ) : type === "success" ? (
-      <CheckCircle className="w-5 h-5" />
+      <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7" />
     ) : (
-      <Clock className="w-5 h-5" />
+      <Clock className="w-6 h-6 sm:w-7 sm:h-7" />
     );
 
   return (
     <div
       className={`flex items-center justify-between p-4 mb-2 rounded-lg border ${bgColor} shadow-lg animate-fadeIn`}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between gap-2">
         {icon}
         <span className="text-sm font-medium">{message}</span>
       </div>
-      <button onClick={() => onDismiss(id)} className="text-gray-500 hover:text-gray-700 transition-colors">
+      <button
+        onClick={() => onDismiss(id)}
+        className="text-gray-500 hover:text-gray-700 transition-colors"
+      >
         <X className="w-4 h-4" />
       </button>
     </div>
