@@ -2,11 +2,23 @@ import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { getCodeTreeByLanguage } from "../api/codeReferenceServices";
 import { getNextSuggestedNode } from "../api/treeNavigationService";
-import { NODE_WIDTH, NODE_HEIGHT, FIT_PADDING_FACTOR } from "../constants/tree-navigation_constants";
+import {
+  NODE_WIDTH,
+  NODE_HEIGHT,
+  FIT_PADDING_FACTOR,
+} from "../constants/tree-navigation_constants";
 import type { CodeReference } from "../types/code";
-import type { TreeNavigatorParams, NavigationMode, TreeNodePosition } from "../types/navigation";
-import { calculateTreeLayout, calculatePanForCenter, findAncestors } from "../utils/treeUtils";
-
+import type {
+  TreeNavigatorParams,
+  NavigationMode,
+  TreeNodePosition,
+} from "../types/navigation";
+import {
+  calculateTreeLayout,
+  calculatePanForCenter,
+  findAncestors,
+} from "../utils/treeUtils";
+import type { Notification } from "../components/Submission/NotificationToast";
 
 export const useTreeNavigator = () => {
   const { language: rawLanguage } = useParams<TreeNavigatorParams>();
@@ -26,6 +38,7 @@ export const useTreeNavigator = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     if (language) {
@@ -38,13 +51,23 @@ export const useTreeNavigator = () => {
           const { positions } = calculateTreeLayout(data);
           setTreePositions(positions);
         })
-        .catch(console.error)
+        .catch(() =>
+          addNotification(
+            "error",
+            "Um erro ocorreu ao buscar os dados. Tente novamente mais tarde."
+          )
+        )
         .finally(() => setIsLoading(false));
     }
   }, [language]);
 
   useEffect(() => {
-    if (treePositions.length > 0 && treeData && isInitialLoad && containerRef.current) {
+    if (
+      treePositions.length > 0 &&
+      treeData &&
+      isInitialLoad &&
+      containerRef.current
+    ) {
       const initialZoomLevel = 0.6;
       setZoom(initialZoomLevel);
       const rootNodePos = treePositions.find((p) => p.node.id === treeData.id);
@@ -58,15 +81,34 @@ export const useTreeNavigator = () => {
     }
   }, [treePositions, treeData, isInitialLoad]);
 
-  const handleNodeSelect = useCallback((node: CodeReference) => {
-    setSelectedNode(node);
-    const nodePos = treePositions.find((p) => p.node.id === node.id);
-    const newPan = calculatePanForCenter(nodePos, containerRef.current, zoom);
-    if (newPan) setPan(newPan);
-  }, [treePositions, zoom]);
+  const addNotification = useCallback(
+    (type: "error" | "success" | "info", message: string, duration = 4000) => {
+      const id = Date.now().toString();
+      setNotifications((prev) => [...prev, { id, type, message, duration }]);
+    },
+    []
+  );
+
+  const removeNotification = (id: string) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handleNodeSelect = useCallback(
+    (node: CodeReference) => {
+      setSelectedNode(node);
+      const nodePos = treePositions.find((p) => p.node.id === node.id);
+      const newPan = calculatePanForCenter(nodePos, containerRef.current, zoom);
+      if (newPan) setPan(newPan);
+    },
+    [treePositions, zoom]
+  );
 
   const handleNext = useCallback(async () => {
-    if (!language || !selectedNode) return;
+    if (!language) return;
+    if (!selectedNode) {
+      addNotification("error", "Erro ao buscar o próximo sugerido. Nenhum nó selecionado.");
+      return;
+    }
     try {
       const nextNode = await getNextSuggestedNode(
         language,
@@ -74,8 +116,8 @@ export const useTreeNavigator = () => {
         parseInt(String(selectedNode.id), 10)
       );
       if (nextNode) handleNodeSelect(nextNode);
-    } catch (error) {
-      console.error("Erro ao buscar próximo nó:", error);
+    } catch {
+      addNotification("error", "Erro ao tentar buscar o próximo nó.");
     }
   }, [language, navigationMode, selectedNode, handleNodeSelect]);
 
@@ -83,27 +125,31 @@ export const useTreeNavigator = () => {
     if (treeData) handleNodeSelect(treeData);
   }, [treeData, handleNodeSelect]);
 
-  const handleZoom = useCallback((direction: "in" | "out") => {
-    if (!selectedNode || !containerRef.current) return;
-    const zoomStep = 0.15;
-    const newZoom = direction === "in"
-        ? Math.min(zoom + zoomStep, 2)
-        : Math.max(zoom - zoomStep, 0.2);
-    
-    const nodePos = treePositions.find((p) => p.node.id === selectedNode.id);
-    if (!nodePos) return;
+  const handleZoom = useCallback(
+    (direction: "in" | "out") => {
+      if (!selectedNode || !containerRef.current) return;
+      const zoomStep = 0.15;
+      const newZoom =
+        direction === "in"
+          ? Math.min(zoom + zoomStep, 2)
+          : Math.max(zoom - zoomStep, 0.2);
 
-    const nodeCenterX = nodePos.x + NODE_WIDTH / 2;
-    const nodeCenterY = nodePos.y + NODE_HEIGHT / 2;
-    const focalPointX = nodeCenterX * zoom + pan.x;
-    const focalPointY = nodeCenterY * zoom + pan.y;
-    const newPanX = focalPointX - nodeCenterX * newZoom;
-    const newPanY = focalPointY - nodeCenterY * newZoom;
+      const nodePos = treePositions.find((p) => p.node.id === selectedNode.id);
+      if (!nodePos) return;
 
-    setZoom(newZoom);
-    setPan({ x: newPanX, y: newPanY });
-  }, [zoom, pan.x, pan.y, selectedNode, treePositions]);
-  
+      const nodeCenterX = nodePos.x + NODE_WIDTH / 2;
+      const nodeCenterY = nodePos.y + NODE_HEIGHT / 2;
+      const focalPointX = nodeCenterX * zoom + pan.x;
+      const focalPointY = nodeCenterY * zoom + pan.y;
+      const newPanX = focalPointX - nodeCenterX * newZoom;
+      const newPanY = focalPointY - nodeCenterY * newZoom;
+
+      setZoom(newZoom);
+      setPan({ x: newPanX, y: newPanY });
+    },
+    [zoom, pan.x, pan.y, selectedNode, treePositions]
+  );
+
   const handleZoomIn = useCallback(() => handleZoom("in"), [handleZoom]);
   const handleZoomOut = useCallback(() => handleZoom("out"), [handleZoom]);
 
@@ -113,15 +159,16 @@ export const useTreeNavigator = () => {
       const maxX = Math.max(...treePositions.map((p) => p.x + NODE_WIDTH));
       const minY = Math.min(...treePositions.map((p) => p.y));
       const maxY = Math.max(...treePositions.map((p) => p.y + NODE_HEIGHT));
-      
+
       const contentWidth = maxX - minX;
       const contentHeight = maxY - minY;
-      const { clientWidth: containerWidth, clientHeight: containerHeight } = containerRef.current;
-      
+      const { clientWidth: containerWidth, clientHeight: containerHeight } =
+        containerRef.current;
+
       const scaleX = containerWidth / contentWidth;
       const scaleY = containerHeight / contentHeight;
       const newZoom = Math.min(scaleX, scaleY) * FIT_PADDING_FACTOR;
-      
+
       setZoom(newZoom);
       setPan({
         x: -minX * newZoom + (containerWidth - contentWidth * newZoom) / 2,
@@ -130,31 +177,44 @@ export const useTreeNavigator = () => {
     }
   }, [treePositions]);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (e.button === 0) {
-      setIsDragging(true);
-      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
-    }
-  }, [pan]);
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.button === 0) {
+        setIsDragging(true);
+        setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      }
+    },
+    [pan]
+  );
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isDragging) {
-      setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
-    }
-  }, [isDragging, dragStart]);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (isDragging) {
+        setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+      }
+    },
+    [isDragging, dragStart]
+  );
 
   const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
-  const isNodeInSelectedPath = useCallback((nodeId: string): boolean => {
-    if (!selectedNode || !treeData) return false;
-    if (String(selectedNode.id) === nodeId) return true;
-    const ancestors = findAncestors(String(selectedNode.id), treeData);
-    return ancestors ? ancestors.includes(nodeId) : false;
-  }, [selectedNode, treeData]);
+  const isNodeInSelectedPath = useCallback(
+    (nodeId: string): boolean => {
+      if (!selectedNode || !treeData) return false;
+      if (String(selectedNode.id) === nodeId) return true;
+      const ancestors = findAncestors(String(selectedNode.id), treeData);
+      return ancestors ? ancestors.includes(nodeId) : false;
+    },
+    [selectedNode, treeData]
+  );
 
-  const gTransitionStyle = useMemo(() => ({
-    transition: isInitialLoad || isDragging ? "none" : "transform 0.3s ease-out",
-  }), [isInitialLoad, isDragging]);
+  const gTransitionStyle = useMemo(
+    () => ({
+      transition:
+        isInitialLoad || isDragging ? "none" : "transform 0.3s ease-out",
+    }),
+    [isInitialLoad, isDragging]
+  );
 
   return {
     containerRef,
@@ -179,5 +239,7 @@ export const useTreeNavigator = () => {
     handleMouseUp,
     isNodeInSelectedPath,
     gTransitionStyle,
+    notifications,
+    removeNotification,
   };
 };
