@@ -6,7 +6,6 @@ export const getNextSuggestedNode = async (
   mode: string,
   currentId: number
 ): Promise<CodeReference | null> => {
-  try {
     const params = new URLSearchParams({
       language,
       mode,
@@ -16,8 +15,5 @@ export const getNextSuggestedNode = async (
 
     const response = await api.get<CodeReference | null>(endpoint);
     return response;
-  } catch (error) {
-    console.error("Failed to get next suggested node:", error);
-    throw error;
-  }
+  
 };
