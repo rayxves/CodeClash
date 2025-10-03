@@ -30,7 +30,7 @@ public class UserControllerTest : BaseIntegrationTest
         Assert.NotNull(result);
         Assert.Equal(registerDto.UserName, result.Username);
         Assert.NotEmpty(result.Token);
-        Assert.Equal(0, result.TotalPoints); 
+        Assert.Equal(0, result.TotalPoints);
     }
 
     [Fact]
@@ -44,9 +44,9 @@ public class UserControllerTest : BaseIntegrationTest
             Password = "Test@123",
             ConfirmPassword = "Test@123"
         };
-        await Client.PostAsJsonAsync("/api/users/register", registerDto); 
+        await Client.PostAsJsonAsync("/api/users/register", registerDto);
 
-        var response = await Client.PostAsJsonAsync("/api/users/register", registerDto); 
+        var response = await Client.PostAsJsonAsync("/api/users/register", registerDto);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
