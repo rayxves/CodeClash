@@ -82,7 +82,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-2 sm:px-4">
+    <div className="min-h-screen pt-12 pb-12 px-2 sm:px-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-card rounded-xl shadow-elegant border border-border/50 overflow-hidden">
           <ProfileHeader
