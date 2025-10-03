@@ -82,6 +82,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
 
         using var client = CreateClient();
         var registerResponse = await client.PostAsJsonAsync("/api/users/register", registerDto);
+        registerResponse.EnsureSuccessStatusCode();
         var userDto = await registerResponse.Content.ReadFromJsonAsync<UserDto>();
 
         return (userDto!.Token, username, userDto.Id);
