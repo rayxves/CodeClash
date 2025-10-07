@@ -20,7 +20,7 @@ export default function TreeNavigator() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-surface flex items-center justify-center">
+      <div role="status" className="min-h-screen bg-gradient-surface flex items-center justify-center">
         <div className="animate-spin w-12 h-12 border-2 border-primary border-t-transparent rounded-full"></div>
       </div>
     );

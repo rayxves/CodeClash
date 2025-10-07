@@ -1,7 +1,7 @@
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { ChevronLeft } from "lucide-react";
 import type { CodeReference } from "../../../types/code";
-import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { nightOwl } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { getLanguageExtension } from "../../../utils/getLanguageExtensions";
 
 interface CodeDetailModalProps {
