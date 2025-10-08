@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Code2 } from "lucide-react";
-import type { CodeReference } from "../../../types/code";
+import type { CodeReference } from "../../types/code";
 
 interface CodeItemProps {
   code: CodeReference;

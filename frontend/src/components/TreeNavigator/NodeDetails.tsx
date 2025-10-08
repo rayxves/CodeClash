@@ -1,8 +1,8 @@
 import { GitBranch } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { getLanguageExtension } from "../../../utils/getLanguageExtensions";
-import type { CodeReference } from "../../../types/code";
+import { getLanguageExtension } from "../../utils/getLanguageExtensions";
+import type { CodeReference } from "../../types/code";
 
 interface NodeDetailsProps {
   selectedNode: CodeReference | null;
@@ -10,7 +10,11 @@ interface NodeDetailsProps {
   language?: string;
 }
 
-export default function NodeDetails({ selectedNode, treeData, language }: NodeDetailsProps) {
+export default function NodeDetails({
+  selectedNode,
+  treeData,
+  language,
+}: NodeDetailsProps) {
   if (!selectedNode) {
     return (
       <div className="text-center p-8 bg-card rounded-2xl border border-border">
@@ -32,7 +36,11 @@ export default function NodeDetails({ selectedNode, treeData, language }: NodeDe
             language={getLanguageExtension(language ?? "")}
             style={vscDarkPlus}
             showLineNumbers
-            customStyle={{ margin: 0, padding: "1.5rem", background: "transparent" }}
+            customStyle={{
+              margin: 0,
+              padding: "1.5rem",
+              background: "transparent",
+            }}
           >
             {selectedNode.code}
           </SyntaxHighlighter>

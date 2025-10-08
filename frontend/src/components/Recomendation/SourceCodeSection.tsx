@@ -1,7 +1,7 @@
 import { Code2 } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { getLanguageExtension } from "../../../utils/getLanguageExtensions";
+import { getLanguageExtension } from "../../utils/getLanguageExtensions";
 
 interface SourceCodeSectionProps {
   sourceCode: string;

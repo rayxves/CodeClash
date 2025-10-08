@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { Language, Category } from "../types/code";
-import LanguageSelector from "../components/CodeModel/CodeModel/LanguageSelector";
-import CategoryList from "../components/CodeModel/CodeModel/CategoryList";
-import SearchBar from "../components/CodeModel/Category/SearchBar";
+import LanguageSelector from "../components/CodeModel/LanguageSelector";
+import CategoryList from "../components/CodeModel/CategoryList";
+import SearchBar from "../components/Category/SearchBar";
 import {
   SortAsc,
   TreeDeciduous,

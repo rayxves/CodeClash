@@ -1,5 +1,5 @@
 import { ChevronRight, RotateCcw } from "lucide-react";
-import type { NavigationMode } from "../../../types/navigation";
+import type { NavigationMode } from "../../types/navigation";
 
 interface TreeControlsProps {
   navigationMode: NavigationMode;

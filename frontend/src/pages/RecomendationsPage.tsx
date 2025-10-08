@@ -1,17 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingScreen from "../components/CodeModel/Recomendation/LoadingScreen";
-import NoCodeScreen from "../components/CodeModel/Recomendation/NoCodeScreen";
-import SourceCodeSection from "../components/CodeModel/Recomendation/SourceCodeSection";
-import CodeDetailModal from "../components/CodeModel/Recomendation/CodeDetailModal";
+import LoadingScreen from "../components/Recomendation/LoadingScreen";
+import NoCodeScreen from "../components/Recomendation/NoCodeScreen";
+import SourceCodeSection from "../components/Recomendation/SourceCodeSection";
+import CodeDetailModal from "../components/Recomendation/CodeDetailModal";
 import {
   getCodeReferenceByFilters,
   recommendSimilar,
 } from "../api/codeReferenceServices";
 import type { CodeReference } from "../types/code";
 import { ChevronLeft } from "lucide-react";
-import HeaderSection from "../components/CodeModel/Recomendation/HeaderSection";
-import RecommendationsList from "../components/CodeModel/Recomendation/RecomendationList";
+import HeaderSection from "../components/Recomendation/HeaderSection";
+import RecommendationsList from "../components/Recomendation/RecomendationList";
 
 export default function RecommendationsPage() {
   const navigate = useNavigate();

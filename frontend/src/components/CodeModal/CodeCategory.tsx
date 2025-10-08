@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Folder, ChevronRight } from "lucide-react";
-import type { CodeReference } from "../../../types/code";
+import type { CodeReference } from "../../types/code";
 import CodeItem from "./CodeItem";
 
 interface CodeCategoryProps {

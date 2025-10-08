@@ -1,12 +1,16 @@
 import { Maximize2, ZoomIn, ZoomOut } from "lucide-react";
 import type { CSSProperties } from "react";
-import { NODE_WIDTH, NODE_HEIGHT, VERTICAL_SPACING } from "../../../constants/tree-navigation_constants";
-import type { CodeReference } from "../../../types/code";
-import type { TreeNodePosition } from "../../../types/navigation";
+import {
+  NODE_WIDTH,
+  NODE_HEIGHT,
+  VERTICAL_SPACING,
+} from "../../constants/tree-navigation_constants";
+import type { CodeReference } from "../../types/code";
+import type { TreeNodePosition } from "../../types/navigation";
 import TreeNode from "./TreeNode";
 
 interface TreeViewProps {
-  containerRef: React.RefObject<HTMLDivElement | null>; 
+  containerRef: React.RefObject<HTMLDivElement | null>;
   treeData: CodeReference | null;
   treePositions: TreeNodePosition[];
   selectedNode: CodeReference | null;
@@ -42,7 +46,6 @@ export default function TreeView({
   handleZoomIn,
   handleZoomOut,
 }: TreeViewProps) {
-  
   const renderConnections = () => {
     if (!treeData) return null;
     return treePositions
@@ -51,13 +54,17 @@ export default function TreeView({
         pos.node.children!.map((child) => {
           const childPos = treePositions.find((p) => p.node.id === child.id);
           if (!childPos) return null;
-          
-          const isHighlighted = isNodeInSelectedPath(String(pos.node.id)) && isNodeInSelectedPath(String(child.id));
-          
+
+          const isHighlighted =
+            isNodeInSelectedPath(String(pos.node.id)) &&
+            isNodeInSelectedPath(String(child.id));
+
           return (
             <path
               key={`${pos.node.id}-${child.id}`}
-              d={`M ${pos.x + NODE_WIDTH / 2} ${pos.y + NODE_HEIGHT} V ${pos.y + NODE_HEIGHT + VERTICAL_SPACING / 2} H ${childPos.x + NODE_WIDTH / 2} V ${childPos.y}`}
+              d={`M ${pos.x + NODE_WIDTH / 2} ${pos.y + NODE_HEIGHT} V ${
+                pos.y + NODE_HEIGHT + VERTICAL_SPACING / 2
+              } H ${childPos.x + NODE_WIDTH / 2} V ${childPos.y}`}
               stroke={isHighlighted ? "#3b82f6" : "#475569"}
               strokeWidth={isHighlighted ? 4 : 2}
               fill="none"
@@ -75,20 +82,34 @@ export default function TreeView({
           Clique nos nós para explorar • Arraste para mover
         </span>
         <div className="flex gap-2">
-          <button onClick={handleZoomFit} className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors" aria-label="Ajustar à tela">
+          <button
+            onClick={handleZoomFit}
+            className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors"
+            aria-label="Ajustar à tela"
+          >
             <Maximize2 className="w-4 h-4" />
           </button>
-          <button onClick={handleZoomIn} className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors" aria-label="Zoom In">
+          <button
+            onClick={handleZoomIn}
+            className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors"
+            aria-label="Zoom In"
+          >
             <ZoomIn className="w-4 h-4" />
           </button>
-          <button onClick={handleZoomOut} className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors" aria-label="Zoom Out">
+          <button
+            onClick={handleZoomOut}
+            className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors"
+            aria-label="Zoom Out"
+          >
             <ZoomOut className="w-4 h-4" />
           </button>
         </div>
       </div>
       <div
         ref={containerRef}
-        className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border cursor-grab ${isDragging ? "cursor-grabbing" : ""}`}
+        className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border cursor-grab ${
+          isDragging ? "cursor-grabbing" : ""
+        }`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -96,7 +117,10 @@ export default function TreeView({
       >
         {treeData && (
           <svg className="w-full h-full">
-            <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`} style={gTransitionStyle}>
+            <g
+              transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
+              style={gTransitionStyle}
+            >
               <g>{renderConnections()}</g>
               <g>
                 {treePositions.map((pos) => (
@@ -107,7 +131,9 @@ export default function TreeView({
                     y={pos.y}
                     width={NODE_WIDTH}
                     height={NODE_HEIGHT}
-                    selectedNodeId={selectedNode ? String(selectedNode.id) : null}
+                    selectedNodeId={
+                      selectedNode ? String(selectedNode.id) : null
+                    }
                     onNodeSelect={handleNodeSelect}
                     isInSelectedPath={isNodeInSelectedPath}
                   />

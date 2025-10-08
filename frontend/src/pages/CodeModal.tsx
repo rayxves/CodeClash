@@ -3,14 +3,14 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { useState, useEffect, useCallback } from "react";
 import type { CodeReference } from "../types/code";
-import CodeHeader from "../components/CodeModel/CodeModal/CodeHeader";
-import CodeFooter from "../components/CodeModel/CodeModal/CodeFooter";
+import CodeHeader from "../components/CodeModal/CodeHeader";
+import CodeFooter from "../components/CodeModal/CodeFooter";
 import {
   getCodeReferenceById,
   getCodeReferenceByFilters,
 } from "../api/codeReferenceServices";
 import type { CodeModalParams } from "../types/routes";
-import RecommendationsList from "../components/CodeModel/Recomendation/RecomendationList";
+import RecommendationsList from "../components/Recomendation/RecomendationList";
 import { ClipboardCopy, Code2 } from "lucide-react";
 import { getLanguageExtension } from "../utils/getLanguageExtensions";
 

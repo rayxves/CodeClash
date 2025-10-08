@@ -1,6 +1,6 @@
 import { Code2, Stars } from "lucide-react";
 import { ArrowRight } from "lucide-react";
-import type { CodeReference } from "../../../types/code";
+import type { CodeReference } from "../../types/code";
 import type { NavigateFunction } from "react-router-dom";
 
 interface RecommendationsListProps {

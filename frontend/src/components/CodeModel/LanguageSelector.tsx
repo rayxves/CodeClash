@@ -1,4 +1,4 @@
-import type { Language } from "../../../types/code";
+import type { Language } from "../../types/code";
 import Cookies from "js-cookie";
 
 interface LanguageSelectorProps {

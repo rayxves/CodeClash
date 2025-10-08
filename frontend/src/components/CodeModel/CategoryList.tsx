@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { Language, Category } from "../../../types/code";
+import type { Language, Category } from "../../types/code";
 import { Search as SearchIcon } from "lucide-react";
 
 interface CategoryListProps {

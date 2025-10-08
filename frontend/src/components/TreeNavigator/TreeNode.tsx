@@ -1,5 +1,5 @@
 import { FileCode, Folder } from "lucide-react";
-import type { CodeReference } from "../../../types/code";
+import type { CodeReference } from "../../types/code";
 
 interface TreeNodeProps {
   node: CodeReference;

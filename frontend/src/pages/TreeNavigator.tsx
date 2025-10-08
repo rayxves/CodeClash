@@ -1,9 +1,9 @@
 import { useTreeNavigator } from "../hooks/useTreeNavigator";
 import NotificationToast from "../components/Submission/NotificationToast";
-import NodeDetails from "../components/CodeModel/TreeNavigator/NodeDetails";
-import TreeControls from "../components/CodeModel/TreeNavigator/TreeControls";
-import TreeHeader from "../components/CodeModel/TreeNavigator/TreeHeader";
-import TreeView from "../components/CodeModel/TreeNavigator/TreeView";
+import NodeDetails from "../components/TreeNavigator/NodeDetails";
+import TreeControls from "../components/TreeNavigator/TreeControls";
+import TreeHeader from "../components/TreeNavigator/TreeHeader";
+import TreeView from "../components/TreeNavigator/TreeView";
 
 export default function TreeNavigator() {
   const {

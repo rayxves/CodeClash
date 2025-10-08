@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { useDebounce } from "../../../hooks/useDebounce";
+import { useDebounce } from "../../hooks/useDebounce";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -9,11 +9,11 @@ interface SearchBarProps {
   onDebouncedSearch?: (term: string) => void;
 }
 
-export default function SearchBar({ 
-  searchTerm, 
-  setSearchTerm, 
-  placehoder, 
-  onDebouncedSearch 
+export default function SearchBar({
+  searchTerm,
+  setSearchTerm,
+  placehoder,
+  onDebouncedSearch,
 }: SearchBarProps) {
   const [localSearch, setLocalSearch] = useState(searchTerm);
   const debouncedSearch = useDebounce(localSearch, 300);
