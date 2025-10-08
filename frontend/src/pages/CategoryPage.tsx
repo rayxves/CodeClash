@@ -1,14 +1,16 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, Suspense, lazy, useMemo } from "react";
-import { getCategoryView } from "../../../api/codeReferenceServices";
-import { useDebounce } from "../../../hooks/useDebounce";
-import EmptyState from "./EmptyState";
-import SearchBar from "./SearchBar";
-import type { CategoryPageParams } from "../../../types/routes";
-import type { CategoryViewData, ChildCategory } from "../../../types/code";
+import { getCategoryView } from "../api/codeReferenceServices";
+import { useDebounce } from "../hooks/useDebounce";
+import EmptyState from "../components/CodeModel/Category/EmptyState";
+import SearchBar from "../components/CodeModel/Category/SearchBar";
+import type { CategoryPageParams } from "../types/routes";
+import type { CategoryViewData, ChildCategory } from "../types/code";
 import { Filter, Code2 } from "lucide-react";
 
-const CodeList = lazy(() => import("../CodeModal/CodeList"));
+const CodeList = lazy(
+  () => import("../components/CodeModel/CodeModal/CodeList")
+);
 
 export default function CategoryPage() {
   const { language = "", category = "" } = useParams<CategoryPageParams>();

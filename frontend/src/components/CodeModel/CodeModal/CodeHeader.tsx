@@ -14,7 +14,7 @@ export default function CodeHeader({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 px-2 pt-6 rounded-2xl">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 px-2 rounded-2xl">
       <Link
         to={`/code-model/${encodeURIComponent(language)}/${encodeURIComponent(
           category

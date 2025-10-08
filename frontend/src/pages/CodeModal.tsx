@@ -2,17 +2,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { useState, useEffect, useCallback } from "react";
-import type { CodeReference } from "../../../types/code";
-import CodeHeader from "./CodeHeader";
-import CodeFooter from "./CodeFooter";
+import type { CodeReference } from "../types/code";
+import CodeHeader from "../components/CodeModel/CodeModal/CodeHeader";
+import CodeFooter from "../components/CodeModel/CodeModal/CodeFooter";
 import {
   getCodeReferenceById,
   getCodeReferenceByFilters,
-} from "../../../api/codeReferenceServices";
-import type { CodeModalParams } from "../../../types/routes";
-import RecommendationsList from "../Recomendation/RecomendationList";
+} from "../api/codeReferenceServices";
+import type { CodeModalParams } from "../types/routes";
+import RecommendationsList from "../components/CodeModel/Recomendation/RecomendationList";
 import { ClipboardCopy, Code2 } from "lucide-react";
-import { getLanguageExtension } from "../../../utils/getLanguageExtensions";
+import { getLanguageExtension } from "../utils/getLanguageExtensions";
 
 export default function CodeModal() {
   const { id, name } = useParams<CodeModalParams>();
@@ -80,8 +80,8 @@ export default function CodeModal() {
 
   if (error || !code) {
     return (
-      <div className="w-full min-h-screen bg-gradient-surface flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
-        <div className="w-full max-w-6xl mt-12">
+      <div className="w-full min-h-screen bg-gradient-surface flex flex-col items-center justify-center px-2 sm:px-4 sm:py-6">
+        <div className="w-full max-w-6xl">
           <div className="bg-card p-8 rounded-2xl shadow-card text-center mb-6 border border-border">
             <Code2 className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-card-foreground mb-2">
@@ -116,12 +116,12 @@ export default function CodeModal() {
   return (
     <div className="w-full min-h-screen bg-gradient-surface flex flex-col items-center justify-center py-6 px-2 sm:px-4 sm:py-10">
       {copySuccess && (
-        <div className="text-gray-900 text-sm text-center mt-10 absolute top-52 right-10 sm:right-20 lg:right-28 bg-gray-300 px-2 py-1 rounded-md">
+        <div className="text-gray-900 text-sm text-center absolute top-52 right-10 sm:right-20 lg:right-28 bg-gray-300 px-2 py-1 rounded-md">
           {copySuccess}
         </div>
       )}
 
-      <div className="w-full max-w-6xl mt-10">
+      <div className="w-full max-w-6xl h-full">
         <CodeHeader
           language={code.language}
           category={code.category}

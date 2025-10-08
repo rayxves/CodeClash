@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import * as useTreeNavigatorHook from "../../../../hooks/useTreeNavigator";
+import * as useTreeNavigatorHook from "../../hooks/useTreeNavigator";
 import TreeNavigator from "../TreeNavigator";
 import { MemoryRouter } from "react-router-dom";
 
-jest.mock("../../../../hooks/useTreeNavigator");
+jest.mock("../../hooks/useTreeNavigator");
 
 const mockUseTreeNavigator = useTreeNavigatorHook.useTreeNavigator as jest.Mock;
 

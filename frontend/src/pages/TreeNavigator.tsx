@@ -1,9 +1,9 @@
-import { useTreeNavigator } from "../../../hooks/useTreeNavigator";
-import NotificationToast from "../../Submission/NotificationToast";
-import NodeDetails from "./NodeDetails";
-import TreeControls from "./TreeControls";
-import TreeHeader from "./TreeHeader";
-import TreeView from "./TreeView";
+import { useTreeNavigator } from "../hooks/useTreeNavigator";
+import NotificationToast from "../components/Submission/NotificationToast";
+import NodeDetails from "../components/CodeModel/TreeNavigator/NodeDetails";
+import TreeControls from "../components/CodeModel/TreeNavigator/TreeControls";
+import TreeHeader from "../components/CodeModel/TreeNavigator/TreeHeader";
+import TreeView from "../components/CodeModel/TreeNavigator/TreeView";
 
 export default function TreeNavigator() {
   const {
@@ -20,7 +20,10 @@ export default function TreeNavigator() {
 
   if (isLoading) {
     return (
-      <div role="status" className="min-h-screen bg-gradient-surface flex items-center justify-center">
+      <div
+        role="status"
+        className="min-h-screen bg-gradient-surface flex items-center justify-center"
+      >
         <div className="animate-spin w-12 h-12 border-2 border-primary border-t-transparent rounded-full"></div>
       </div>
     );

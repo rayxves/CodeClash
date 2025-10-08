@@ -4,9 +4,9 @@ import RecommendationsPage from "../RecomendationsPage";
 import {
   getCodeReferenceByFilters,
   recommendSimilar,
-} from "../../../../api/codeReferenceServices";
+} from "../../api/codeReferenceServices";
 
-jest.mock("../../../../api/codeReferenceServices", () => ({
+jest.mock("../../api/codeReferenceServices", () => ({
   getCodeReferenceByFilters: jest.fn(),
   recommendSimilar: jest.fn(),
 }));

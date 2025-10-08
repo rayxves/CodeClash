@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useDebounce } from "../../hooks/useDebounce";
-import { getProblems } from "../../api/problemServices";
-import type { Problem } from "../../types/problem";
-import ProblemCard from "./ProblemCard";
-import ProblemCardSkeleton from "./ProblemCardSkeleton";
-import Filters from "./Filters";
+import { useDebounce } from "../hooks/useDebounce";
+import { getProblems } from "../api/problemServices";
+import type { Problem } from "../types/problem";
+import ProblemCard from "../components/Problems/ProblemCard";
+import ProblemCardSkeleton from "../components/Problems/ProblemCardSkeleton";
+import Filters from "../components/Problems/Filters";
 import { AlertCircle, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

@@ -1,14 +1,15 @@
-import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { type CompleteProfileData } from "../../types/auth";
 import { LogOut } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCompleteProfile } from "../../api/userServices";
-import { ProfileHeader } from "./ProfileHeader";
-import { RankingCard } from "./RankingCard";
-import { PersonalInfoCard } from "./PersonalInfoCard";
-import { SolutionsCard } from "./SolutionsCard";
-import { ErrorState } from "./ErrorState";
+import { getCompleteProfile } from "../api/userServices";
+import { ErrorState } from "../components/Profile/ErrorState";
+import { PersonalInfoCard } from "../components/Profile/PersonalInfoCard";
+import { ProfileHeader } from "../components/Profile/ProfileHeader";
+import { RankingCard } from "../components/Profile/RankingCard";
+import { SolutionsCard } from "../components/Profile/SolutionsCard";
+import { useAuth } from "../contexts/AuthContext";
+import type { CompleteProfileData } from "../types/auth";
+
 
 export default function ProfilePage() {
   const [profileData, setProfileData] = useState<CompleteProfileData | null>(

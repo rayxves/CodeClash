@@ -4,18 +4,18 @@ import "./index.css";
 import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./components/Home/ErrorPage.tsx";
-import AboutPage from "./components/About/AboutPage.tsx";
-import CodeModel from "./components/CodeModel/CodeModel/CodeModel.tsx";
-import Home from "./components/Home/Home.tsx";
-import CategoryPage from "./components/CodeModel/CategoryPage/CategoryPage.tsx";
-import CodeModal from "./components/CodeModel/CodeModal/CodeModal.tsx";
-import EnhancedSubmissionPage from "./components/Submission/EnhancedSubmissionPage.tsx";
-import RecommendationsPage from "./components/CodeModel/Recomendation/RecomendationsPage.tsx";
-import ProblemsPage from "./components/Problems/ProblemsPage.tsx";
-import LoginPage from "./components/Auth/LoginPage.tsx";
-import RegisterPage from "./components/Auth/RegisterPage.tsx";
-import ProfilePage from "./components/Profile/ProfilePage.tsx";
-import TreeNavigator from "./components/CodeModel/TreeNavigator/TreeNavigator.tsx";
+import AboutPage from "./pages/AboutPage.tsx";
+import CodeModel from "./pages/CodeModel.tsx";
+import Home from "./pages/Home.tsx";
+import CategoryPage from "./pages/CategoryPage.tsx";
+import CodeModal from "./pages/CodeModal.tsx";
+import EnhancedSubmissionPage from "./pages/EnhancedSubmissionPage.tsx";
+import RecommendationsPage from "./pages/RecomendationsPage.tsx";
+import ProblemsPage from "./pages/ProblemsPage.tsx";
+import LoginPage from "./pages/LoginPage.tsx";
+import RegisterPage from "./pages/RegisterPage.tsx";
+import TreeNavigator from "./pages/TreeNavigator.tsx";
+import ProfilePage from "./pages/ProfilePage.tsx";
 
 const router = createBrowserRouter([
   {

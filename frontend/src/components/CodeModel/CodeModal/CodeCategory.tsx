@@ -43,7 +43,7 @@ export default function CodeCategory({
       </button>
 
       {isOpen && categoryItem.children && (
-        <div className="bg-muted/30 p-6 space-y-4 border-t border-border">
+        <div className="bg-muted/30 p-2 sm:p-6 space-y-4 border-t border-border">
           {categoryItem.children.map((child) =>
             child.children && child.children.length > 0 ? (
               <CodeCategory

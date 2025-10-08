@@ -19,7 +19,7 @@ const MockAuthProvider = ({ children }: { children: React.ReactNode }) => (
   </MockAuthContext.Provider>
 );
 
-jest.mock("../../../contexts/AuthContext", () => ({
+jest.mock("../../contexts/AuthContext", () => ({
   useAuth: () => React.useContext(MockAuthContext),
 }));
 
@@ -42,12 +42,16 @@ describe("RegisterPage", () => {
 
   it("should render the registration form correctly", () => {
     renderWithProviders(<RegisterPage />);
-    expect(screen.getByRole("heading", { name: /registrar/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /registrar/i })
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/nome de usuário/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^senha$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/confirmar senha/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /criar conta/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /criar conta/i })
+    ).toBeInTheDocument();
   });
 
   it("should handle successful registration", async () => {
@@ -80,13 +84,18 @@ describe("RegisterPage", () => {
 
     await user.type(screen.getByLabelText(/nome de usuário/i), "ab");
     await user.type(screen.getByLabelText(/email/i), "test@email.com");
-    await user.type(screen.getByLabelText(/^confirmar senha$/i), "Password123!");
-        await user.type(screen.getByLabelText(/^senha$/i), "Password123!");
+    await user.type(
+      screen.getByLabelText(/^confirmar senha$/i),
+      "Password123!"
+    );
+    await user.type(screen.getByLabelText(/^senha$/i), "Password123!");
 
     await user.click(screen.getByRole("button", { name: /criar conta/i }));
 
     expect(
-      await screen.findByText(/O nome de usuário deve ter pelo menos 3 caracteres/i)
+      await screen.findByText(
+        /O nome de usuário deve ter pelo menos 3 caracteres/i
+      )
     ).toBeInTheDocument();
     expect(mockRegister).not.toHaveBeenCalled();
   });
@@ -98,10 +107,15 @@ describe("RegisterPage", () => {
     await user.type(screen.getByLabelText(/nome de usuário/i), "testuser");
     await user.type(screen.getByLabelText(/email/i), "test@email.com");
     await user.type(screen.getByLabelText(/^senha$/i), "Password123!");
-    await user.type(screen.getByLabelText(/confirmar senha/i), "WrongPassword!");
+    await user.type(
+      screen.getByLabelText(/confirmar senha/i),
+      "WrongPassword!"
+    );
     await user.click(screen.getByRole("button", { name: /criar conta/i }));
 
-    expect(await screen.findByText(/as senhas não coincidem/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/as senhas não coincidem/i)
+    ).toBeInTheDocument();
     expect(mockRegister).not.toHaveBeenCalled();
   });
 
@@ -126,8 +140,8 @@ describe("RegisterPage", () => {
   it("should show loading state on submission", async () => {
     const user = userEvent.setup();
     let resolveRegister: any;
-    const registerPromise = new Promise(resolve => {
-        resolveRegister = resolve;
+    const registerPromise = new Promise((resolve) => {
+      resolveRegister = resolve;
     });
     mockRegister.mockReturnValue(registerPromise);
     renderWithProviders(<RegisterPage />);
@@ -141,7 +155,9 @@ describe("RegisterPage", () => {
     await user.click(submitButton);
 
     expect(submitButton).toBeDisabled();
-    expect(screen.getByRole('button', { name: /criando conta.../i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /criando conta.../i })
+    ).toBeInTheDocument();
 
     resolveRegister({ success: true });
 

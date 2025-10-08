@@ -11,7 +11,7 @@ int main() {
 
 export default function CodeBlock() {
   return (
-    <section className="px-4 py-4 rounded shadow w-11/12 md:w-9/12 lg:w-7/12">
+    <section className="px-2 sm:px-4 py-4 rounded shadow w-11/12 md:w-9/12 lg:w-7/12">
       <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
         {" "}
         <SyntaxHighlighter

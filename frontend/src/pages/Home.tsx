@@ -1,5 +1,5 @@
 import { Code2, BookOpen, Target } from "lucide-react";
-import CodeBlock from "./CodeBlock";
+import CodeBlock from "../components/Home/CodeBlock";
 
 export default function Home() {
   return (
@@ -105,7 +105,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="w-full flex justify-center items-center py-16 px-4">
+      <div className="w-full flex justify-center items-center py-8">
         <CodeBlock />
       </div>
 

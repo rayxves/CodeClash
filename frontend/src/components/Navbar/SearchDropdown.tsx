@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { LANGUAGES, CATEGORIES } from "../CodeModel/CodeModel/CodeModel";
+import { LANGUAGES, CATEGORIES } from "../../pages/CodeModel";
 import { useNavigate } from "react-router-dom";
 
 interface SearchDropdownProps {

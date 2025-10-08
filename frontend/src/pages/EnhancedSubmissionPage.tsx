@@ -9,16 +9,16 @@ import {
   Stars,
   Terminal,
 } from "lucide-react";
-import { getProblemById } from "../../api/problemServices";
-import { useAuth } from "../../contexts/AuthContext";
-import type { Problem } from "../../types/problem";
-import NotificationToast from "./NotificationToast";
-import type { Notification } from "./NotificationToast";
-import ProblemDetail from "./ProblemDetail";
-import ProblemDetailSkeleton from "./ProblemDetailSkeleton";
-import CodeEditor from "./CodeEditor";
-import SubmissionResultDisplay from "./SubmissionResultDisplay";
-import { submitCode } from "../../api/codeReferenceServices";
+import { getProblemById } from "../api/problemServices";
+import { useAuth } from "../contexts/AuthContext";
+import type { Problem } from "../types/problem";
+import NotificationToast from "../components/Submission/NotificationToast";
+import type { Notification } from "../components/Submission/NotificationToast";
+import ProblemDetail from "../components/Submission/ProblemDetail";
+import ProblemDetailSkeleton from "../components/Submission/ProblemDetailSkeleton";
+import CodeEditor from "../components/Submission/CodeEditor";
+import SubmissionResultDisplay from "../components/Submission/SubmissionResultDisplay";
+import { submitCode } from "../api/codeReferenceServices";
 
 export default function EnhancedSubmissionPage() {
   const navigate = useNavigate();

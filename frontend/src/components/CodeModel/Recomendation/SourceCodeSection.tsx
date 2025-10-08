@@ -15,7 +15,7 @@ export default function SourceCodeSection({
   language,
 }: SourceCodeSectionProps) {
   return (
-    <div className="mb-8 bg-card/50 backdrop-blur-sm p-6 rounded-2xl border border-border hover:shadow-elegant transition-all hover-lift">
+    <div className="mb-8 bg-card/50 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-border hover:shadow-elegant transition-all hover-lift">
       <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
         {sourceType === "model" ? (
           <>

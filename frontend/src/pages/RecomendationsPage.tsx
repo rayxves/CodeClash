@@ -1,17 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingScreen from "./LoadingScreen";
-import NoCodeScreen from "./NoCodeScreen";
-import SourceCodeSection from "./SourceCodeSection";
-import CodeDetailModal from "./CodeDetailModal";
+import LoadingScreen from "../components/CodeModel/Recomendation/LoadingScreen";
+import NoCodeScreen from "../components/CodeModel/Recomendation/NoCodeScreen";
+import SourceCodeSection from "../components/CodeModel/Recomendation/SourceCodeSection";
+import CodeDetailModal from "../components/CodeModel/Recomendation/CodeDetailModal";
 import {
   getCodeReferenceByFilters,
   recommendSimilar,
-} from "../../../api/codeReferenceServices";
-import type { CodeReference } from "../../../types/code";
+} from "../api/codeReferenceServices";
+import type { CodeReference } from "../types/code";
 import { ChevronLeft } from "lucide-react";
-import HeaderSection from "./HeaderSection";
-import RecommendationsList from "./RecomendationList";
+import HeaderSection from "../components/CodeModel/Recomendation/HeaderSection";
+import RecommendationsList from "../components/CodeModel/Recomendation/RecomendationList";
 
 export default function RecommendationsPage() {
   const navigate = useNavigate();
@@ -70,11 +70,18 @@ export default function RecommendationsPage() {
 
   if (isLoading) return <LoadingScreen />;
   if (!sourceCode)
-    return <NoCodeScreen language={language} name={name} navigate={navigate} error={error} />;
+    return (
+      <NoCodeScreen
+        language={language}
+        name={name}
+        navigate={navigate}
+        error={error}
+      />
+    );
 
   return (
     <div className="min-h-screen bg-gradient-surface py-8 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto mt-12">
+      <div className="max-w-6xl mx-auto mt-8">
         {selectedCode ? (
           <div className="space-y-6">
             <CodeDetailModal

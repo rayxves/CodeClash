@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import type { Language, Category } from "../../../types/code";
-import LanguageSelector from "./LanguageSelector";
-import CategoryList from "./CategoryList";
-import SearchBar from "../CategoryPage/SearchBar";
+import type { Language, Category } from "../types/code";
+import LanguageSelector from "../components/CodeModel/CodeModel/LanguageSelector";
+import CategoryList from "../components/CodeModel/CodeModel/CategoryList";
+import SearchBar from "../components/CodeModel/Category/SearchBar";
 import {
   SortAsc,
   TreeDeciduous,
@@ -121,7 +121,7 @@ export default function CodeModel() {
     <div className="min-h-screen bg-gradient-surface py-12 px-4 sm:px-6">
       <Link
         to="/"
-        className="mt-8 mb-8 flex items-center text-primary hover:text-primary/80 transition-colors text-sm sm:text-base group max-w-4xl mx-auto"
+        className="mb-8 flex items-center text-primary hover:text-primary/80 transition-colors text-sm sm:text-base group max-w-4xl mx-auto"
       >
         <svg
           className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform"

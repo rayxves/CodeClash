@@ -18,8 +18,8 @@ const MockAuthProvider = ({
   </MockAuthContext.Provider>
 );
 
-jest.mock("../../../contexts/AuthContext", () => {
-  const actual = jest.requireActual("../../../contexts/AuthContext");
+jest.mock("../../contexts/AuthContext", () => {
+  const actual = jest.requireActual("../../contexts/AuthContext");
   return {
     ...actual,
     useAuth: () => React.useContext(MockAuthContext),
