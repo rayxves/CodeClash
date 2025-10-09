@@ -7,6 +7,8 @@ services:
     restart: always
     ports:
       - "5070:8080"
+    env_file:
+      - ./api/.env
 
   frontend:
     build:
