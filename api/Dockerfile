@@ -1,16 +1,19 @@
-# Estágio de compilação
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY api.csproj .
-RUN dotnet restore "api.csproj"
+COPY ["CodeClashApi.sln", "./"]
+COPY ["api/api.csproj", "api/"]
+COPY ["api.tests/api.tests.csproj", "api.tests/"]
+
+RUN dotnet restore "CodeClashApi.sln"
 
 COPY . .
 
-RUN dotnet publish "api.csproj" -c Release -o /app/publish
+WORKDIR "/src/api"
+RUN dotnet publish "api.csproj" -c Release -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-EXPOSE 5070
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "api.dll"]

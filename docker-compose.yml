@@ -1,0 +1,18 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: codeclash-api
+    restart: always
+    ports:
+      - "5070:8080"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: codeclash-frontend
+    restart: always
+    ports:
+      - "8080:80"
