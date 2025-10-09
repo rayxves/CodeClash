@@ -7,6 +7,7 @@ import {
   sanitizeInput,
   validatePassword,
 } from "../utils/validateUserData";
+import { getErrorMessage } from "../utils/errorsHandler";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -24,12 +25,14 @@ export default function LoginPage() {
       setError("Nome de usuário precisa ter 3 ou mais caracteres.");
       return;
     }
+
     if (!validateUsername(username)) {
       setError(
         "Nome de usuário inválido. Use apenas letras, números, hífen e underscore."
       );
       return;
     }
+
     const passwordError = validatePassword(password);
     if (passwordError) {
       setError(passwordError);
@@ -43,11 +46,9 @@ export default function LoginPage() {
       await login(cleanUsername, password);
       navigate("/");
     } catch (error: any) {
-      if (error?.response?.status !== 500) {
-        setError(error?.response?.data || "Credenciais inválidas.");
-      } else {
-        setError("Erro interno ao tentar realizar o login.");
-      }
+      const errorMessage = getErrorMessage(error);
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +68,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 animate-in fade-in slide-in-from-top-2 duration-300">
                 <p className="text-destructive text-sm">{error}</p>
               </div>
             )}
@@ -88,13 +89,15 @@ export default function LoginPage() {
                   onChange={(e) => {
                     const clean = sanitizeInput(e.target.value);
                     setUsername(clean);
+                    setError(""); // Limpa erro ao digitar
                   }}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none transition-all"
                   placeholder="Seu nome de usuário"
                   required
                   maxLength={20}
                   pattern="[a-zA-Z0-9_-]{3,20}"
                   title="Use apenas letras, números, hífen e underscore (3-20 caracteres)"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -112,12 +115,16 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError(""); // Limpa erro ao digitar
+                  }}
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none transition-all"
                   placeholder="Sua senha"
                   required
                   minLength={6}
                   maxLength={100}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -125,9 +132,31 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-lg font-medium transition-all disabled:opacity-50"
+              className="w-full py-3 px-4 bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Entrando..." : "Entrar"}
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Entrando...
+                </span>
+              ) : (
+                "Entrar"
+              )}
             </button>
           </form>
 
@@ -136,7 +165,7 @@ export default function LoginPage() {
               Não tem uma conta?{" "}
               <Link
                 to="/register"
-                className="text-primary hover:text-primary/80 font-medium"
+                className="text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 Registre-se
               </Link>

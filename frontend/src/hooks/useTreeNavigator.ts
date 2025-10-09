@@ -19,6 +19,7 @@ import {
   findAncestors,
 } from "../utils/treeUtils";
 import type { Notification } from "../components/Submission/NotificationToast";
+import { getErrorMessage } from "../utils/errorsHandler";
 
 export const useTreeNavigator = () => {
   const { language: rawLanguage } = useParams<TreeNavigatorParams>();
@@ -51,12 +52,10 @@ export const useTreeNavigator = () => {
           const { positions } = calculateTreeLayout(data);
           setTreePositions(positions);
         })
-        .catch(() =>
-          addNotification(
-            "error",
-            "Um erro ocorreu ao buscar os dados. Tente novamente mais tarde."
-          )
-        )
+        .catch((error) => {
+          const message = getErrorMessage(error);
+          addNotification("error", message);
+        })
         .finally(() => setIsLoading(false));
     }
   }, [language]);
@@ -106,7 +105,10 @@ export const useTreeNavigator = () => {
   const handleNext = useCallback(async () => {
     if (!language) return;
     if (!selectedNode) {
-      addNotification("error", "Erro ao buscar o próximo sugerido. Nenhum nó selecionado.");
+      addNotification(
+        "error",
+        "Erro ao buscar o próximo sugerido. Nenhum nó selecionado."
+      );
       return;
     }
     try {
@@ -116,8 +118,9 @@ export const useTreeNavigator = () => {
         parseInt(String(selectedNode.id), 10)
       );
       if (nextNode) handleNodeSelect(nextNode);
-    } catch {
-      addNotification("error", "Erro ao tentar buscar o próximo nó.");
+    } catch (error) {
+      const message = getErrorMessage(error);
+      addNotification("error", message);
     }
   }, [language, navigationMode, selectedNode, handleNodeSelect]);
 

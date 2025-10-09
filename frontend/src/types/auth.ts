@@ -6,7 +6,6 @@ export interface User {
   totalPoints: number;
 }
 
-
 export interface UserProblemSolution {
   id: number;
   code: string;
@@ -26,11 +25,15 @@ export interface UserProblemSolution {
   userId: string;
 }
 
-
 export interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string,
+    confirmPassword: string
+  ) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }

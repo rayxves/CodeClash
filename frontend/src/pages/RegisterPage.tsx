@@ -7,6 +7,7 @@ import {
   validatePassword,
   validateUsername,
 } from "../utils/validateUserData";
+import { getErrorMessage } from "../utils/errorsHandler";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -23,7 +24,7 @@ export default function RegisterPage() {
     setError("");
 
     if (username.length < 3) {
-      setError("O nome de usuário deve ter pelo menos 3 caracteres");
+      setError("O nome de usuário deve ter pelo menos 3 caracteres.");
       return;
     }
 
@@ -33,6 +34,12 @@ export default function RegisterPage() {
       );
       return;
     }
+
+    if (!email.includes("@")) {
+      setError("Email inválido.");
+      return;
+    }
+
     const passwordError = validatePassword(password);
     if (passwordError) {
       setError(passwordError);
@@ -40,7 +47,7 @@ export default function RegisterPage() {
     }
 
     if (password !== confirmPassword) {
-      setError("As senhas não coincidem");
+      setError("As senhas não coincidem.");
       return;
     }
 
@@ -48,14 +55,12 @@ export default function RegisterPage() {
 
     try {
       const cleanUsername = sanitizeInput(username);
-      await register(cleanUsername, email, password); // senha enviada "como é"
+      await register(cleanUsername, email, password, confirmPassword);
       navigate("/");
     } catch (error: any) {
-      if (error?.response?.status !== 500) {
-        setError(error?.response?.data || "Erro ao tentar registrar.");
-      } else {
-        setError("Erro interno ao tentar realizar o registro.");
-      }
+      const errorMessage = getErrorMessage(error);
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +82,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 animate-in fade-in slide-in-from-top-2 duration-300">
                 <p className="text-destructive text-sm">{error}</p>
               </div>
             )}
@@ -95,10 +100,17 @@ export default function RegisterPage() {
                   id="username"
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(sanitizeInput(e.target.value))}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
+                  onChange={(e) => {
+                    setUsername(sanitizeInput(e.target.value));
+                    setError("");
+                  }}
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none transition-all"
                   placeholder="Seu nome de usuário"
                   required
+                  maxLength={20}
+                  pattern="[a-zA-Z0-9_-]{3,20}"
+                  title="Use apenas letras, números, hífen e underscore (3-20 caracteres)"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -116,10 +128,14 @@ export default function RegisterPage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError("");
+                  }}
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none transition-all"
                   placeholder="seu@email.com"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -137,10 +153,16 @@ export default function RegisterPage() {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError("");
+                  }}
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none transition-all"
                   placeholder="Sua senha"
                   required
+                  minLength={6}
+                  maxLength={100}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -153,15 +175,21 @@ export default function RegisterPage() {
                 Confirmar senha
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-accent" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   id="confirmPassword"
                   type="password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none "
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    setError("");
+                  }}
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg focus:ring-1 focus:ring-primary focus:border-transparent focus:outline-none transition-all"
                   placeholder="Confirme sua senha"
                   required
+                  minLength={6}
+                  maxLength={100}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -169,9 +197,31 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-lg font-medium transition-all disabled:opacity-50"
+              className="w-full py-3 px-4 bg-gradient-primary hover:shadow-primary text-primary-foreground rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Criando conta..." : "Criar conta"}
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Criando conta...
+                </span>
+              ) : (
+                "Criar conta"
+              )}
             </button>
           </form>
 
@@ -180,7 +230,7 @@ export default function RegisterPage() {
               Já tem uma conta?{" "}
               <Link
                 to="/login"
-                className="text-primary hover:text-primary/80 font-medium"
+                className="text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 Faça login
               </Link>

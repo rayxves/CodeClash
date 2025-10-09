@@ -33,9 +33,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (
     username: string,
     email: string,
-    password: string
+    password: string,
+    confirmPassword: string
   ): Promise<void> => {
-    const user = await registerUser(username, email, password);
+    const user = await registerUser(username, email, password, confirmPassword);
     setUser(user);
     Cookies.set("user", JSON.stringify(user), { expires: 1 });
   };

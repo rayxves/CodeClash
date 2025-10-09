@@ -45,7 +45,21 @@ class APIClient {
 
             if (!response.ok) {
               const text = await response.text();
-              throw new Error(`HTTP ${response.status}: ${text}`);
+              
+              let data: any;
+              try {
+                data = JSON.parse(text);
+              } catch {
+                data = text;
+              }
+
+              const error: any = new Error(`HTTP ${response.status}`);
+              error.response = {
+                status: response.status,
+                statusText: response.statusText,
+                data: data,
+              };
+              throw error;
             }
 
             if (
@@ -60,8 +74,11 @@ class APIClient {
             return;
           } catch (err) {
             lastError = err;
-            if (attempt < retries)
+            if (attempt < retries && !(err as any).response) {
               await new Promise((res) => setTimeout(res, 500 * attempt));
+            } else {
+              break;
+            }
           }
         }
         reject(lastError);
@@ -94,4 +111,3 @@ class APIClient {
 export const apiClient = new APIClient(
   "http://localhost:5070/api"
 );
-
