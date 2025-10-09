@@ -109,5 +109,5 @@ class APIClient {
 }
 
 export const apiClient = new APIClient(
-  "http://localhost:5070/api"
+  "https://codeclashplatform.duckdns.org:5070/api"
 );
