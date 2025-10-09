@@ -104,7 +104,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        policy.WithOrigins("http://codeclashplatform.duckdns.org:8080")
+        policy.WithOrigins("https://codeclashplatform.duckdns.org")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();

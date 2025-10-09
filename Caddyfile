@@ -1,4 +1,5 @@
 codeclashplatform.duckdns.org {
-    root * /srv
-    file_server
+    reverse_proxy /api/* api:8080
+
+    reverse_proxy * frontend:80
 }
