@@ -1,0 +1,4 @@
+codeclashplatform.duckdns.org {
+    root * /srv
+    file_server
+}

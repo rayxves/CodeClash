@@ -5,16 +5,44 @@ services:
       dockerfile: api/Dockerfile
     container_name: codeclash-api
     restart: always
-    ports:
-      - "5070:8080"
+    expose:
+      - "8080"
     env_file:
       - ./api/.env
+    networks:
+      - codeclash-network
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
     container_name: codeclash-frontend
     restart: always
+    expose:
+      - "80"
+    networks:
+      - codeclash-network
+
+  caddy:
+    image: caddy:latest
+    container_name: codeclash-caddy
+    restart: always
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - codeclash-network
+    depends_on:
+      - frontend
+      - api
+
+networks:
+  codeclash-network:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
