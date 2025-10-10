@@ -75,6 +75,35 @@ export default function TreeView({
       );
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent('mousedown', {
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        bubbles: true,
+      });
+      handleMouseDown(mouseEvent as any);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent('mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        bubbles: true,
+      });
+      handleMouseMove(mouseEvent as any);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    handleMouseUp();
+  };
+
   return (
     <div className="bg-card/50 backdrop-blur-sm p-4 rounded-2xl border border-border">
       <div className="flex justify-between items-center mb-2">
@@ -107,13 +136,17 @@ export default function TreeView({
       </div>
       <div
         ref={containerRef}
-        className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border cursor-grab ${
+        className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border cursor-grab touch-none ${
           isDragging ? "cursor-grabbing" : ""
         }`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
       >
         {treeData && (
           <svg className="w-full h-full">
