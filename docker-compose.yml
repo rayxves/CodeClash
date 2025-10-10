@@ -11,6 +11,7 @@ services:
       - ./api/.env
     networks:
       - codeclash-network
+      - judge0_default
 
   frontend:
     build:
@@ -42,6 +43,8 @@ services:
 networks:
   codeclash-network:
     driver: bridge
+  judge0_default:
+    external: true
 
 volumes:
   caddy_data:
