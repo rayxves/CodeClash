@@ -1,6 +1,6 @@
 import { Maximize2, ZoomIn, ZoomOut } from "lucide-react";
 import type { CSSProperties } from "react";
-import { useCallback, useRef } from "react";
+import { useRef, useEffect } from "react";
 import {
   NODE_WIDTH,
   NODE_HEIGHT,
@@ -47,8 +47,7 @@ export default function TreeView({
   handleZoomIn,
   handleZoomOut,
 }: TreeViewProps) {
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const isTouchMoveRef = useRef(false);
+  const svgContainerRef = useRef<HTMLDivElement | null>(null);
 
   const renderConnections = () => {
     if (!treeData) return null;
@@ -79,49 +78,55 @@ export default function TreeView({
       );
   };
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      const touch = e.touches[0];
-      touchStartRef.current = { 
-        x: touch.clientX, 
-        y: touch.clientY,
-        time: Date.now()
-      };
-      isTouchMoveRef.current = false;
-      
-      handleMouseDown({ 
-        clientX: touch.clientX, 
-        clientY: touch.clientY 
-      });
-    }
-  }, [handleMouseDown]);
+  useEffect(() => {
+    const container = svgContainerRef.current;
+    if (!container) return;
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      const touch = e.touches[0];
-      
-      if (touchStartRef.current) {
-        const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
-        const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    let isTouching = false;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        isTouching = true;
         
-        if (deltaX > 5 || deltaY > 5) {
-          isTouchMoveRef.current = true;
-          e.preventDefault();
-        }
+        handleMouseDown({ 
+          clientX: touch.clientX, 
+          clientY: touch.clientY 
+        });
       }
-      
-      handleMouseMove({ 
-        clientX: touch.clientX, 
-        clientY: touch.clientY 
-      });
-    }
-  }, [handleMouseMove]);
+    };
 
-  const handleTouchEnd = useCallback(() => {
-    handleMouseUp();
-    touchStartRef.current = null;
-    isTouchMoveRef.current = false;
-  }, [handleMouseUp]);
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 1 && isTouching) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        
+        handleMouseMove({ 
+          clientX: touch.clientX, 
+          clientY: touch.clientY 
+        });
+      }
+    };
+
+    const onTouchEnd = () => {
+      if (isTouching) {
+        isTouching = false;
+        handleMouseUp();
+      }
+    };
+
+    container.addEventListener('touchstart', onTouchStart, { passive: false });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    container.addEventListener('touchend', onTouchEnd);
+    container.addEventListener('touchcancel', onTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
+      container.removeEventListener('touchend', onTouchEnd);
+      container.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [handleMouseDown, handleMouseMove, handleMouseUp]);
 
   return (
     <div className="bg-card/50 backdrop-blur-sm p-4 rounded-2xl border border-border">
@@ -154,23 +159,25 @@ export default function TreeView({
         </div>
       </div>
       <div
-        ref={containerRef}
+        ref={(el) => {
+          svgContainerRef.current = el;
+          if (containerRef) {
+            (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+          }
+        }}
         className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border select-none ${
           isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
         style={{ 
           touchAction: 'none',
           WebkitUserSelect: 'none',
+          WebkitTouchCallout: 'none',
           userSelect: 'none'
         }}
         onMouseDown={(e) => handleMouseDown(e as React.MouseEvent)}
         onMouseMove={(e) => handleMouseMove(e as React.MouseEvent)}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
       >
         {treeData && (
           <svg className="w-full h-full">
