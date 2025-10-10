@@ -21,9 +21,7 @@ public class TreeNavigationService : ITreeNavigationService
             return null;
         }
 
-        var baseIterator = (mode.ToLower() == "breadth")
-            ? (IIterator<CodeComponent>)new BreadthFirstIterator(root)
-            : new DepthFirstIterator(root);
+        IIterator<CodeComponent> baseIterator = root.CreateIterator(mode);
 
         while (baseIterator.HasNext())
         {

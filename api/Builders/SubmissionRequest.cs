@@ -17,14 +17,4 @@ public class SubmissionRequest
         ExpectedOutput = expectedOutput;
     }
 
-    public override bool Equals(object? obj)
-    {
-        return obj is SubmissionRequest other &&
-               Language == other.Language &&
-               LanguageId == other.LanguageId &&
-               Code == other.Code &&
-               Input == other.Input &&
-               ExpectedOutput == other.ExpectedOutput;
-    }
-
 }

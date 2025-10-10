@@ -10,7 +10,6 @@ public static class SubmissionChainFactory
         var chain = new CodeNotEmptyValidationHandler();
 
         chain
-            .SetNext(new CodeNotEmptyValidationHandler())
             .SetNext(new SendToJudge0Handler(judge0Service))
             .SetNext(new ProcessingHandler())
             .SetNext(new AcceptedHandler())
