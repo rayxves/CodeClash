@@ -41,6 +41,8 @@ export const useTreeNavigator = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+  const lastPositionRef = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
     if (language) {
       setIsLoading(true);
@@ -122,7 +124,7 @@ export const useTreeNavigator = () => {
       const message = getErrorMessage(error);
       addNotification("error", message);
     }
-  }, [language, navigationMode, selectedNode, handleNodeSelect]);
+  }, [language, navigationMode, selectedNode, handleNodeSelect, addNotification]);
 
   const handleReset = useCallback(() => {
     if (treeData) handleNodeSelect(treeData);
@@ -181,19 +183,19 @@ export const useTreeNavigator = () => {
   }, [treePositions]);
 
   const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.button === 0) {
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
-      }
+    (e: React.MouseEvent | { clientX: number; clientY: number }) => {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      lastPositionRef.current = { x: e.clientX, y: e.clientY };
     },
     [pan]
   );
 
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
+    (e: React.MouseEvent | { clientX: number; clientY: number }) => {
       if (isDragging) {
         setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+        lastPositionRef.current = { x: e.clientX, y: e.clientY };
       }
     },
     [isDragging, dragStart]

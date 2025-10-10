@@ -1,5 +1,6 @@
 import { Maximize2, ZoomIn, ZoomOut } from "lucide-react";
 import type { CSSProperties } from "react";
+import { useCallback, useRef } from "react";
 import {
   NODE_WIDTH,
   NODE_HEIGHT,
@@ -18,8 +19,8 @@ interface TreeViewProps {
   zoom: number;
   isDragging: boolean;
   gTransitionStyle: CSSProperties;
-  handleMouseDown: (e: React.MouseEvent) => void;
-  handleMouseMove: (e: React.MouseEvent) => void;
+  handleMouseDown: (e: React.MouseEvent | { clientX: number; clientY: number }) => void;
+  handleMouseMove: (e: React.MouseEvent | { clientX: number; clientY: number }) => void;
   handleMouseUp: () => void;
   handleNodeSelect: (node: CodeReference) => void;
   isNodeInSelectedPath: (nodeId: string) => boolean;
@@ -46,6 +47,9 @@ export default function TreeView({
   handleZoomIn,
   handleZoomOut,
 }: TreeViewProps) {
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const isTouchMoveRef = useRef(false);
+
   const renderConnections = () => {
     if (!treeData) return null;
     return treePositions
@@ -75,34 +79,49 @@ export default function TreeView({
       );
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 1) {
       const touch = e.touches[0];
-      const mouseEvent = new MouseEvent('mousedown', {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
-        bubbles: true,
+      touchStartRef.current = { 
+        x: touch.clientX, 
+        y: touch.clientY,
+        time: Date.now()
+      };
+      isTouchMoveRef.current = false;
+      
+      handleMouseDown({ 
+        clientX: touch.clientX, 
+        clientY: touch.clientY 
       });
-      handleMouseDown(mouseEvent as any);
     }
-  };
+  }, [handleMouseDown]);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 1) {
-      e.preventDefault();
       const touch = e.touches[0];
-      const mouseEvent = new MouseEvent('mousemove', {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
-        bubbles: true,
+      
+      if (touchStartRef.current) {
+        const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+        const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+        
+        if (deltaX > 5 || deltaY > 5) {
+          isTouchMoveRef.current = true;
+          e.preventDefault();
+        }
+      }
+      
+      handleMouseMove({ 
+        clientX: touch.clientX, 
+        clientY: touch.clientY 
       });
-      handleMouseMove(mouseEvent as any);
     }
-  };
+  }, [handleMouseMove]);
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     handleMouseUp();
-  };
+    touchStartRef.current = null;
+    isTouchMoveRef.current = false;
+  }, [handleMouseUp]);
 
   return (
     <div className="bg-card/50 backdrop-blur-sm p-4 rounded-2xl border border-border">
@@ -136,11 +155,16 @@ export default function TreeView({
       </div>
       <div
         ref={containerRef}
-        className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border cursor-grab touch-none ${
-          isDragging ? "cursor-grabbing" : ""
+        className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border select-none ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
+        style={{ 
+          touchAction: 'none',
+          WebkitUserSelect: 'none',
+          userSelect: 'none'
+        }}
+        onMouseDown={(e) => handleMouseDown(e as React.MouseEvent)}
+        onMouseMove={(e) => handleMouseMove(e as React.MouseEvent)}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onTouchStart={handleTouchStart}
@@ -150,6 +174,15 @@ export default function TreeView({
       >
         {treeData && (
           <svg className="w-full h-full">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
             <g
               transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
               style={gTransitionStyle}
