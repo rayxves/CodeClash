@@ -8,11 +8,6 @@ public class SubmissionBuilder : ISubmissionRequestBuilder
     private string? _input = null;
     private string? _expectedOutput = null;
 
-    public SubmissionBuilder()
-    {
-        Reset();
-    }
-
     public void Reset()
     {
         _code = string.Empty;
@@ -50,7 +45,6 @@ public class SubmissionBuilder : ISubmissionRequestBuilder
     public SubmissionRequest Build()
     {
         var request = new SubmissionRequest(_code, _languageName, _languageId, _input, _expectedOutput);
-        Reset();
         return request;
     }
 }

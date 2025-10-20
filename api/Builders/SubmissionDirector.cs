@@ -14,6 +14,7 @@ public class SubmissionDirector
 
     public SubmissionRequest ConstructSimpleExecutionRequest(string code, Language language)
     {
+        _builder.Reset();
         _builder
             .WithCode(code)
             .WithInput(null)
@@ -25,6 +26,7 @@ public class SubmissionDirector
 
     public SubmissionRequest ConstructProblemTestRequest(string code, Language language, TestCase testCase)
     {
+        _builder.Reset();
         _builder
             .WithCode(code)
             .WithLanguage(language.Name, language.Id)
