@@ -1,10 +1,9 @@
 using Builders;
 using Dtos;
 using Interfaces;
-using Mappers;
 using Models;
-using Strategies;
 using SubmissionChain;
+using Adapters;
 
 namespace Services.Extensions;
 
@@ -12,13 +11,16 @@ public class TestExecutorService : ITestExecutorService
 {
     private readonly SubmissionDirector _submissionDirector;
     private readonly ISubmissionHandler _submissionChain;
-    private readonly IUserProblemSolutionServices _solutionService;
+    private readonly IJudge0ResponseAdapter _adapter;
 
-    public TestExecutorService(SubmissionDirector submissionDirector, ISubmissionHandler submissionChain, IUserProblemSolutionServices solutionService)
+    public TestExecutorService(
+        SubmissionDirector submissionDirector,
+        ISubmissionHandler submissionChain,
+        IJudge0ResponseAdapter adapter)
     {
         _submissionDirector = submissionDirector;
         _submissionChain = submissionChain;
-        _solutionService = solutionService;
+        _adapter = adapter;
     }
 
     public async Task<List<TestCaseResultDto>> ExecuteTestsAsync(SubmissionStrategyInput input, IEnumerable<TestCase> testCases)
@@ -31,16 +33,23 @@ public class TestExecutorService : ITestExecutorService
             var context = new SubmissionContext(request);
             await _submissionChain.HandleAsync(context);
 
-            results.Add(new TestCaseResultDto
+            if (context.Response != null)
             {
-                TestCaseId = testCase.Id,
-                Status = context.Response?.Status?.Description ?? "Error",
-                ExpectedOutput = context.Request?.ExpectedOutput ?? "",
-                Output = context.Response?.Stdout ?? context.Response?.Stderr ?? context.ErrorMessage ?? "",
-                CompileOutput = context.Response?.CompileOutput ?? context.Response?.Message ?? "Ocorreu um erro durante a execução.",
-                Passed = context.Response?.Status?.Description == "Accepted",
-                Time = context.Response?.Time ?? "0"
-            });
+                results.Add(_adapter.AdaptToTestResult(context.Response, testCase));
+            }
+            else
+            {
+                results.Add(new TestCaseResultDto
+                {
+                    TestCaseId = testCase.Id,
+                    Status = "Error",
+                    ExpectedOutput = testCase.ExpectedOutput,
+                    Output = context.ErrorMessage ?? "Erro desconhecido",
+                    CompileOutput = context.ErrorMessage ?? "Ocorreu um erro durante a execução.",
+                    Passed = false,
+                    Time = "0"
+                });
+            }
         }
 
         return results;
