@@ -2,7 +2,7 @@ using Builders;
 using Models;
 using Xunit;
 
-namespace IntegrationTests.Patterns;
+namespace UnitTests.Patterns;
 
 public class BuilderPatternTests
 {

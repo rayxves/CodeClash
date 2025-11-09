@@ -3,7 +3,8 @@ using Iterators;
 using Models;
 using Xunit;
 
-namespace IntegrationTests.Patterns;
+
+namespace UnitTests.Patterns;
 
 public class IteratorPatternTests
 {
@@ -29,8 +30,10 @@ public class IteratorPatternTests
         {
             order.Add(iterator.Next().Name);
         }
-        Assert.Equal("Root", order[0]);
-        Assert.Equal("Category1", order[1]);
+
+        var expectedOrder = new List<string> { "Root", "Category1", "Algorithm2", "Algorithm1" };
+        Assert.Equal(expectedOrder.Count, order.Count);
+        Assert.Equal(expectedOrder, order);
     }
 
     [Fact]
@@ -44,6 +47,6 @@ public class IteratorPatternTests
             iterator.Next();
             count++;
         }
-        Assert.True(count >= 3);
+        Assert.Equal(4, count);
     }
 }
