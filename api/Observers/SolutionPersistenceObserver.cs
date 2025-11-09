@@ -1,26 +1,21 @@
-using Data;
 using Dtos;
-using Microsoft.EntityFrameworkCore;
+using Interfaces;
 using Services.Extensions;
 
 namespace Observers;
 
 public class SolutionPersistenceObserver : IObserver
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IUserProblemSolutionRepository _solutionRepository;
 
-    public SolutionPersistenceObserver(ApplicationDbContext context)
+    public SolutionPersistenceObserver(IUserProblemSolutionRepository solutionRepository)
     {
-
-        _context = context;
-
+        _solutionRepository = solutionRepository;
     }
 
     public async Task UpdateAsync(SubmissionSuccessContext context)
     {
-        var solution = await _context.UserProblemSolutions
-           .FirstOrDefaultAsync(s => s.Id == context.Solution.Id);
-
+        var solution = await _solutionRepository.GetByIdAsync(context.Solution.Id);
         if (solution == null) return;
 
         int points = ProblemHelperServices.GetPointsForDifficulty(context.Problem.Difficulty);
@@ -29,9 +24,7 @@ public class SolutionPersistenceObserver : IObserver
         solution.PointsEarned = points;
         solution.MessageOutput = "Todos os testes passaram.";
 
-        _context.UserProblemSolutions.Update(solution);
-        await _context.SaveChangesAsync();
+        await _solutionRepository.UpdateAsync(solution);
+        await _solutionRepository.SaveChangesAsync();
     }
-
-
 }

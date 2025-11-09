@@ -1,4 +1,3 @@
-using Data;
 using Dtos;
 using Interfaces;
 using Mappers;
@@ -10,20 +9,20 @@ namespace Services;
 
 public class UserServices : IUserServices
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IUserRepository _repository;
     private readonly UserManager<User> _userManager;
     private readonly TokenServices _tokenServices;
 
-    public UserServices(ApplicationDbContext context, UserManager<User> userManager, TokenServices tokenServices)
+    public UserServices(IUserRepository repository, UserManager<User> userManager, TokenServices tokenServices)
     {
+        _repository = repository;
         _userManager = userManager;
-        _context = context;
         _tokenServices = tokenServices;
     }
 
     public async Task<UserDto> GetUserByUsernameAsync(string username)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+        var user = await _repository.GetByUsernameAsync(username);
         if (user == null) throw new InvalidOperationException($"User with username '{username}' not found.");
 
         var token = _tokenServices.GenerateToken(user);
@@ -32,35 +31,36 @@ public class UserServices : IUserServices
 
     public async Task<object> GetCompleteUserProfileAsync(string username)
     {
-        var result = await _context.Users
-            .Where(u => u.UserName.ToLower() == username.ToLower())
-            .Select(u => new {
-                User = new { u.Id, u.UserName, u.Email, u.TotalPoints },
-                Solutions = u.UserProblemSolutions
-                    .Select(ups => new {
-                        ups.Id,
-                        ups.ProblemId,
-                        ups.Language,
-                        ups.Code,
-                        ups.IsApproved,
-                        ups.PointsEarned,
-                        ups.MessageOutput,
-                        ups.SolvedAt,
-                        Problem = new {
-                            ups.Problem.Id,
-                            ups.Problem.Title,
-                            ups.Problem.Difficulty,
-                            ups.Problem.Category
-                        }
-                    })
-                    .OrderByDescending(ups => ups.SolvedAt)
-                    .ToList()
-            })
-            .FirstOrDefaultAsync();
+        var user = await _repository.GetCompleteProfileAsync(username);
 
-        if (result == null) throw new InvalidOperationException($"User with username '{username}' not found.");
+        if (user == null)
+            throw new InvalidOperationException($"User with username '{username}' not found.");
 
-        return result;
+        return new
+        {
+            User = new { user.Id, user.UserName, user.Email, user.TotalPoints },
+            Solutions = user.UserProblemSolutions
+                .Select(ups => new
+                {
+                    ups.Id,
+                    ups.ProblemId,
+                    ups.Language,
+                    ups.Code,
+                    ups.IsApproved,
+                    ups.PointsEarned,
+                    ups.MessageOutput,
+                    ups.SolvedAt,
+                    Problem = new
+                    {
+                        ups.Problem.Id,
+                        ups.Problem.Title,
+                        ups.Problem.Difficulty,
+                        ups.Problem.Category
+                    }
+                })
+                .OrderByDescending(ups => ups.SolvedAt)
+                .ToList()
+        };
     }
 
     public async Task<UserDto> LoginUserAsync(UserLoginDto loginDto)
@@ -90,11 +90,11 @@ public class UserServices : IUserServices
         var result = await _userManager.CreateAsync(user, registerDto.Password);
         if (!result.Succeeded) throw new InvalidOperationException("Erro ao tentar criar o usuário.");
 
-        await _context.SaveChangesAsync();
+        await _repository.SaveChangesAsync();
         var token = _tokenServices.GenerateToken(user);
 
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
+        await _repository.UpdateAsync(user);
+        await _repository.SaveChangesAsync();
 
         return user.ToUserDto(token);
     }

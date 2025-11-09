@@ -1,4 +1,3 @@
-using Data;
 using Dtos;
 using Interfaces;
 using Mappers;
@@ -6,61 +5,71 @@ using Observers;
 using Strategies;
 using Strategies.Enums;
 
-namespace Services
+namespace Services;
+
+public class SubmissionServices : ISubmissionServices
 {
-    public class SubmissionServices : ISubmissionServices
+    private readonly ISubmissionStrategySelector _strategySelector;
+    private readonly IUserProblemSolutionServices _solutionService;
+    private readonly ISubject _submissionPublisher;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public SubmissionServices(
+        ISubmissionStrategySelector strategySelector,
+        IUserProblemSolutionServices solutionService,
+        ISubject submissionPublisher,
+        IUnitOfWork unitOfWork)
     {
-        private readonly ISubmissionStrategySelector _strategySelector;
-        private readonly IUserProblemSolutionServices _solutionService;
-        private readonly ISubject _submissionPublisher;
-        private readonly ApplicationDbContext _context;
+        _strategySelector = strategySelector;
+        _solutionService = solutionService;
+        _submissionPublisher = submissionPublisher;
+        _unitOfWork = unitOfWork;
+    }
 
-        public SubmissionServices(
-            ISubmissionStrategySelector strategySelector,
-            IUserProblemSolutionServices solutionService,
-            ISubject submissionPublisher,
-            ApplicationDbContext context)
+    public async Task<SubmissionResultDto> ProcessSubmissionAsync(SubmissionStrategyInput input)
+    {
+        var strategy = _strategySelector.SelectStrategy(input);
+
+        var initialSolution = input.ProblemId.HasValue
+            ? await _solutionService.CreateInitialSubmissionAsync(input.UserId, input.ProblemId.Value, input.Language.Name, input.SourceCode)
+            : null;
+
+        var resultDto = await strategy.HandleAsync(input);
+
+        if (initialSolution != null)
         {
-            _strategySelector = strategySelector;
-            _solutionService = solutionService;
-            _submissionPublisher = submissionPublisher;
-            _context = context;
-        }
+            await _unitOfWork.BeginTransactionAsync();
 
-        public async Task<SubmissionResultDto> ProcessSubmissionAsync(SubmissionStrategyInput input)
-        {
-            var strategy = _strategySelector.SelectStrategy(input);
-
-
-            var initialSolution = input.ProblemId.HasValue
-                ? await _solutionService.CreateInitialSubmissionAsync(input.UserId, input.ProblemId.Value, input.Language.Name, input.SourceCode)
-                : null;
-
-            var resultDto = await strategy.HandleAsync(input);
-
-            if (initialSolution != null)
+            try
             {
-
                 if (resultDto.OverallStatus == SubmissionStatus.Accepted && initialSolution.PointsEarned == 0)
                 {
+                    var problem = await _unitOfWork.Problems.GetByIdAsync(input.ProblemId!.Value);
+
                     await _submissionPublisher.NotifyAsync(new SubmissionSuccessContext
                     {
                         UserId = input.UserId,
-                        Problem = await _context.Problems.FindAsync(input.ProblemId.Value),
+                        Problem = problem!,
                         Solution = initialSolution,
                         ResultDto = resultDto
                     });
 
-                    await _context.SaveChangesAsync();
+                    await _unitOfWork.CommitTransactionAsync();
                 }
                 else if (resultDto.OverallStatus != SubmissionStatus.Accepted && !initialSolution.IsApproved)
                 {
                     initialSolution.MessageOutput = "Um ou mais testes falharam.";
                     await _solutionService.UpdateUserProblemSolutionAsync(initialSolution.ToDto());
+                    await _unitOfWork.CommitTransactionAsync();
                 }
             }
-            
-            return resultDto;
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
+
+        return resultDto;
     }
 }

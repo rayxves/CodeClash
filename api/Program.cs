@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Models;
 using Newtonsoft.Json;
 using Observers;
+using Repositories;
 using Services;
 using Services.Extensions;
 using Strategies;
@@ -32,9 +33,7 @@ builder.Services.AddControllers()
     {
         opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-
     });
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -121,7 +120,11 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddHttpClient();
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ICodeReferenceRepository, CodeReferenceRepository>();
+builder.Services.AddScoped<IProblemRepository, ProblemRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserProblemSolutionRepository, UserProblemSolutionRepository>();
 builder.Services.AddScoped<IJudge0Services, Judge0Services>();
 builder.Services.AddScoped<ISubmissionFacade, SubmissionFacade>();
 builder.Services.AddScoped<ICodeReferenceServices, CodeReferenceService>();

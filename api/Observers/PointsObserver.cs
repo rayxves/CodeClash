@@ -1,31 +1,26 @@
-using Data;
 using Dtos;
 using Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Services.Extensions;
 
 namespace Observers;
 
 public class PointsObserver : IObserver
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IUserRepository _userRepository;
 
-    public PointsObserver(ApplicationDbContext context)
+    public PointsObserver(IUserRepository userRepository)
     {
-        _context = context;
+        _userRepository = userRepository;
     }
-
 
     public async Task UpdateAsync(SubmissionSuccessContext context)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == context.UserId);
+        var user = await _userRepository.GetByIdAsync(context.UserId);
         if (user == null) return;
 
         int points = ProblemHelperServices.GetPointsForDifficulty(context.Problem.Difficulty);
         user.TotalPoints += points;
 
-        _context.Users.Update(user);
-
+        await _userRepository.UpdateAsync(user);
     }
-
 }

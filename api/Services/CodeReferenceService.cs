@@ -1,9 +1,7 @@
 using Composites;
-using Data;
 using Dtos;
 using Interfaces;
 using Mappers;
-using Microsoft.EntityFrameworkCore;
 using Models;
 using Services.Extensions;
 
@@ -11,11 +9,11 @@ namespace Services;
 
 public class CodeReferenceService : ICodeReferenceServices
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ICodeReferenceRepository _repository;
 
-    public CodeReferenceService(ApplicationDbContext context)
+    public CodeReferenceService(ICodeReferenceRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
     public async Task<CodeReferenceEntity> AddReferenceAsync(string name, string category, string language, string code, string description, int? parentId)
@@ -30,31 +28,19 @@ public class CodeReferenceService : ICodeReferenceServices
             ParentId = parentId
         };
 
-        _context.CodeReferences.Add(entity);
-        await _context.SaveChangesAsync();
+        await _repository.AddAsync(entity);
+        await _repository.SaveChangesAsync();
         return entity;
     }
 
     public async Task<IEnumerable<object>> SearchAsync(string? language = null, string? category = null, string? name = null)
     {
-        var query = _context.CodeReferences.AsQueryable();
+        var matchedEntities = await _repository.SearchAsync(language, category, name);
+        var matchedIds = matchedEntities.Select(e => e.Id).ToList();
 
-        if (!string.IsNullOrWhiteSpace(language))
-            query = query.Where(e => e.Language.ToLower() == language.ToLower());
-
-        if (!string.IsNullOrWhiteSpace(category))
-            query = query.Where(e => e.Category.ToLower() == category.ToLower());
-
-        if (!string.IsNullOrWhiteSpace(name))
-        {
-            var lowerName = name.ToLower().Trim();
-            query = query.Where(e => EF.Functions.Like(e.Name.ToLower(), $"%{lowerName}%"));
-        }
-
-        var matchedIds = await query.Select(e => e.Id).ToListAsync();
         if (!matchedIds.Any()) return Enumerable.Empty<object>();
 
-        var allResults = await GetAllDescendantsAsync(matchedIds);
+        var allResults = await _repository.GetAllDescendantsAsync(matchedIds);
 
         return allResults.Select(e => new
         {
@@ -73,35 +59,31 @@ public class CodeReferenceService : ICodeReferenceServices
         var concepts = userCodeAttempt.ExtractCodeConcepts();
         if (!concepts.Any()) return Enumerable.Empty<object>();
 
-        var potentialMatches = _context.CodeReferences
-        .Where(e => !string.IsNullOrEmpty(e.Code))
-        .AsEnumerable()
-        .Where(e => concepts.Any(c =>
-            e.Name.Contains(c, StringComparison.OrdinalIgnoreCase) ||
-            e.Code.Contains(c, StringComparison.OrdinalIgnoreCase) ||
-            e.Description.Contains(c, StringComparison.OrdinalIgnoreCase) ||
-            e.Category.Contains(c, StringComparison.OrdinalIgnoreCase)))
-        .ToList();
+        var allEntities = await _repository.GetAllAsync();
 
+        var potentialMatches = allEntities
+            .Where(e => !string.IsNullOrEmpty(e.Code))
+            .Where(e => concepts.Any(c =>
+                e.Name.Contains(c, StringComparison.OrdinalIgnoreCase) ||
+                e.Code.Contains(c, StringComparison.OrdinalIgnoreCase) ||
+                e.Description.Contains(c, StringComparison.OrdinalIgnoreCase) ||
+                e.Category.Contains(c, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
 
         var topMatches = potentialMatches.GetTopMatches(concepts, take);
 
         return topMatches.Select(e => new { e.Name, e.Category, e.Language, e.Code, e.Description });
     }
 
-
     public async Task<CodeComponent?> BuildTreeForLanguageAsync(string language)
     {
-        var allEntities = await _context.CodeReferences
-            .Where(e => e.Language.ToLower() == language.ToLower())
-            .AsNoTracking() 
-            .ToListAsync();
+        var allEntities = await _repository.GetByLanguageAsync(language);
 
         if (!allEntities.Any()) return null;
 
         var virtualRoot = new CodeCategory(new CodeReferenceEntity
         {
-            Id = 0, 
+            Id = 0,
             Name = language,
             Language = language,
             Description = $"Conteúdo principal para a linguagem {language}"
@@ -146,50 +128,25 @@ public class CodeReferenceService : ICodeReferenceServices
 
         return dto;
     }
+
     public async Task<object> GetByIdAsync(int id)
     {
-        var entity = await _context.CodeReferences
-            .Where(e => e.Id == id)
-            .Select(e => new { e.Name, e.Category, e.Language, e.Code, e.Description })
-            .FirstOrDefaultAsync();
+        var entity = await _repository.GetByIdAsync(id);
 
         if (entity == null)
             throw new KeyNotFoundException($"Code reference with ID '{id}' not found.");
 
-        return entity;
+        return new { entity.Name, entity.Category, entity.Language, entity.Code, entity.Description };
     }
 
     public async Task<List<CodeReferenceEntity>> GetAllDescendantsAsync(List<int> parentIds)
     {
-        if (!parentIds.Any()) return new List<CodeReferenceEntity>();
-
-        var allEntities = await _context.CodeReferences.ToListAsync();
-        var result = new List<CodeReferenceEntity>();
-        var queue = new Queue<int>(parentIds);
-
-        while (queue.Any())
-        {
-            var currentId = queue.Dequeue();
-            var children = allEntities.Where(e => e.ParentId == currentId).ToList();
-
-            foreach (var child in children)
-            {
-                result.Add(child);
-                queue.Enqueue(child.Id);
-            }
-        }
-
-        result.AddRange(allEntities.Where(e => parentIds.Contains(e.Id)));
-
-        return result.Distinct().ToList();
+        return await _repository.GetAllDescendantsAsync(parentIds);
     }
 
     public async Task<CategoryViewDto?> GetCategoryViewAsync(string language, string? categoryName = null)
     {
-        var allEntities = await _context.CodeReferences
-            .Where(e => e.Language.ToLower() == language.ToLower())
-            .AsNoTracking()
-            .ToListAsync();
+        var allEntities = await _repository.GetByLanguageAsync(language);
 
         if (!allEntities.Any()) return null;
 
@@ -238,5 +195,4 @@ public class CodeReferenceService : ICodeReferenceServices
             })
             .ToList();
     }
-
 }
