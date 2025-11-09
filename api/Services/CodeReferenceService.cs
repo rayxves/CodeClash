@@ -10,10 +10,12 @@ namespace Services;
 public class CodeReferenceService : ICodeReferenceServices
 {
     private readonly ICodeReferenceRepository _repository;
+    private readonly ICodeComponentFactory _componentFactory;
 
-    public CodeReferenceService(ICodeReferenceRepository repository)
+    public CodeReferenceService(ICodeReferenceRepository repository, ICodeComponentFactory componentFactory)
     {
         _repository = repository;
+        _componentFactory = componentFactory;
     }
 
     public async Task<CodeReferenceEntity> AddReferenceAsync(string name, string category, string language, string code, string description, int? parentId)
@@ -91,7 +93,7 @@ public class CodeReferenceService : ICodeReferenceServices
 
         var map = allEntities.ToDictionary(
             e => e.Id,
-            e => string.IsNullOrEmpty(e.Code) ? (CodeComponent)new CodeCategory(e) : new CodeAlgorithm(e)
+            e => _componentFactory.CreateComponent(e)
         );
 
         foreach (var entity in allEntities)

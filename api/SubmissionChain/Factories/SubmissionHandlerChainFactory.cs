@@ -3,9 +3,9 @@ using SubmissionChain.Handlers;
 
 namespace SubmissionChain;
 
-public static class SubmissionChainFactory
+public class SubmissionChainFactory : ISubmissionChainFactory
 {
-    public static ISubmissionHandler Create(IJudge0Services judge0Service)
+    public ISubmissionHandler Create(IJudge0Services judge0Service)
     {
         var chain = new CodeNotEmptyValidationHandler();
 
@@ -13,10 +13,10 @@ public static class SubmissionChainFactory
             .SetNext(new SendToJudge0Handler(judge0Service))
             .SetNext(new ProcessingHandler())
             .SetNext(new AcceptedHandler())
-            .SetNext(new WrongAnswerHandler())         
+            .SetNext(new WrongAnswerHandler())
             .SetNext(new CompilationErrorHandler())
             .SetNext(new TimeoutHandler())
-            .SetNext(new MemoryLimitExceededHandler())  
+            .SetNext(new MemoryLimitExceededHandler())
             .SetNext(new RuntimeErrorHandler())
             .SetNext(new UnprocessableEntityHandler());
 

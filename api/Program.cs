@@ -19,6 +19,9 @@ using Services;
 using Services.Extensions;
 using Strategies;
 using SubmissionChain;
+using Factories;
+using Adapters;
+using Composites;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,6 +123,8 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddHttpClient();
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
+builder.Services.AddScoped<ICodeComponentFactory, CodeComponentFactory>();
+builder.Services.AddScoped<IJudge0ResponseAdapter, Judge0ResponseAdapter>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICodeReferenceRepository, CodeReferenceRepository>();
 builder.Services.AddScoped<IProblemRepository, ProblemRepository>();
@@ -146,10 +151,12 @@ builder.Services.AddScoped<ISubmissionStrategy, SimpleExecutionStrategy>();
 builder.Services.AddScoped<SubmissionDirector>();
 builder.Services.AddScoped<ISubmissionServices, SubmissionServices>();
 builder.Services.AddScoped<ITreeNavigationService, TreeNavigationService>();
+builder.Services.AddScoped<SubmissionChainFactory>();
 builder.Services.AddScoped<ISubmissionHandler>(sp =>
 {
     var judge0Service = sp.GetRequiredService<IJudge0Services>();
-    return SubmissionChainFactory.Create(judge0Service);
+    var factory = sp.GetRequiredService<SubmissionChainFactory>();
+    return factory.Create(judge0Service);
 });
 
 var app = builder.Build();
@@ -168,7 +175,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        await DbSeeder.SeedCodeReferenceAsync(context);
+        var factory = services.GetRequiredService<ICodeComponentFactory>();
+        await DbSeeder.SeedCodeReferenceAsync(context, factory);
     }
     catch (Exception ex)
     {

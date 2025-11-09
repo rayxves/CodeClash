@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Composites;
 using Dtos;
+using Factories;
 
 namespace Services;
 
 public static class DbSeeder
 {
-    public static async Task SeedCodeReferenceAsync(ApplicationDbContext context)
+    public static async Task SeedCodeReferenceAsync(ApplicationDbContext context, ICodeComponentFactory factory)
     {
         if (await context.CodeReferences.AnyAsync())
         {
@@ -29,10 +30,7 @@ public static class DbSeeder
 
         foreach (var dto in seedData)
         {
-            CodeComponent component = string.IsNullOrEmpty(dto.Code)
-                ? new CodeCategory(dto)
-                : new CodeAlgorithm(dto);
-
+            var component = factory.CreateComponent(dto);
             componentMap.Add(dto.Id, (component, dto.ParentId));
         }
 

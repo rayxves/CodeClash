@@ -14,10 +14,14 @@ public abstract class SubmissionHandler : ISubmissionHandler
 
     public async Task HandleAsync(SubmissionContext context)
     {
+        await PreProcessAsync(context);
+
         if (await CanHandleAsync(context))
         {
             await ProcessAsync(context);
         }
+
+        await PostProcessAsync(context);
 
         if (!context.IsCompleted && _next is not null)
         {
@@ -25,6 +29,17 @@ public abstract class SubmissionHandler : ISubmissionHandler
         }
     }
 
+    protected virtual Task PreProcessAsync(SubmissionContext context)
+    {
+        return Task.CompletedTask;
+    }
+
     protected abstract Task<bool> CanHandleAsync(SubmissionContext context);
+
     protected abstract Task ProcessAsync(SubmissionContext context);
+
+    protected virtual Task PostProcessAsync(SubmissionContext context)
+    {
+        return Task.CompletedTask;
+    }
 }
