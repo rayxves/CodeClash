@@ -1,4 +1,3 @@
-
 using Models;
 
 namespace Builders;
@@ -15,24 +14,22 @@ public class SubmissionDirector
     public SubmissionRequest ConstructSimpleExecutionRequest(string code, Language language)
     {
         _builder.Reset();
-        _builder
+        return _builder
             .WithCode(code)
             .WithInput(null)
             .WithExpectedOutput(null)
-            .WithLanguage(language.Name, language.Id);
-
-        return _builder.Build();
+            .WithLanguage(language.Name, language.Id)
+            .Build();
     }
 
     public SubmissionRequest ConstructProblemTestRequest(string code, Language language, TestCase testCase)
     {
         _builder.Reset();
-        _builder
+        return _builder
             .WithCode(code)
             .WithLanguage(language.Name, language.Id)
             .WithInput(testCase.Input)
-            .WithExpectedOutput(testCase.ExpectedOutput);
-
-        return _builder.Build();
+            .WithExpectedOutput(testCase.ExpectedOutput)
+            .Build();
     }
 }
