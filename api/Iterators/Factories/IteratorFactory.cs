@@ -2,11 +2,6 @@ using Composites;
 
 namespace Iterators;
 
-public interface IIteratorFactory
-{
-    IIterator<CodeComponent> CreateIterator(CodeComponent root, string mode);
-}
-
 public class IteratorFactory : IIteratorFactory
 {
     public IIterator<CodeComponent> CreateIterator(CodeComponent root, string mode)
