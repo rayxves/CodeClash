@@ -1,8 +1,7 @@
-using Composites;
 using Dtos;
 using Models;
 
-namespace Factories;
+namespace Composites;
 
 public class CodeComponentFactory : ICodeComponentFactory
 {

@@ -19,7 +19,6 @@ using Services;
 using Services.Extensions;
 using Strategies;
 using SubmissionChain;
-using Factories;
 using Adapters;
 using Composites;
 
@@ -155,7 +154,7 @@ builder.Services.AddScoped<SubmissionChainFactory>();
 builder.Services.AddScoped<ISubmissionHandler>(sp =>
 {
     var judge0Service = sp.GetRequiredService<IJudge0Services>();
-    var factory = sp.GetRequiredService<SubmissionChainFactory>();
+    var factory = sp.GetRequiredService<ISubmissionChainFactory>();
     return factory.Create(judge0Service);
 });
 
