@@ -82,7 +82,7 @@ export default function EnhancedSubmissionPage() {
       return;
     }
 
-    if (!code.trim() || code === "// Write your code here") {
+    if (!code.trim() || code === "// Write your code here\n") {
       addNotification("error", "O código não pode estar vazio.");
       return;
     }
@@ -151,7 +151,7 @@ export default function EnhancedSubmissionPage() {
   };
 
   const handleGetRecommendations = () => {
-    if (!code.trim() || code === "// Write your code here") {
+    if (!code.trim() || code === "// Write your code here\n") {
       addNotification(
         "error",
         "O código não pode estar vazio para obter recomendações."
@@ -273,7 +273,7 @@ export default function EnhancedSubmissionPage() {
 
                 <button
                   onClick={handleGetRecommendations}
-                  disabled={!code.trim() || code === "// Write your code here"}
+                  disabled={!code.trim() || code === "// Write your code here\n"}
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary hover:bg-secondary/90 disabled:bg-muted disabled:text-muted-foreground text-secondary-foreground rounded-lg font-medium transition-all hover-lift disabled:cursor-not-allowed"
                 >
                   <Stars className="w-4 h-4" /> Ver Códigos Similares
