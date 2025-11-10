@@ -21,33 +21,45 @@ public class TreeNavigationService : ITreeNavigationService
             return null;
         }
 
-        IIterator<CodeComponent> baseIterator = root.CreateIterator(mode);
+        Predicate<CodeComponent> filter;
+        if (mode.ToLower() == "algorithms")
+        {
+            filter = (component) => !component.IsComposite();
+        }
+        else
+        {
+            filter = (component) => true;
+        }
+
+
+        IIterator<CodeComponent> baseIterator;
+        if (mode.ToLower() == "breadth")
+        {
+            baseIterator = new BreadthFirstIterator(root);
+        }
+        else
+        {
+            baseIterator = new DepthFirstIterator(root);
+        }
 
         while (baseIterator.HasNext())
         {
-            if (baseIterator.Next().Id == currentId)
+            var node = baseIterator.Next();
+            if (node.Id == currentId)
             {
                 break;
             }
         }
 
-        if (mode.ToLower() == "algorithms")
+        while (baseIterator.HasNext())
         {
-            while (baseIterator.HasNext())
+            var nextNode = baseIterator.Next();
+
+            if (filter(nextNode))
             {
-                var nextNode = baseIterator.Next();
-                if (!nextNode.IsComposite())
-                {
-                    return nextNode;
-                }
+                return nextNode;
             }
-        }
-        else
-        {
-            if (baseIterator.HasNext())
-            {
-                return baseIterator.Next();
-            }
+
         }
 
         return null;
