@@ -48,6 +48,7 @@ export default function TreeView({
   handleZoomOut,
 }: TreeViewProps) {
   const svgContainerRef = useRef<HTMLDivElement | null>(null);
+  const lastTouchDistanceRef = useRef<number | null>(null);
 
   const renderConnections = () => {
     if (!treeData) return null;
@@ -69,9 +70,10 @@ export default function TreeView({
                 pos.y + NODE_HEIGHT + VERTICAL_SPACING / 2
               } H ${childPos.x + NODE_WIDTH / 2} V ${childPos.y}`}
               stroke={isHighlighted ? "#3b82f6" : "#475569"}
-              strokeWidth={isHighlighted ? 4 : 2}
+              strokeWidth={isHighlighted ? 3 : 2}
               fill="none"
               className="transition-all duration-300"
+              style={{ pointerEvents: 'none' }}
             />
           );
         })
@@ -82,43 +84,63 @@ export default function TreeView({
     const container = svgContainerRef.current;
     if (!container) return;
 
-    let isTouching = false;
+    const getTouchDistance = (touches: TouchList) => {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
 
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
+        e.preventDefault();
         const touch = e.touches[0];
-        isTouching = true;
-        
         handleMouseDown({ 
           clientX: touch.clientX, 
           clientY: touch.clientY 
         });
+      } else if (e.touches.length === 2) {
+        e.preventDefault();
+        lastTouchDistanceRef.current = getTouchDistance(e.touches);
       }
     };
 
     const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length === 1 && isTouching) {
-        e.preventDefault();
+      e.preventDefault();
+      
+      if (e.touches.length === 1) {
         const touch = e.touches[0];
-        
         handleMouseMove({ 
           clientX: touch.clientX, 
           clientY: touch.clientY 
         });
+      } else if (e.touches.length === 2 && lastTouchDistanceRef.current) {
+        const newDistance = getTouchDistance(e.touches);
+        const delta = newDistance - lastTouchDistanceRef.current;
+        
+        if (Math.abs(delta) > 10) {
+          if (delta > 0) {
+            handleZoomIn();
+          } else {
+            handleZoomOut();
+          }
+          lastTouchDistanceRef.current = newDistance;
+        }
       }
     };
 
-    const onTouchEnd = () => {
-      if (isTouching) {
-        isTouching = false;
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length === 0) {
         handleMouseUp();
+        lastTouchDistanceRef.current = null;
+      } else if (e.touches.length === 1) {
+        lastTouchDistanceRef.current = null;
       }
     };
 
     container.addEventListener('touchstart', onTouchStart, { passive: false });
     container.addEventListener('touchmove', onTouchMove, { passive: false });
-    container.addEventListener('touchend', onTouchEnd);
-    container.addEventListener('touchcancel', onTouchEnd);
+    container.addEventListener('touchend', onTouchEnd, { passive: false });
+    container.addEventListener('touchcancel', onTouchEnd, { passive: false });
 
     return () => {
       container.removeEventListener('touchstart', onTouchStart);
@@ -126,35 +148,35 @@ export default function TreeView({
       container.removeEventListener('touchend', onTouchEnd);
       container.removeEventListener('touchcancel', onTouchEnd);
     };
-  }, [handleMouseDown, handleMouseMove, handleMouseUp]);
+  }, [handleMouseDown, handleMouseMove, handleMouseUp, handleZoomIn, handleZoomOut]);
 
   return (
-    <div className="bg-card/50 backdrop-blur-sm p-4 rounded-2xl border border-border">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-muted-foreground">
-          Clique nos nós para explorar • Arraste para mover
+    <div className="bg-card/50 backdrop-blur-sm p-2 sm:p-4 rounded-2xl border border-border">
+      <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
+        <span className="text-xs sm:text-sm text-muted-foreground">
+          Toque nos nós • Arraste para mover • Pinça para zoom
         </span>
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2">
           <button
             onClick={handleZoomFit}
-            className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors"
+            className="p-1.5 sm:p-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors touch-manipulation"
             aria-label="Ajustar à tela"
           >
-            <Maximize2 className="w-4 h-4" />
+            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={handleZoomIn}
-            className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors"
+            className="p-1.5 sm:p-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors touch-manipulation"
             aria-label="Zoom In"
           >
-            <ZoomIn className="w-4 h-4" />
+            <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="p-2 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors"
+            className="p-1.5 sm:p-2 rounded-lg bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors touch-manipulation"
             aria-label="Zoom Out"
           >
-            <ZoomOut className="w-4 h-4" />
+            <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>
@@ -165,16 +187,20 @@ export default function TreeView({
             (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
           }
         }}
-        className={`w-full h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border select-none ${
+        className={`w-full h-[50vh] sm:h-[65vh] overflow-hidden rounded-xl bg-background border-2 border-border select-none ${
           isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
         style={{ 
           touchAction: 'none',
           WebkitUserSelect: 'none',
           WebkitTouchCallout: 'none',
-          userSelect: 'none'
+          userSelect: 'none',
+          WebkitTapHighlightColor: 'transparent'
         }}
-        onMouseDown={(e) => handleMouseDown(e as React.MouseEvent)}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          handleMouseDown(e as React.MouseEvent);
+        }}
         onMouseMove={(e) => handleMouseMove(e as React.MouseEvent)}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}

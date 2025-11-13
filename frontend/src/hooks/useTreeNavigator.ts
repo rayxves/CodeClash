@@ -5,7 +5,6 @@ import { getNextSuggestedNode } from "../api/treeNavigationService";
 import {
   NODE_WIDTH,
   NODE_HEIGHT,
-  FIT_PADDING_FACTOR,
 } from "../constants/tree-navigation_constants";
 import type { CodeReference } from "../types/code";
 import type {
@@ -34,7 +33,7 @@ export const useTreeNavigator = () => {
   const [navigationMode, setNavigationMode] = useState<NavigationMode>("depth");
   const [isLoading, setIsLoading] = useState(true);
   const [treePositions, setTreePositions] = useState<TreeNodePosition[]>([]);
-  const [zoom, setZoom] = useState(0.6);
+  const [zoom, setZoom] = useState(0.3);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -69,7 +68,9 @@ export const useTreeNavigator = () => {
       isInitialLoad &&
       containerRef.current
     ) {
-      const initialZoomLevel = 0.6;
+      const isMobile = window.innerWidth < 768;
+      const initialZoomLevel = isMobile ? 0.25 : 0.6;
+      
       setZoom(initialZoomLevel);
       const rootNodePos = treePositions.find((p) => p.node.id === treeData.id);
       const initialPan = calculatePanForCenter(
@@ -95,11 +96,15 @@ export const useTreeNavigator = () => {
   };
 
   const handleNodeSelect = useCallback(
-    (node: CodeReference) => {
+    (node: CodeReference, shouldCenter = false) => {
       setSelectedNode(node);
-      const nodePos = treePositions.find((p) => p.node.id === node.id);
-      const newPan = calculatePanForCenter(nodePos, containerRef.current, zoom);
-      if (newPan) setPan(newPan);
+      
+      const isMobile = window.innerWidth < 768;
+      if (shouldCenter || !isMobile) {
+        const nodePos = treePositions.find((p) => p.node.id === node.id);
+        const newPan = calculatePanForCenter(nodePos, containerRef.current, zoom);
+        if (newPan) setPan(newPan);
+      }
     },
     [treePositions, zoom]
   );
@@ -119,7 +124,9 @@ export const useTreeNavigator = () => {
         navigationMode,
         parseInt(String(selectedNode.id), 10)
       );
-      if (nextNode) handleNodeSelect(nextNode);
+      if (nextNode) {
+        handleNodeSelect(nextNode, true);
+      }
     } catch (error) {
       const message = getErrorMessage(error);
       addNotification("error", message);
@@ -127,32 +134,41 @@ export const useTreeNavigator = () => {
   }, [language, navigationMode, selectedNode, handleNodeSelect, addNotification]);
 
   const handleReset = useCallback(() => {
-    if (treeData) handleNodeSelect(treeData);
+    if (treeData) {
+      handleNodeSelect(treeData, true);
+    }
   }, [treeData, handleNodeSelect]);
 
   const handleZoom = useCallback(
     (direction: "in" | "out") => {
-      if (!selectedNode || !containerRef.current) return;
-      const zoomStep = 0.15;
+      if (!containerRef.current) return;
+      
+      const isMobile = window.innerWidth < 768;
+      const zoomStep = isMobile ? 0.05 : 0.15;
+      const maxZoom = isMobile ? 1.0 : 2;
+      const minZoom = 0.15;
+      
       const newZoom =
         direction === "in"
-          ? Math.min(zoom + zoomStep, 2)
-          : Math.max(zoom - zoomStep, 0.2);
+          ? Math.min(zoom + zoomStep, maxZoom)
+          : Math.max(zoom - zoomStep, minZoom);
 
-      const nodePos = treePositions.find((p) => p.node.id === selectedNode.id);
-      if (!nodePos) return;
+      if (newZoom === zoom) return;
 
-      const nodeCenterX = nodePos.x + NODE_WIDTH / 2;
-      const nodeCenterY = nodePos.y + NODE_HEIGHT / 2;
-      const focalPointX = nodeCenterX * zoom + pan.x;
-      const focalPointY = nodeCenterY * zoom + pan.y;
-      const newPanX = focalPointX - nodeCenterX * newZoom;
-      const newPanY = focalPointY - nodeCenterY * newZoom;
+      const container = containerRef.current;
+      const centerX = container.clientWidth / 2;
+      const centerY = container.clientHeight / 2;
+      
+      const worldX = (centerX - pan.x) / zoom;
+      const worldY = (centerY - pan.y) / zoom;
+      
+      const newPanX = centerX - worldX * newZoom;
+      const newPanY = centerY - worldY * newZoom;
 
       setZoom(newZoom);
       setPan({ x: newPanX, y: newPanY });
     },
-    [zoom, pan.x, pan.y, selectedNode, treePositions]
+    [zoom, pan]
   );
 
   const handleZoomIn = useCallback(() => handleZoom("in"), [handleZoom]);
@@ -172,7 +188,7 @@ export const useTreeNavigator = () => {
 
       const scaleX = containerWidth / contentWidth;
       const scaleY = containerHeight / contentHeight;
-      const newZoom = Math.min(scaleX, scaleY) * FIT_PADDING_FACTOR;
+      const newZoom = Math.min(scaleX, scaleY) * 0.85;
 
       setZoom(newZoom);
       setPan({
@@ -194,7 +210,9 @@ export const useTreeNavigator = () => {
   const handleMouseMove = useCallback(
     (e: React.MouseEvent | { clientX: number; clientY: number }) => {
       if (isDragging) {
-        setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+        const newX = e.clientX - dragStart.x;
+        const newY = e.clientY - dragStart.y;
+        setPan({ x: newX, y: newY });
         lastPositionRef.current = { x: e.clientX, y: e.clientY };
       }
     },
