@@ -1,12 +1,14 @@
 using Data;
 using Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
+    private readonly IMemoryCache _cache;
     private IDbContextTransaction? _transaction;
 
     private ICodeReferenceRepository? _codeReferences;
@@ -14,16 +16,17 @@ public class UnitOfWork : IUnitOfWork
     private IUserRepository? _users;
     private IUserProblemSolutionRepository? _userProblemSolutions;
 
-    public UnitOfWork(ApplicationDbContext context)
+    public UnitOfWork(ApplicationDbContext context, IMemoryCache cache)
     {
         _context = context;
+        _cache = cache;
     }
 
     public ICodeReferenceRepository CodeReferences =>
         _codeReferences ??= new CodeReferenceRepository(_context);
 
     public IProblemRepository Problems =>
-        _problems ??= new ProblemRepository(_context, null);
+        _problems ??= new ProblemRepository(_context, _cache);
 
     public IUserRepository Users =>
         _users ??= new UserRepository(_context);
