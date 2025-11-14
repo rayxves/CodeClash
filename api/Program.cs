@@ -122,34 +122,40 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddHttpClient();
 builder.Services.Configure<Judge0Settings>(builder.Configuration.GetSection("Judge0"));
-builder.Services.AddScoped<ICodeComponentFactory, CodeComponentFactory>();
-builder.Services.AddScoped<IJudge0ResponseAdapter, Judge0ResponseAdapter>();
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICodeReferenceRepository, CodeReferenceRepository>();
 builder.Services.AddScoped<IProblemRepository, ProblemRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserProblemSolutionRepository, UserProblemSolutionRepository>();
+
 builder.Services.AddScoped<IJudge0Services, Judge0Services>();
-builder.Services.AddScoped<ISubmissionFacade, SubmissionFacade>();
 builder.Services.AddScoped<ICodeReferenceServices, CodeReferenceService>();
 builder.Services.AddScoped<IProblemServices, ProblemServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<TokenServices>();
 builder.Services.AddScoped<IUserProblemSolutionServices, UserProblemSolutionServices>();
-builder.Services.AddScoped<ISubmissionRequestBuilder, SubmissionBuilder>();
 builder.Services.AddScoped<ICodeFormatterServices, CodeFormatterServices>();
+builder.Services.AddScoped<ITestExecutorService, TestExecutorService>();
+builder.Services.AddScoped<ISubmissionServices, SubmissionServices>();
+builder.Services.AddScoped<ITreeNavigationService, TreeNavigationService>();
+builder.Services.AddScoped<ILanguageResolver, LanguageResolver>();
+
+builder.Services.AddScoped<ICodeComponentFactory, CodeComponentFactory>();
+builder.Services.AddScoped<IJudge0ResponseAdapter, Judge0ResponseAdapter>();
+builder.Services.AddScoped<ISubmissionFacade, SubmissionFacade>();
+builder.Services.AddScoped<ISubmissionRequestBuilder, SubmissionBuilder>();
+builder.Services.AddScoped<SubmissionDirector>();
+
 builder.Services.AddScoped<ISubject, SubmissionPublisher>();
 builder.Services.AddScoped<IObserver, PointsObserver>();
 builder.Services.AddScoped<IObserver, SolutionPersistenceObserver>();
 builder.Services.AddScoped<IObserver, FrontendNotifierObserver>();
+
+
 builder.Services.AddScoped<ISubmissionStrategySelector, SubmissionStrategySelector>();
-builder.Services.AddScoped<ILanguageResolver, LanguageResolver>();
-builder.Services.AddScoped<ITestExecutorService, TestExecutorService>();
 builder.Services.AddScoped<ISubmissionStrategy, ProblemSubmissionStrategy>();
 builder.Services.AddScoped<ISubmissionStrategy, SimpleExecutionStrategy>();
-builder.Services.AddScoped<SubmissionDirector>();
-builder.Services.AddScoped<ISubmissionServices, SubmissionServices>();
-builder.Services.AddScoped<ITreeNavigationService, TreeNavigationService>();
 builder.Services.AddScoped<ISubmissionChainFactory, SubmissionChainFactory>(); 
 builder.Services.AddScoped<ISubmissionHandler>(sp =>
 {

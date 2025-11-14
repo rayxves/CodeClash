@@ -1,6 +1,7 @@
 using Dtos;
 using Interfaces;
 using Mappers;
+using Models;
 using Observers;
 using Strategies;
 using Strategies.Enums;
@@ -30,7 +31,7 @@ public class SubmissionServices : ISubmissionServices
     {
         var strategy = _strategySelector.SelectStrategy(input);
 
-        var initialSolution = input.ProblemId.HasValue
+        UserProblemSolution? initialSolution = input.ProblemId.HasValue
             ? await _solutionService.CreateInitialSubmissionAsync(input.UserId, input.ProblemId.Value, input.Language.Name, input.SourceCode)
             : null;
 

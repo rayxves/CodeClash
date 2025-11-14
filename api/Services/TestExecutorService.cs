@@ -29,23 +29,39 @@ public class TestExecutorService : ITestExecutorService
 
         foreach (var testCase in testCases)
         {
-            var request = _submissionDirector.ConstructProblemTestRequest(input.SourceCode, input.Language, testCase);
-            var context = new SubmissionContext(request);
-            await _submissionChain.HandleAsync(context);
-
-            if (context.Response != null)
+            try
             {
-                results.Add(_adapter.AdaptToTestResult(context.Response, testCase));
+                var request = _submissionDirector.ConstructProblemTestRequest(input.SourceCode, input.Language, testCase);
+                var context = new SubmissionContext(request);
+                await _submissionChain.HandleAsync(context);
+
+                if (context.Response != null)
+                {
+                    results.Add(_adapter.AdaptToTestResult(context.Response, testCase));
+                }
+                else
+                {
+                    results.Add(new TestCaseResultDto
+                    {
+                        TestCaseId = testCase.Id,
+                        Status = "Error",
+                        ExpectedOutput = testCase.ExpectedOutput ?? string.Empty,
+                        Output = context.ErrorMessage ?? "Erro desconhecido",
+                        CompileOutput = context.ErrorMessage ?? "Ocorreu um erro durante a execução.",
+                        Passed = false,
+                        Time = "0"
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
                 results.Add(new TestCaseResultDto
                 {
                     TestCaseId = testCase.Id,
                     Status = "Error",
-                    ExpectedOutput = testCase.ExpectedOutput,
-                    Output = context.ErrorMessage ?? "Erro desconhecido",
-                    CompileOutput = context.ErrorMessage ?? "Ocorreu um erro durante a execução.",
+                    ExpectedOutput = testCase.ExpectedOutput ?? string.Empty,
+                    Output = $"Erro ao executar teste: {ex.Message}",
+                    CompileOutput = ex.ToString(),
                     Passed = false,
                     Time = "0"
                 });
