@@ -1,20 +1,19 @@
-codeclashplatform.duckdns.org {
-    handle /api/* {
-        reverse_proxy api:8080 {
-            header_up Host {host}
-            header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-            header_up X-Forwarded-Proto {scheme}
-        }
-    }
-
-    handle {
-        reverse_proxy frontend:80
-    }
-
-    encode gzip
-    log {
-        output file /data/access.log
-    }
+server {
+  listen 80;
+  server_name localhost;
+  root /usr/share/nginx/html;
+  index index.html;
+  
+  location /.well-known/acme-challenge/ {
+    root /var/www/certbot;
+  }
+  
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+  
+  location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+  }
 }
-
