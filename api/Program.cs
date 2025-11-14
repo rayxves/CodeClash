@@ -72,7 +72,6 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString, npgsql =>
     {
         npgsql.CommandTimeout(30);
-        npgsql.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null);
     });
 }, poolSize: 64);
 
